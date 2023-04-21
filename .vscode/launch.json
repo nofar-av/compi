@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/a.out",
-            "args": ["<", "t1.in"],
+            "args": ["<", "t2.in"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
