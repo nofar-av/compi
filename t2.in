@@ -1,7 +1,8 @@
+"Nice,\nisn't\nit\"31?" 
 // Hello world program
 
 int main() {
 	print("Hello world!");
-	print("Nice,\nisn't\nit?");
+	print("Nice,\nisn't\nit\x31?");
 	return 0;
 }
