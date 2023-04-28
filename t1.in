@@ -9,3 +9,5 @@ int main() {
 
 
 \"{string_chars|\\}*\"      return UNDEFINED_ESCAPE_SEQ;
+
+\"{string_chars}*\\\"       return UNCLOSED_STRING_ERROR;

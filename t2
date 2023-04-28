@@ -1,0 +1,21 @@
+1 INT int
+1 ID main
+1 LPAREN (
+1 RPAREN )
+1 LBRACE {
+2 ID print
+2 LPAREN (
+2 STRING Hello world!
+2 RPAREN )
+2 SC ;
+3 ID print
+3 LPAREN (
+3 STRING Nice,
+isn't
+it ?
+3 RPAREN )
+3 SC ;
+4 RETURN return
+4 NUM 0
+4 SC ;
+5 RBRACE }
