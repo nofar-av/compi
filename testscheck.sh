@@ -63,7 +63,7 @@ GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
 #	number of tests:
-numtests=57
+numtests=58
 #	command to execute test:
 command="./hw1.out < ../tests/input/t\$i.in >& ../tests/output/t\$i.out"
 i="1"

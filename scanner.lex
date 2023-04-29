@@ -14,10 +14,7 @@ digit   		([0-9])
 letter  		([a-zA-Z])
 id              ([0-9a-zA-Z])
 whitespace		([\r\t\n ])
-printable_chars ([\x20-\x7E])
 string_chars    ([\x09\x20-\x21\x23-\x5B\x5D-\x7E]|\\\"|\\r|\\n|\\0|\\t|\\x|\\\\)
-string_chars_with_bs   ([\x20-\x21\x23-\x7E]|\\\")
-new_line         ([\x0A\0x0D])
 %%
 
 void                        return VOID;
@@ -51,10 +48,9 @@ continue                    return CONTINUE;
 0|[1-9][0-9]*               return NUM;
 \"{string_chars}*\"         return STRING;
 \"{string_chars}*\\[^nrxt0\\\"]{string_chars}* return UNDEFINED_ESCAPE_SEQ;
-\"{string_chars}*         return STRING_ERROR;
+\"{string_chars}*           return STRING_ERROR;
 {whitespace}				;
-{printable_chars}           return CHAR_ERROR;
-.		printf("Lex doesn't know what that is!\n");
+.                           return CHAR_ERROR;		
 
 %%
 
