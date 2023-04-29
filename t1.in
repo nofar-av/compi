@@ -1,4 +1,6 @@
+"Nice bad escape \d here"
 int main() {
+	
 	int x = 5;
 	int powerOfx = x * x;
 	print(x);

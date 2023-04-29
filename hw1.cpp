@@ -14,13 +14,19 @@ void showUndefinedEscapeSeq()
     while (i != s.length())
     {
         char c = s[i++];
-        if (c == '\\' && i != s.length() && (s[i] != 'r' && s[i] != 'n' && s[i] != 't' && s[i] != '0' && s[i] != '"' && s[i] != '\\'))
+        if(i + 1 < s.length() && c == '\\' && s[i] == 'x' && s[i + 1] == '\\')
+        {
+            std::cout << "Error undefined escape sequence " << s.substr(i, 3) << std::endl;                
+            exit(0);
+        }
+        else if (c == '\\' && i != s.length() && s[i] != 'r' && s[i] != 'n' && s[i] != 't' && s[i] != '0' && s[i] != '"' && s[i] != '\\'
+            && s[i] != 'x')
         {
             std::cout << "Error undefined escape sequence " << s[i] << std::endl;
             exit(0);
         }    
     }
-    std::cout << "hello" << std::endl;
+    std::cout << "mistake" << std::endl;
     exit(0);
 }
 void showError(std::string name)
@@ -48,7 +54,7 @@ void showToken(std::string name)
         std::cout << yylineno << " " << name << " //" << std::endl;
         return;  
     }
-	std::cout << yylineno << " " << name << " " << str << std::endl;
+	std::cout << yylineno << " " << name << " " << str.c_str() << std::endl;
 }
 
 std::string unescape(const std::string& s)
@@ -64,9 +70,7 @@ std::string unescape(const std::string& s)
             case '\\': c = '\\'; break;
             case 'n': c = '\n'; break;
             case 't': c = '\t'; break;
-            case '0': {
-                return res;
-            }
+            case '0': c = '\0'; break;
             case 'r': c = '\r'; break;
             case '"': c = '\"'; break;
             case 'x': {
