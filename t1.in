@@ -3,8 +3,7 @@ int main() {
 	int powerOfx = x * x;
 	print(x);
 	return 0;
-	"unclose
-
+	"hello\0 hello"
 }
 
 

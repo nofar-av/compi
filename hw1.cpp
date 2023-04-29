@@ -7,6 +7,22 @@
 extern int yylex();
 std::string unescape(const std::string& s);
 
+void showUndefinedEscapeSeq()
+{
+    std::string s(yytext);
+    int i = 0;
+    while (i != s.length())
+    {
+        char c = s[i++];
+        if (c == '\\' && i != s.length() && (s[i] != 'r' && s[i] != 'n' && s[i] != 't' && s[i] != '0' && s[i] != '"' && s[i] != '\\'))
+        {
+            std::cout << "Error undefined escape sequence " << s[i] << std::endl;
+            exit(0);
+        }    
+    }
+    std::cout << "hello" << std::endl;
+    exit(0);
+}
 void showError(std::string name)
 {
     if(name == "Error unclosed string")
@@ -27,6 +43,11 @@ void showToken(std::string name)
         str = str.substr(1, str.length() - 2);
         str = unescape(str);
     }
+    else if(name == "COMMENT")
+    {
+        std::cout << yylineno << " " << name << " //" << std::endl;
+        return;  
+    }
 	std::cout << yylineno << " " << name << " " << str << std::endl;
 }
 
@@ -43,7 +64,9 @@ std::string unescape(const std::string& s)
             case '\\': c = '\\'; break;
             case 'n': c = '\n'; break;
             case 't': c = '\t'; break;
-            case '0': c = '\0'; break;
+            case '0': {
+                return res;
+            }
             case 'r': c = '\r'; break;
             case '"': c = '\"'; break;
             case 'x': {
@@ -122,7 +145,11 @@ int main()
 	while((token = yylex()))
 	{
 		// Your code here
-        if(token > 30)
+        if(token == 34)
+        {
+            showUndefinedEscapeSeq();
+        }
+        else if(token > 30)
             showError(tokenMap.at(token));
 		showToken(tokenMap.at(token));
 	}
