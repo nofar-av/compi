@@ -1,3 +1,6 @@
+byte x = 15b;
+print("Hello\nyou!");
+
 "Nice bad escape \d here"
 int main() {
 	
