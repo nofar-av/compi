@@ -1,0 +1,119 @@
+%{
+	#include "output.hpp"
+	#include <iostream>
+	#include <stdlib.h>
+	typedef enum { OP_AND, OP_OR } opType;
+
+	using namespace std;
+    using namespace output;
+    
+	extern int yylex();
+	int yyerror(const char * message);
+%}
+
+%token VOID
+%token INT
+%token BYTE
+%token B
+%token BOOL
+%token OVERRIDE
+%token NOT
+%token TRUE
+%token FALSE
+%token RETURN
+%token IF
+%right ELSE
+%token WHILE
+%token BREAK
+%token CONTINUE
+%token SC
+%token COMMA
+%token LBRACE
+%token RBRACE
+%token ID
+%token NUM
+%token STRING
+
+%right ASSIGN
+%left OR
+%left AND
+%left RELOP
+%left BINOP
+%left LPAREN
+%right RPAREN
+
+%%
+Program : Funcs { printProductionRule(1); };
+
+Funcs : /* epsilon */ 
+        | FuncDecl Funcs { cout << "func"; };
+
+FuncDecl : OverRide RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE { };
+
+OverRide : /* epsilon */
+        |  OVERRIDE {  };
+
+RetType : Type {  }
+        | VOID {  };
+
+Formals : /* epsilon */
+        | FormalsList {};
+
+FormalsList : FormalDecl {}
+            | FormalDecl COMMA FormalsList {};
+
+FormalDecl : Type ID {};
+
+Statements : Statement {}
+            | Statements Statement {};
+
+Statement : LBRACE Statements RBRACE {}
+        | Type ID SC {}
+        | Type ID ASSIGN Exp SC {}
+        | ID ASSIGN Exp SC {}
+        | Call SC {}
+        | RETURN SC {}
+        | RETURN Exp SC {}
+        | IF LPAREN Exp RPAREN Statement {}
+        | IF LPAREN Exp RPAREN Statement ELSE Statement {}
+        | WHILE LPAREN Exp RPAREN Statement {}
+        | BREAK SC {}
+        | CONTINUE SC {};
+
+Call : ID LPAREN ExpList RPAREN {}
+    | ID LPAREN RPAREN {};
+
+ExpList : Exp {}
+        | Exp COMMA ExpList {};
+
+Type : INT {}
+    | BYTE {}
+    | BOOL {};
+
+Exp : LPAREN Exp RPAREN {}
+    | Exp BINOP Exp {}
+    | ID {}
+    | Call {}
+    | NUM {}
+    | NUM B {}
+    | STRING {}
+    | TRUE {}
+    | FALSE {}
+    | NOT Exp {}
+    | Exp AND Exp {}
+    | Exp OR Exp {}
+    | Exp RELOP Exp {}
+    | LPAREN Type RPAREN Exp {};
+
+%%
+
+int main()
+{
+	return yyparse();
+}
+
+int yyerror(const char * message)
+{
+	cout<<"Parse error: "<<message<<endl;
+	exit(0);
+}

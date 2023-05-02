@@ -32,7 +32,11 @@
     ID = 27,
     NUM = 28,
     STRING = 29,
-	OVERRIDE=30
+	  OVERRIDE = 30,
+    CHAR_ERROR = 31,
+    STRING_ERROR = 32,
+    UNCLOSED_STRING_ERROR = 33,
+    UNDEFINED_ESCAPE_SEQ = 34
   };
   extern int yylineno;
   extern char* yytext;

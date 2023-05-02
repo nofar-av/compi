@@ -1,4 +1,4 @@
-byte x = 15b;
+override
 print("Hello\nyou!");
 
 "Nice bad escape \d here"
