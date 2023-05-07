@@ -1,0 +1,9 @@
+5: OverRide -> epsilon
+8: RetType ->  VOID
+9: Formals -> epsilon
+21: Statement -> RETURN SC
+14: Statements -> Statement
+4: FuncDecl -> OverRide RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE
+2: Funcs -> epsilon
+3: Funcs -> FuncDecl Funcs
+1: Program -> Funcs

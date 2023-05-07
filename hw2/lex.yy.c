@@ -571,10 +571,10 @@ char *yytext;
 #line 1 "scanner.lex"
 #line 2 "scanner.lex"
 
-/* Declarations section */
-#include <stdio.h>
-#include "parser.tab.hpp"
-#include "output.hpp"
+    /* Declarations section */
+    #include <stdio.h>
+    #include "parser.tab.hpp"
+    #include "output.hpp"
 
 #line 580 "lex.yy.c"
 #line 581 "lex.yy.c"
@@ -1024,7 +1024,7 @@ YY_RULE_SETUP
 case 32:
 YY_RULE_SETUP
 #line 52 "scanner.lex"
-;	
+{ output::errorLex(yylineno); exit(0);};	
 	YY_BREAK
 case 33:
 YY_RULE_SETUP

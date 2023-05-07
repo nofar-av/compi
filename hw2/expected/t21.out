@@ -1,0 +1,13 @@
+5: OverRide -> epsilon
+32: Type -> INT
+7: RetType -> Type
+32: Type -> INT
+13: FormalDecl -> Type ID
+11: FormalsList -> FormalDecl
+10: Formals -> FormalsList
+41: Exp -> STRING
+42: Exp -> TRUE
+41: Exp -> STRING
+45: Exp -> Exp AND Exp
+46: Exp -> Exp OR Exp
+line 2: syntax error

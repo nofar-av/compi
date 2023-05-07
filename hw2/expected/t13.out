@@ -1,0 +1,15 @@
+5: OverRide -> epsilon
+8: RetType ->  VOID
+9: Formals -> epsilon
+34: Type -> BOOL
+37: Exp -> ID
+44: Exp -> NOT Exp
+37: Exp -> ID
+44: Exp -> NOT Exp
+45: Exp -> Exp AND Exp
+18: Statement -> Type ID ASSIGN Exp SC
+14: Statements -> Statement
+4: FuncDecl -> OverRide RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE
+2: Funcs -> epsilon
+3: Funcs -> FuncDecl Funcs
+1: Program -> Funcs

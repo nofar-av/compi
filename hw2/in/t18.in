@@ -1,0 +1,17 @@
+
+void main()
+{
+
+    s=0;
+
+    if (true) 
+        s = 6;
+    
+    else 
+        print(2);
+    
+
+    if (a) if(y) print(s); else s2=s;
+
+
+}

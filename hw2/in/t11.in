@@ -1,0 +1,16 @@
+
+void main()
+{
+
+
+    if (a){
+        if(x){
+           print(22);
+        }
+    
+        else{
+            s2=s;
+        }
+    }
+
+}

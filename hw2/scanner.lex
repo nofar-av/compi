@@ -1,9 +1,9 @@
 %{
 
-/* Declarations section */
-#include <stdio.h>
-#include "parser.tab.hpp"
-#include "output.hpp"
+    /* Declarations section */
+    #include <stdio.h>
+    #include "parser.tab.hpp"
+    #include "output.hpp"
 
 %}
 
@@ -49,7 +49,7 @@ continue                    return CONTINUE;
 0|[1-9][0-9]*               return NUM;
 \"([^\n\r\"\\]|\\[rnt"\\])+\"         return STRING;
 {whitespace}				;
-.                           ;	
+.                           { output::errorLex(yylineno); exit(0);};	
 
 %%
 

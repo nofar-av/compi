@@ -1,0 +1,35 @@
+
+void main()
+{
+
+    //int s=0;
+
+    if (true) 
+        s = 6;
+    
+    else 
+        print(2);
+    
+
+    if(a) if(s) s=8; else print(2);
+    
+
+    if(1<22) {
+        if(true) 
+            x=y;
+    }
+
+
+    if (a) if(y) print(s); else s2=s;
+
+    if (a){
+        if(x){
+           print(22);
+        }
+    
+        else{
+            s2=s;
+        }
+    }
+
+}
