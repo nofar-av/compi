@@ -1,0 +1,44 @@
+void callNoArgs()
+{
+    func();
+}
+
+void callOneArg()
+{
+    func(1);
+}
+
+void callTwoArgs()
+{
+    func(1, 2);
+}
+
+void callThreeArgs()
+{
+    func(1, 2, 3);
+}
+
+void callFourArgs()
+{
+    func(1, 2, 3, 4);
+}
+
+void callOneArgOneVar()
+{
+    int arg = 1;
+    func(arg);
+}
+
+void callTwoArgsOneVar()
+{
+    int arg = 1;
+    func(arg, 2);
+    func(1, arg);
+}
+
+void callOneArgTwoVars()
+{
+    int arg1 = 1;
+    int arg2 = 2;
+    func(arg1, arg2);
+}

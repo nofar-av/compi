@@ -1,0 +1,89 @@
+void addAdd()
+{
+    return 1 + 2 + 3;
+}
+
+void addSub()
+{
+    return 1 + 2 - 3;
+}
+
+void addMul()
+{
+    return 1 + 2 * 3;
+}
+
+void addDiv()
+{
+    return 1 + 2 / 3;
+}
+
+void subAdd()
+{
+    return 1 - 2 + 3;
+}
+
+void subSub()
+{
+    return 1 - 2 - 3;
+}
+
+void subMul()
+{
+    return 1 - 2 * 3;
+}
+
+void subDiv()
+{
+    return 1 - 2 / 3;
+}
+
+void mulAdd()
+{
+    return 1 * 2 + 3;
+}
+
+void mulSub()
+{
+    return 1 * 2 - 3;
+}
+
+void mulMul()
+{
+    return 1 * 2 * 3;
+}
+
+void mulDiv()
+{
+    return 1 * 2 / 3;
+}
+
+void divAdd()
+{
+    return 1 / 2 + 3;
+}
+
+void divSub()
+{
+    return 1 / 2 - 3;
+}
+
+void divMul()
+{
+    return 1 / 2 * 3;
+}
+
+void divDiv()
+{
+    return 1 / 2 / 3;
+}
+
+void addSubMulDiv()
+{
+    return 1 + 2 - 3 * 4 / 5;
+}
+
+void addMulSubDiv()
+{
+    return 1 + 2 * 3 - 4 / 5;
+}

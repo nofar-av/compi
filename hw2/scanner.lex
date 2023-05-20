@@ -10,12 +10,12 @@
 %option yylineno
 %option noyywrap
 relop           (==|!=|<|>|<=|>=)
-binop           ([-+/*])
+binop_add       ([-+])
+binop_mul       ([/*])    
 digit   		([0-9])
 letter  		([a-zA-Z])
 id              ([0-9a-zA-Z])
 whitespace		([\r\t\n ])
-string_chars    ([\x09\x20-\x21\x23-\x5B\x5D-\x7E]|\\\"|\\r|\\n|\\0|\\t|\\x|\\\\)
 %%
 
 void                        return VOID;
@@ -43,7 +43,8 @@ continue                    return CONTINUE;
 \}                          return RBRACE;
 =                           return ASSIGN;
 {relop}                     return RELOP;
-{binop}                     return BINOP;
+{binop_add}                 return BINOP_ADD;
+{binop_mul}                 return BINOP_MUL;
 \/\/[^\r\n]*[\r|\n|\r\n]?   ;
 {letter}+{id}*              return ID;
 0|[1-9][0-9]*               return NUM;

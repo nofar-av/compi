@@ -1,0 +1,51 @@
+void oneIf()
+{
+    if (a == 1)
+    {
+        a = 2;
+    }
+}
+
+void ifNoBrace()
+{
+    if (a == 1)
+        a = 2;
+}
+
+void ifElse()
+{
+    if (a == 1)
+    {
+        a = 2;
+    }
+    else
+    {
+        a = 3;
+    }
+}
+
+void ifElseIf()
+{
+    if (a == 1)
+    {
+        a = 2;
+    }
+    else if (a == 3)
+    {
+        a = c;
+    }
+    else
+    {
+        a = 5;
+    }
+}
+
+void danglingElse()
+{
+    if (a == 1)
+        if (c == 2)
+            a = 3;
+        else
+            a = 4;
+}
+

@@ -32,7 +32,8 @@
 %left OR
 %left AND
 %left RELOP
-%left BINOP
+%left BINOP_ADD
+%left BINOP_MUL
 %nonassoc NOT
 %left LPAREN LBRACE RPAREN RBRACE
 %nonassoc ELSE
@@ -86,7 +87,8 @@ Type : INT { output::printProductionRule(32); }
     | BOOL { output::printProductionRule(34); };
 
 Exp : LPAREN Exp RPAREN { output::printProductionRule(35); }
-    | Exp BINOP Exp { output::printProductionRule(36); }
+    | Exp BINOP_MUL Exp { output::printProductionRule(36); }
+    | Exp BINOP_ADD Exp { output::printProductionRule(36); }
     | ID { output::printProductionRule(37); }
     | Call { output::printProductionRule(38); }
     | NUM { output::printProductionRule(39); }
@@ -110,4 +112,5 @@ int main()
 void yyerror(const char * message)
 {
 	output::errorSyn(yylineno);
+        exit(0);
 }
