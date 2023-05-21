@@ -1,21 +1,16 @@
 #include "decl.hpp"
 
-void SymTable::addSymbol(string name, Type type)
-{
-    if (this->vars.find(name) != this->vars.end())
-    {
+void SymTable::addSymbol(string name, Type type) {
+    if (this->vars.find(name) != this->vars.end()) {
         output::errorDef(yylineno, name);
         exit(0);
     }
     this->vars.insert(name);
-    if (this->tables.empty())
-    {
+    if (this->tables.empty()) {
         vector<Entry> table;
         table.push_back({name, type, 0});
         this->tables.push(table); // TODO: should be refernce?
-    }
-    else
-    {
+    } else {
         vector<Entry> table = this->tables.top();
         int offset = this->offsets.top();
         this->offsets.pop();
@@ -24,21 +19,26 @@ void SymTable::addSymbol(string name, Type type)
     }
 }
 
-void SymTable::addScope()
-{
+void SymTable::addScope() {
     int offset = this->offsets.top();
     this->offsets.push(offset);
     vector<Entry> table;
     this->tables.push(table);
 }
 
-void SymTable::removeScope()
-{
+void SymTable::removeScope() {
     this->offsets.pop();
     vector<Entry> scope = this->tables.top();
-    for(auto it = scope.begin(); it != scope.end(); it++)
-    {
+    for(auto it = scope.begin(); it != scope.end(); it++) {
         this->vars.erase(it->name);
     }
     this->tables.pop();
+}
+
+bool SymTable::checkForSymbol (string name) {
+    return this->vars.find(name) != this->vars.end();
+}
+
+Type SymTable::findType (string name) {
+    
 }

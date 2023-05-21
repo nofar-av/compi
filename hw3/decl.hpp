@@ -15,11 +15,9 @@ using namespace std;
 
 enum Type { intType, boolType, byteType, stringType };
 
-class SymTable
-{
+class SymTable {
 private:
-    struct Entry
-    {
+    struct Entry {
         string name;
         Type type;
         int offset;
@@ -34,6 +32,8 @@ public:
     void addSymbol(string name, Type type);
     void addScope();
     void removeScope();
+    bool checkForSymbol (string name);
+    Type SymTable::findType (string name);
 };
 
 #endif
