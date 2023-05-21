@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <algorithm>
-
+#include "decl.hpp"
 
 using namespace std;
 
@@ -78,7 +78,9 @@ class Type : public Node {
 };
 
 class Exp : public Node {
+    Exp(Node *node, string type);
     virtual ~Exp() = default;
+
 };
 
 #endif

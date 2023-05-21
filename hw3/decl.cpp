@@ -6,6 +6,12 @@ void Scope::addSymbol(string name, Type type, int offset, bool is_func = false, 
 
 }
 
+SymTable::SymTable()
+{
+    Scope scope;
+    scope.addSymbol("print", voidType, 0, true, );
+    this->tables.push_back(scope); // TODO: should be refernce?
+}
 
 void SymTable::addSymbol(string name, Type type, bool is_func = false, vector<string> params = {}) {
     if (checkForSymbol(name)) {
@@ -13,17 +19,11 @@ void SymTable::addSymbol(string name, Type type, bool is_func = false, vector<st
         exit(0);
     }
     this->vars.insert(name);
-    if (this->tables.empty()) {
-        Scope scope;
-        scope.addSymbol(name, type, 0, is_func, params);
-        this->tables.push_back(scope); // TODO: should be refernce?
-    } else {
-        Scope& scope = this->tables.back();
-        int offset = this->offsets.back();
-        this->offsets.pop_back();
-        scope.addSymbol(name, type, offset + 1, is_func, params);
-        this->offsets.push_back(offset + 1);
-    }
+    Scope& scope = this->tables.back();
+    int offset = this->offsets.back();
+    this->offsets.pop_back();
+    scope.addSymbol(name, type, offset + 1, is_func, params);
+    this->offsets.push_back(offset + 1);
 }
 
 void SymTable::addScope(bool is_loop) {

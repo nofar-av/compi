@@ -104,16 +104,16 @@ Exp : LPAREN Exp RPAREN { output::printProductionRule(35); }
     | Exp BINOP_ADD Exp { output::printProductionRule(36); }
     | ID { output::printProductionRule(37); }
     | Call { output::printProductionRule(38); }
-    | NUM { output::printProductionRule(39); }
-    | NUM B { output::printProductionRule(40); }
-    | STRING { output::printProductionRule(41); }
-    | TRUE { output::printProductionRule(42); }
-    | FALSE { output::printProductionRule(43); }
+    | NUM                                                          {$$ = new Exp($1, "int");}
+    | NUM B                                                        {$$ = new Exp($1, "byte");}
+    | STRING                                                       {$$ = new Exp($1, "string");}
+    | TRUE                                                         {$$ = new Exp($1, "bool");}
+    | FALSE                                                        {$$ = new Exp($1, "bool");}
     | NOT Exp { output::printProductionRule(44); }
     | Exp AND Exp { output::printProductionRule(45); }
     | Exp OR Exp { output::printProductionRule(46); }
     | Exp RELOP Exp { output::printProductionRule(47); }
-    | LPAREN Type RPAREN Exp { output::printProductionRule(48); };
+    | LPAREN Type RPAREN Exp {  };
 
 AddScopeMarker : /* epsilon */ {symtable.addScope(false);};
 AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true);};
