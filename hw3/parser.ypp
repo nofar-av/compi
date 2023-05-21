@@ -48,13 +48,12 @@
 %nonassoc ELSE
 
 %%
-Program : Funcs { output::printProductionRule(1); };
+Program : Funcs { };
 
-Funcs : /* epsilon */ { output::printProductionRule(2); }
-        | FuncDecl Funcs { output::printProductionRule(3); };
+Funcs : /* epsilon */ { }
+        | FuncDecl Funcs { };
 
-FuncDecl : OverRide RetType ID LPAREN Formals RPAREN LBRACE Statements RBRACE { symtable.addSymbol($3.name, $2.type);
-                                                                                output::printProductionRule(4); };
+FuncDecl : OverRide RetType ID LPAREN Formals RPAREN LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); };
 
 OverRide : /* epsilon */ { output::printProductionRule(5); }
         |  OVERRIDE { output::printProductionRule(6); };
@@ -73,7 +72,7 @@ FormalDecl : Type  { output::printProductionRule(13); };
 Statements : Statement { output::printProductionRule(14); }
             | Statements Statement { output::printProductionRule(15); };
 
-Statement : LBRACE Statements RBRACE { output::printProductionRule(16); }
+Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
         | Type ID SC {  symtable.addSymbol($2.name, $1.type); 
                         output::printProductionRule(17); }
         | Type ID ASSIGN Exp SC { symtable.addSymbol($2.name, $1.type);
@@ -83,11 +82,11 @@ Statement : LBRACE Statements RBRACE { output::printProductionRule(16); }
         | Call SC { output::printProductionRule(20); }
         | RETURN SC { output::printProductionRule(21); }
         | RETURN Exp SC { output::printProductionRule(22); }
-        | IF LPAREN Exp RPAREN Statement { output::printProductionRule(23); }
-        | IF LPAREN Exp RPAREN Statement ELSE Statement { output::printProductionRule(24); }
-        | WHILE LPAREN Exp RPAREN Statement { output::printProductionRule(25); }
-        | BREAK SC { output::printProductionRule(26); }
-        | CONTINUE SC { output::printProductionRule(27); }
+        | IF LPAREN Exp RPAREN AddScopeMarker Statement { symtable.removeScope(); }
+        | IF LPAREN Exp RPAREN AddScopeMarker Statement removeScope ELSE AddScopeMarker Statement { symtable.removeScope(); }
+        | WHILE LPAREN Exp RPAREN AddLoopScopeMarker Statement { symtable.removeScope(); }
+        | BREAK SC { symtable.verifyInLoop(true); }
+        | CONTINUE SC { symtable.verifyInLoop(false); }
         ;
 
 Call : ID LPAREN ExpList RPAREN { output::printProductionRule(28); }
@@ -96,9 +95,9 @@ Call : ID LPAREN ExpList RPAREN { output::printProductionRule(28); }
 ExpList : Exp { output::printProductionRule(30); }
         | Exp COMMA ExpList { output::printProductionRule(31); };
 
-Type : INT { output::printProductionRule(32); }
-    | BYTE { output::printProductionRule(33); }
-    | BOOL { output::printProductionRule(34); };
+Type : INT { $$ = new Type("int"); }
+    | BYTE { $$ = new Type("byte"); }
+    | BOOL { $$ = new Type("bool"); };
 
 Exp : LPAREN Exp RPAREN { output::printProductionRule(35); }
     | Exp BINOP_MUL Exp { output::printProductionRule(36); }
@@ -116,8 +115,12 @@ Exp : LPAREN Exp RPAREN { output::printProductionRule(35); }
     | Exp RELOP Exp { output::printProductionRule(47); }
     | LPAREN Type RPAREN Exp { output::printProductionRule(48); };
 
+AddScopeMarker : /* epsilon */ {symtable.addScope(false);};
+AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true);};
+RemoveScopeMarker : /* epsilon */ {symtable.removeScope();};
 %%
 
+SymTable symtable = new SymTable(); 
 int main()
 {
 	return yyparse();
