@@ -2,8 +2,7 @@
 
 extern SymTable symtable;
 
-Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type)
-{
+Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
     if (DEBUG)
         std::cout << "Exp Node+string " << type << " " << terminal->value << std::endl;
     if (type == "byte") {
@@ -17,8 +16,7 @@ Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type)
 
 Exp::Exp(Exp *exp) : Node(exp->value), type(exp->type) {}
 
-Exp::Exp(Node *terminal, string op) : type("bool")
-{
+Exp::Exp(Node *terminal, string op) : type("bool") {
     Exp* exp = dynamic_cast<Exp*>(terminal);
     if (op != "not") {
         //TODO: some error
@@ -33,8 +31,7 @@ Exp::Exp(Node *terminal, string op) : type("bool")
     }
     // this->value = !exp->value;
 }
-Exp::Exp(Node *terminal1, Node *terminal2, string type, string op)
-{
+Exp::Exp(Node *terminal1, Node *terminal2, string type, string op) {
     Exp* exp1 = dynamic_cast<Exp*>(terminal1);
     Exp* exp2 = dynamic_cast<Exp*>(terminal2);
     if (exp1->is_var && !symtable.checkForSymbol(exp1->value)) {
@@ -70,8 +67,7 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op)
         }
     }
 }
-Exp::Exp(Node *terminal, Node *type) : Node(terminal->value)
-{
+Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
     Exp* exp = dynamic_cast<Exp*>(terminal);
     Type* new_type = dynamic_cast<Type*>(type);
     if ((exp->type != "int" && exp->type != "byte") || (new_type->value != "int" && new_type->value != "byte")) {
@@ -80,25 +76,22 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value)
     }
     this->type = new_type->value;     
 }
-Exp::Exp(Call *call) : Node(), type(call->type)
-{
+Exp::Exp(Call *call) : Node(), type(call->type) {
+
 }
 
-ExpList::ExpList(Exp *exp) : Node(), exps()
-{
+ExpList::ExpList(Exp *exp) : Node(), exps() {
     this->exps.push_back(make_shared<Exp>(*exp));
 }
 
-ExpList::ExpList(Exp *exp, ExpList* explist) : Node()
-{
+ExpList::ExpList(Exp *exp, ExpList* explist) : Node() {
     this->exps.push_back(make_shared<Exp>(*exp));
     if(explist != nullptr) {
         exps.insert(exps.end(), explist->exps.begin(), explist->exps.end());
     }
 }
 
-Call::Call(Node *id) : Node(id->value)
-{
+Call::Call(Node *id) : Node(id->value) {
     if(!symtable.checkForSymbol(id->value)) {
         output::errorUndefFunc(yylineno, id->value);
         exit(0);
@@ -115,8 +108,7 @@ Call::Call(Node *id) : Node(id->value)
     }
     this->type = func.type;
 }
-Call::Call(Node *id, ExpList *explist) : Node(id->value)
-{
+Call::Call(Node *id, ExpList *explist) : Node(id->value) {
     if(!symtable.checkForSymbol(id->value)) {
         output::errorUndefFunc(yylineno, id->value);
         exit(0);
