@@ -54,19 +54,20 @@ Funcs : /* epsilon */ { }
 
 FuncDecl : OverRide RetType ID LPAREN Formals RPAREN LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); };
 
-OverRide : /* epsilon */ { output::printProductionRule(5); }
-        |  OVERRIDE { output::printProductionRule(6); };
+OverRide : /* epsilon */ { $$ = new OverRide(); }
+        |  OVERRIDE { $$ = new OverRide(true); };
 
 RetType : Type                          {$$ = new RetType(dynamic_cast<Type*>($1)->type);}
         | VOID                          {$$ = new RetType("void");};
 
-Formals : /* epsilon */ { output::printProductionRule(9); }
-        | FormalsList { output::printProductionRule(10); };
+Formals : /* epsilon */ { $$ = new Formals(); }
+        | FormalsList { $$ = new Formals(dynamic_cast<FormalsList*>($1)); };
 
-FormalsList : FormalDecl { output::printProductionRule(11); }
-            | FormalDecl COMMA FormalsList { output::printProductionRule(12); };
+FormalsList : FormalDecl { $$ = new FormalsList(dynamic_cast<FormalDecl*>($1)); }
+            | FormalDecl COMMA FormalsList { $$ = new FormalsList(dynamic_cast<FormalDecl*>($1), 
+                                                        dynamic_cast<FormalsList*>($3)); };
 
-FormalDecl : Type ID { output::printProductionRule(13); };
+FormalDecl : Type ID { $$ = new FormalDecl(dynamic_cast<Type*>($1), $2.value) };
 
 Statements : Statement { output::printProductionRule(14); }
             | Statements Statement { output::printProductionRule(15); };

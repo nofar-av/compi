@@ -120,3 +120,27 @@ Call::Call(Node *id, ExpList *explist) : Node(id->value) {
     }
     //TODO: handle override
 }
+
+
+//function parameter
+FormalDecl::FormalDecl(Type* type, string name) : Node(name), type(type) {}
+
+//function's list of parameters
+FormalsList::FormalsList(Formals *formal) : Node(), formals_list() {
+    if (formal != nullptr)
+        this->formals_list.push_back(make_shared<Formals>(*formal));
+}
+
+FormalsList::FormalsList(Formals *formals, FormalsList *f_list) 
+        : Node(), formals_list() {
+    this->formals_list.push_back(make_shared<Exp>(*exp));
+    if(f_list != nullptr) {
+        this->formals_list.insert(formals_list.end(), f_list->formals_list.begin(), f_list->formals_list.end());
+    }
+}
+    
+Formals::Formals(FormalsList* formals_list) {
+    if (formals_list != nullptr) {
+        this->params = formals_list;
+    }
+}

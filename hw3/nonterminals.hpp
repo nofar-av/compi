@@ -39,6 +39,8 @@ class FuncDecl : public Node {
 };
 
 class OverRide : public Node {
+    bool is_override;
+    OverRide(bool is_override = false) : is_override(is_override) {};
     virtual ~OverRide() = default;
 };
 
@@ -49,14 +51,25 @@ class RetType : public Node {
 };
 
 class Formals : public Node {
+    FormalsList params; //* or shared_ptr?
+    Formals() = default;
+    Formals(FormalsList* formals_list);
     virtual ~Formals() = default;
 };
 
 class FormalsList : public Node {
+public:
+    vector<shared_ptr<Formals>> formals_list;
+    FormalsList() = default;
+    FormalsList(Formals *formal);
+    FormalsList(Formals *formals, FormalsList *formals_list);
+    FormalsList(FormalsList other); //TODO:: needed for formals
     virtual ~FormalsList() = default;
 };
 
 class FormalDecl : public Node {
+    string type;
+    FormalDecl(Type* type, string name);
     virtual ~FormalDecl() = default;
 };
 
