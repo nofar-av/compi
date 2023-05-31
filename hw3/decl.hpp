@@ -21,6 +21,7 @@ struct Symbol {
         int offset;
         bool is_function;
         vector<string> params;
+        bool is_override;
 };
 class Scope {
     public:
@@ -28,7 +29,7 @@ class Scope {
         bool is_loop;
         Scope(bool is_loop = false) : symbols(), is_loop(is_loop) {};
         ~Scope() = default;
-        void addSymbol(string name, string type, int offset, bool is_func = false, vector<string> params = {});
+        void addSymbol(string name, string type, int offset, bool is_func = false, vector<string> params = {}, bool is_override = false);
 };
 
 class SymTable {
@@ -39,7 +40,7 @@ public:
     
     SymTable();
     ~SymTable() = default;
-    void addSymbol(string name, string type, bool is_func = false, vector<string> params = {});
+    void addSymbol(string name, string type, bool is_func = false, vector<string> params = {}, bool is_override = false);
     void addScope(bool is_loop);
     void removeScope();
     bool checkForSymbol (string name);

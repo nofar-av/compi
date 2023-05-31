@@ -1,8 +1,8 @@
 #include "decl.hpp"
 
-void Scope::addSymbol(string name, string type, int offset, bool is_func = false, vector<string> params = {})
+void Scope::addSymbol(string name, string type, int offset, bool is_func = false, vector<string> params = {}, bool is_override = false)
 {
-    this->symbols.push_back({name, type, offset, is_func, params});
+    this->symbols.push_back({name, type, offset, is_func, params, is_override});
 
 }
 
@@ -13,7 +13,7 @@ SymTable::SymTable()
     this->tables.push_back(scope); // TODO: should be refernce?
 }
 
-void SymTable::addSymbol(string name, string type, bool is_func = false, vector<string> params = {}) {
+void SymTable::addSymbol(string name, string type, bool is_func = false, vector<string> params = {}, bool is_override = false) {
     if (checkForSymbol(name)) {
         output::errorDef(yylineno, name);
         exit(0);
@@ -22,7 +22,7 @@ void SymTable::addSymbol(string name, string type, bool is_func = false, vector<
     Scope& scope = this->tables.back();
     int offset = this->offsets.back();
     this->offsets.pop_back();
-    scope.addSymbol(name, type, offset + 1, is_func, params);
+    scope.addSymbol(name, type, offset + 1, is_func, params, is_override);
     this->offsets.push_back(offset + 1);
 }
 
@@ -56,6 +56,28 @@ Symbol& SymTable::getSymbol (string name) {
     output::errorUndef(yylineno, name);
     exit(0);
 }
+
+Symbol& getFunction (string name, vector<string> params) {
+    for(auto table = this->tables.begin(); table != this->tables.end(); table++) {
+        for(auto symbol = table->symbols.begin(); symbol != table->symbols.end(); symbol++){
+            if(symbol->name == name) {
+                if (symbol->is_function && params == symbol->params)
+                    return *symbol;
+                else if (!symbol->is_function) {
+                    output::errorUndef(yylineno, name);
+                    exit(0);
+                } else if (!symbol->is_override) {
+                    output::errorPrototypeMismatch(yylineno, name);
+                    exit(0);
+                }
+                //else - meaning it's overriden so we can keep looking :)
+            }
+        }
+    }
+    output::errorUndef(yylineno, name);
+    exit(0);
+}
+
 bool SymTable::verifyInLoop(bool is_break)
 {
     if (!this->tables.back().is_loop) {
