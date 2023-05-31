@@ -1,6 +1,6 @@
 #include "decl.hpp"
 
-void Scope::addSymbol(string name, Type type, int offset, bool is_func = false, vector<string> params = {})
+void Scope::addSymbol(string name, string type, int offset, bool is_func = false, vector<string> params = {})
 {
     this->symbols.push_back({name, type, offset, is_func, params});
 
@@ -9,11 +9,11 @@ void Scope::addSymbol(string name, Type type, int offset, bool is_func = false, 
 SymTable::SymTable()
 {
     Scope scope;
-    scope.addSymbol("print", voidType, 0, true, );
+    //scope.addSymbol("print", "void", 0, true, );
     this->tables.push_back(scope); // TODO: should be refernce?
 }
 
-void SymTable::addSymbol(string name, Type type, bool is_func = false, vector<string> params = {}) {
+void SymTable::addSymbol(string name, string type, bool is_func = false, vector<string> params = {}) {
     if (checkForSymbol(name)) {
         output::errorDef(yylineno, name);
         exit(0);
@@ -66,4 +66,35 @@ bool SymTable::verifyInLoop(bool is_break)
         }
         exit(0);
     }
+}
+void SymTable::printTable()
+{
+    for(auto scope = this->tables.begin(); scope != this->tables.end(); scope++)
+    {
+        for(auto symbol = scope->symbols.begin(); symbol != scope->symbols.end(); symbol++)
+        {
+            std::cout << symbol->name << " ";
+            if (symbol->is_function) {
+                std::cout << "(" << printArgs(symbol->params) << ")" << "->";
+                
+            }
+            std::cout << symbol->type << " " << symbol->offset << std::endl;
+        }
+        std::cout << "---end scope---" << std::endl;
+    }
+}
+string printArgs(vector<string> params)
+{
+    if (params.empty()) {
+        return "VOID";
+    }
+    string res = "";
+    for(auto arg = params.begin(); arg != params.end(); arg++)
+    {
+        if(arg != params.begin()) {
+            res += ", ";
+        }
+        res += *arg;
+    }
+    return res;
 }

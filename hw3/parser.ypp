@@ -16,7 +16,6 @@
                 bool f;
                 string s;
         }
-
 %}
 
 %token VOID
@@ -58,8 +57,8 @@ FuncDecl : OverRide RetType ID LPAREN Formals RPAREN LBRACE AddScopeMarker State
 OverRide : /* epsilon */ { output::printProductionRule(5); }
         |  OVERRIDE { output::printProductionRule(6); };
 
-RetType : Type { output::printProductionRule(7); }
-        | VOID { output::printProductionRule(8); };
+RetType : Type                          {$$ = new RetType(dynamic_cast<Type*>($1)->type);}
+        | VOID                          {$$ = new RetType("void");};
 
 Formals : /* epsilon */ { output::printProductionRule(9); }
         | FormalsList { output::printProductionRule(10); };
@@ -89,31 +88,31 @@ Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
         | CONTINUE SC { symtable.verifyInLoop(false); }
         ;
 
-Call : ID LPAREN ExpList RPAREN { output::printProductionRule(28); }
-    | ID LPAREN RPAREN { output::printProductionRule(29); };
+Call : ID LPAREN ExpList RPAREN         {$$ = new Call($1, dynamic_cast<ExpList*>($3));}
+    | ID LPAREN RPAREN                  {$$ = new Call($1);};
 
-ExpList : Exp { output::printProductionRule(30); }
-        | Exp COMMA ExpList { output::printProductionRule(31); };
+ExpList : Exp                   {$$ = new ExpList(dynamic_cast<Exp*>($1));}
+        | Exp COMMA ExpList     {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));};
 
 Type : INT { $$ = new Type("int"); }
     | BYTE { $$ = new Type("byte"); }
     | BOOL { $$ = new Type("bool"); };
 
-Exp : LPAREN Exp RPAREN { output::printProductionRule(35); }
-    | Exp BINOP_MUL Exp { output::printProductionRule(36); }
-    | Exp BINOP_ADD Exp { output::printProductionRule(36); }
-    | ID { output::printProductionRule(37); }
-    | Call { output::printProductionRule(38); }
+Exp : LPAREN Exp RPAREN                                            {$$ = new Exp(dynamic_cast<Exp*>($2));}
+    | Exp BINOP_MUL Exp                                            {$$ = new Exp($1, $3, "int", $2->value);}
+    | Exp BINOP_ADD Exp                                            {$$ = new Exp($1, $3, "int", $2->value);}
+    | ID                                                           {$$ = new Exp($1);}
+    | Call                                                         {$$ = new Exp(dynamic_cast<Call*>($1));}
     | NUM                                                          {$$ = new Exp($1, "int");}
     | NUM B                                                        {$$ = new Exp($1, "byte");}
     | STRING                                                       {$$ = new Exp($1, "string");}
     | TRUE                                                         {$$ = new Exp($1, "bool");}
     | FALSE                                                        {$$ = new Exp($1, "bool");}
-    | NOT Exp { output::printProductionRule(44); }
-    | Exp AND Exp { output::printProductionRule(45); }
-    | Exp OR Exp { output::printProductionRule(46); }
-    | Exp RELOP Exp { output::printProductionRule(47); }
-    | LPAREN Type RPAREN Exp {  };
+    | NOT Exp                                                      {$$ = new Exp($2, "bool", $1->value);}
+    | Exp AND Exp                                                  {$$ = new Exp($1, $3, "bool", $2->value);}
+    | Exp OR Exp                                                   {$$ = new Exp($1, $3, "bool", $2->value);}
+    | Exp RELOP Exp                                                {$$ = new Exp($1, $3, "bool", $2->value);}
+    | LPAREN Type RPAREN Exp                                       {$$ = new Exp($4, $2);};
 
 AddScopeMarker : /* epsilon */ {symtable.addScope(false);};
 AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true);};
