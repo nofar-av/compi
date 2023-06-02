@@ -52,7 +52,13 @@ void SymTable::addFunction(string name, string type, bool is_func = false, vecto
     Scope& scope = *(this->tables.back());
     int offset = this->offsets.back();
     scope.addSymbol(name, type, offset, is_func, params, is_override);
-
+    if (name == "main") {
+        this->has_main = true;
+        if (is_override == true) {
+            output::errorrMainOverride(lineno);
+            exit(0);
+        }
+    }
 }
 
 void SymTable::addScope(string return_type) {
@@ -162,4 +168,11 @@ string printArgs(vector<string> params)
         res += *arg;
     }
     return res;
+}
+
+void SymTable::checkMain() {
+    if (!this->has_main) {
+        output::errorMainMissing();
+        exit(0);
+    }
 }

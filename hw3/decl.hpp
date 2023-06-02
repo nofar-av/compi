@@ -40,6 +40,7 @@ class Scope {
 
 class SymTable {
 public:
+    bool has_main = false;
     vector<shared_ptr<Scope>> tables;
     vector<int> offsets;
     
@@ -57,6 +58,7 @@ public:
     string getCurrScopeRetType();
     bool verifyInLoop(bool is_break);
     void printTable();
+    void checkMain();
 };
 
 #endif
