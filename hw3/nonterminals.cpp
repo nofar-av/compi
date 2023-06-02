@@ -60,11 +60,8 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op) {
             output::errorMismatch(yylineno);
             exit(0);
         }
-        if(exp1->type == "int" || exp2->type == "int") {
-            this->type = "int";
-        } else {
-            this->type = "byte";
-        }
+        this->type = (exp1->type == "int" || exp2->type == "int") ?
+            "int" : "byte";
     }
 }
 Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
@@ -76,9 +73,7 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
     }
     this->type = new_type->value;     
 }
-Exp::Exp(Call *call) : Node(), type(call->type) {
-
-}
+Exp::Exp(Call *call) : Node(), type(call->type) { }
 
 ExpList::ExpList(Exp *exp) : Node(), exps() {
     this->exps.push_back(make_shared<Exp>(*exp));
