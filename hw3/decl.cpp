@@ -20,7 +20,6 @@ void SymTable::addSymbol(string name, string type, bool is_func = false, vector<
         output::errorDef(yylineno, name);
         exit(0);
     }
-    this->vars.insert(name);
     Scope& scope = *(this->tables.back());
     int offset = this->offsets.back();
     this->offsets.pop_back();
@@ -50,8 +49,6 @@ void SymTable::addFunction(string name, string type, bool is_func = false, vecto
             }
         }
     }
-
-    this->vars.insert(name);
     Scope& scope = *(this->tables.back());
     int offset = this->offsets.back();
     scope.addSymbol(name, type, offset, is_func, params, is_override);
@@ -74,15 +71,18 @@ void SymTable::addScope(bool is_loop = false) {
 
 void SymTable::removeScope() {
     this->offsets.pop_back();
-    Scope& scope = *(this->tables.back());
-    for(auto it = scope.symbols.begin(); it != scope.symbols.end(); it++) {
-        this->vars.erase((*it)->name);
-    }
+    // Scope& scope = *(this->tables.back());
     this->tables.pop_back();
 }
 
 bool SymTable::checkForSymbol (string name) {
-    return this->vars.find(name) != this->vars.end();
+    for(auto table = this->tables.begin(); table != this->tables.end(); table++) {
+        for(auto symbol = (*table)->symbols.begin(); symbol != (*table)->symbols.end(); symbol++){
+            if((*symbol)->name == name)
+                return true;
+        }
+    }
+    return false;
 }
 
 Symbol& SymTable::getSymbol (string name) {

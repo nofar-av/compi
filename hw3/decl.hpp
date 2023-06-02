@@ -40,7 +40,6 @@ class Scope {
 
 class SymTable {
 public:
-    set<string> vars;
     vector<shared_ptr<Scope>> tables;
     vector<int> offsets;
     
