@@ -103,11 +103,18 @@ Symbol& SymTable::getSymbol (string name) {
 }
 
 Symbol& SymTable::getFunction (string name, vector<string> params) {
+    shared_ptr<Symbol> func;
     for(auto table = this->tables.begin(); table != this->tables.end(); table++) {
         for(auto symbol = (*table)->symbols.begin(); symbol != (*table)->symbols.end(); symbol++){
             if((*symbol)->name == name) {
-                if ((*symbol)->is_function && params == (*symbol)->params)
-                    return **symbol;
+                if ((*symbol)->is_function && params == (*symbol)->params) {
+                    if (func == nullptr) {
+                        func = *symbol;
+                    } else {
+                        output::errorAmbiguousCall(yylineno, name);
+                        exit(0);
+                    }
+                }
                 else if (!(*symbol)->is_function) {
                     output::errorUndef(yylineno, name);
                     exit(0);
@@ -119,6 +126,8 @@ Symbol& SymTable::getFunction (string name, vector<string> params) {
             }
         }
     }
+    if (func != nullptr) 
+        return *func;
     output::errorUndef(yylineno, name);
     exit(0);
 }
