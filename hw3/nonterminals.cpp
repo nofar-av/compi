@@ -91,49 +91,37 @@ ExpList::ExpList(Exp *exp, ExpList* explist) : Node() {
     }
 }
 
-Call::Call(Node *id) : Node(id->value) {
-    if(!symtable.checkForSymbol(id->value)) {
-        output::errorUndefFunc(yylineno, id->value);
+Call::Call(string name) : Node(name) {
+    if(!symtable.checkForSymbol(name)) {
+        output::errorUndefFunc(yylineno, name);
         exit(0);
     }
-    Symbol func = symtable.getSymbol(id->value);
-    if(!func.is_function) {
-        output::errorUndefFunc(yylineno, id->value);
-        exit(0);       
-    }
-    //TODO: handle override
-    if(!func.params.empty()) {
-        output::errorPrototypeMismatch(yylineno, id->value);
-        exit(0);       
-    }
+    Symbol& func = symtable.getFunction(name, {});
     this->type = func.type;
 }
-Call::Call(Node *id, ExpList *explist) : Node(id->value) {
-    if(!symtable.checkForSymbol(id->value)) {
-        output::errorUndefFunc(yylineno, id->value);
+
+Call::Call(string name, ExpList *explist) : Node(name) {
+    if(!symtable.checkForSymbol(name)) {
+        output::errorUndefFunc(yylineno, name);
         exit(0);
     }
-    Symbol func = symtable.getSymbol(id->value);
-    if(!func.is_function) {
-        output::errorUndefFunc(yylineno, id->value);
-        exit(0);       
-    }
-    //TODO: handle override
-}
 
+    Symbol& func = symtable.getFunction(name, convertExpToString(explist->exps));
+    this->type = func.type;
+}
 
 //function parameter
-FormalDecl::FormalDecl(Type* type, string name) : Node(name), type(type) {}
+FormalDecl::FormalDecl(Type* type, string name) : Node(name), type(type->type) {}
 
 //function's list of parameters
-FormalsList::FormalsList(Formals *formal) : Node(), formals_list() {
-    if (formal != nullptr)
-        this->formals_list.push_back(make_shared<Formals>(*formal));
+FormalsList::FormalsList(FormalDecl *formaldecl) : Node(), formals_list() {
+    if (formaldecl != nullptr)
+        this->formals_list.push_back(make_shared<FormalDecl>(*formaldecl));
 }
 
-FormalsList::FormalsList(Formals *formals, FormalsList *f_list) 
+FormalsList::FormalsList(FormalDecl *formaldecl, FormalsList *f_list) 
         : Node(), formals_list() {
-    this->formals_list.push_back(make_shared<Exp>(*exp));
+    this->formals_list.push_back(make_shared<FormalDecl>(*formaldecl));
     if(f_list != nullptr) {
         this->formals_list.insert(formals_list.end(), f_list->formals_list.begin(), f_list->formals_list.end());
     }
@@ -141,6 +129,78 @@ FormalsList::FormalsList(Formals *formals, FormalsList *f_list)
     
 Formals::Formals(FormalsList* formals_list) {
     if (formals_list != nullptr) {
-        this->params = formals_list;
+        this->params = formals_list->formals_list;
     }
+}
+
+vector<string> convertExpToString(vector<shared_ptr<Exp>>& explist)
+{
+    vector<string> types;
+    for (auto it = explist.begin(); it != explist.end(); it++)
+    {
+        types.push_back((*it)->type);
+    }
+    return types;
+}
+
+vector<string> convertFormalDeclToString(vector<shared_ptr<FormalDecl>>& f_list)
+{
+    vector<string> types;
+    for (auto it = f_list.begin(); it != f_list.end(); it++)
+    {
+        types.push_back((*it)->type);
+    }
+    return types;
+}
+
+Statement::Statement(string name, string type) : Node() {
+    symtable.addSymbol(name, type);
+}
+
+Statement::Statement(string name, string ltype, string rtype) : Node() {
+    if(ltype != rtype && !(ltype == "INT" && rtype == "BYTE")) {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+    symtable.addSymbol(name, ltype);
+}
+
+Statement::Statement(string name, Exp* exp) : Node() {
+    Symbol& id = symtable.getSymbol(name);
+    if(id.type != exp->type && !(id.type == "INT" && exp->type == "BYTE")) {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+}
+
+Statement::Statement() : Node() {
+    if(symtable.getCurrScopeRetType() != "void") {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+}
+Statement::Statement(Exp *exp) : Node() {
+    string ltype = symtable.getCurrScopeRetType();
+    string rtype = exp->type;
+    if(ltype != rtype && !(ltype == "INT" && rtype == "BYTE")) {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+}
+
+Statement::Statement(string type) : Node() {
+    if(type != "bool") {
+        output::errorMismatch(yylineno);
+        exit(0);
+    }
+}
+
+FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals) : Node() {
+    symtable.addFunction(name, type, true, convertFormalDeclToString(formals->params), is_override);
+    symtable.addScope(type);
+    symtable.addFuncParams(formals->params);
+}
+
+Program::Program() : Node() {
+    symtable.CheckMain(); // check if program has main, main returns void, main gets 0 args and is not overrided.
 }

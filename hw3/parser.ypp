@@ -47,12 +47,13 @@
 %nonassoc ELSE
 
 %%
-Program : Funcs { };
+Program : Funcs { $$ = new Program(); };
 
 Funcs : /* epsilon */ { }
         | FuncDecl Funcs { };
 
-FuncDecl : OverRide RetType ID LPAREN Formals RPAREN LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); };
+FuncDecl : OverRide RetType ID LPAREN Formals RPAREN {  $$ = new FuncDecl(dynamic_cast<OverRide*>($1)->is_override, 
+                                                                dynamic_cast<RetType*>($2)->type, $3->value, dynamic_cast<Formals*>($5)); } LBRACE Statements RBRACE { symtable.removeScope(); };
 
 OverRide : /* epsilon */ { $$ = new OverRide(); }
         |  OVERRIDE { $$ = new OverRide(true); };
@@ -69,28 +70,28 @@ FormalsList : FormalDecl { $$ = new FormalsList(dynamic_cast<FormalDecl*>($1)); 
 
 FormalDecl : Type ID { $$ = new FormalDecl(dynamic_cast<Type*>($1), $2.value) };
 
-Statements : Statement { output::printProductionRule(14); }
-            | Statements Statement { output::printProductionRule(15); };
+Statements : Statement { $$ = new Statements(); }
+            | Statements Statement { $$ = new Statements(); };
 
 Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
-        | Type ID SC {  symtable.addSymbol($2.name, $1.type); 
-                        output::printProductionRule(17); }
-        | Type ID ASSIGN Exp SC { symtable.addSymbol($2.name, $1.type);
-                                  output::printProductionRule(18); }
-        | ID ASSIGN Exp SC { symtable.addSymbol($2.name, $3.type);
-                             output::printProductionRule(19); }
-        | Call SC { output::printProductionRule(20); }
-        | RETURN SC { output::printProductionRule(21); }
-        | RETURN Exp SC { output::printProductionRule(22); }
-        | IF LPAREN Exp RPAREN AddScopeMarker Statement { symtable.removeScope(); }
-        | IF LPAREN Exp RPAREN AddScopeMarker Statement removeScope ELSE AddScopeMarker Statement { symtable.removeScope(); }
-        | WHILE LPAREN Exp RPAREN AddLoopScopeMarker Statement { symtable.removeScope(); }
+        | Type ID SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type); }
+        | Type ID ASSIGN Exp SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type, (dynamic_cast<Exp*>($1))->type); }
+        | ID ASSIGN Exp SC { $$ = new Statement($1->value, dynamic_cast<Exp*>($3)); }
+        | Call SC { }
+        | RETURN SC { $$ = new Statement(); }
+        | RETURN Exp SC { $$ = new Statement(dynamic_cast<Exp*>($1)); }
+        | IF LPAREN Exp RPAREN AddScopeMarker Statement { $$ = new Statement((dynamic_cast<Type*>($3))->type);
+                                                          symtable.removeScope(); }
+        | IF LPAREN Exp RPAREN AddScopeMarker Statement removeScope ELSE AddScopeMarker Statement { $$ = new Statement((dynamic_cast<Type*>($3))->type);
+                                                                                                         symtable.removeScope(); }
+        | WHILE LPAREN Exp RPAREN AddLoopScopeMarker Statement { $$ = new Statement((dynamic_cast<Type*>($3))->type);
+                                                                 symtable.removeScope(); }
         | BREAK SC { symtable.verifyInLoop(true); }
         | CONTINUE SC { symtable.verifyInLoop(false); }
         ;
 
-Call : ID LPAREN ExpList RPAREN         {$$ = new Call($1, dynamic_cast<ExpList*>($3));}
-    | ID LPAREN RPAREN                  {$$ = new Call($1);};
+Call : ID LPAREN ExpList RPAREN         {$$ = new Call($1->value, dynamic_cast<ExpList*>($3));}
+    | ID LPAREN RPAREN                  {$$ = new Call($1->value);};
 
 ExpList : Exp                   {$$ = new ExpList(dynamic_cast<Exp*>($1));}
         | Exp COMMA ExpList     {$$ = new ExpList(dynamic_cast<Exp*>($1), dynamic_cast<ExpList*>($3));};

@@ -26,7 +26,7 @@ public:
 #define YYSTYPE Node*
 
 class Program : public Node {
-
+    Program();
     virtual ~Program() = default;
 };
 
@@ -35,6 +35,7 @@ class Funcs : public Node {
 };
 
 class FuncDecl : public Node {
+    FuncDecl(bool is_override, string type, string name, Formals* formals);
     virtual ~FuncDecl() = default;
 };
 
@@ -51,7 +52,9 @@ class RetType : public Node {
 };
 
 class Formals : public Node {
-    FormalsList params; //* or shared_ptr?
+public:
+
+    vector<shared_ptr<FormalDecl>> params;
     Formals() = default;
     Formals(FormalsList* formals_list);
     virtual ~Formals() = default;
@@ -59,33 +62,41 @@ class Formals : public Node {
 
 class FormalsList : public Node {
 public:
-    vector<shared_ptr<Formals>> formals_list;
+    vector<shared_ptr<FormalDecl>> formals_list;
     FormalsList() = default;
-    FormalsList(Formals *formal);
-    FormalsList(Formals *formals, FormalsList *formals_list);
-    FormalsList(FormalsList other); //TODO:: needed for formals
+    FormalsList(FormalDecl *formaldecl);
+    FormalsList(FormalDecl *formaldecl, FormalsList *formals_list);
+    //FormalsList(FormalsList other); //TODO:: needed for formals
     virtual ~FormalsList() = default;
 };
 
 class FormalDecl : public Node {
+public:
     string type;
     FormalDecl(Type* type, string name);
     virtual ~FormalDecl() = default;
 };
 
 class Statements : public Node {
+    Statements() = default;
     virtual ~Statements() = default;
 };
 
 class Statement : public Node {
+    Statement(string name, string type);
+    Statement(string name, string ltype, string rtype);
+    Statement(string name, Exp* exp);
+    Statement(); // RETURN SC
+    Statement(Exp* exp); // RETURN Exp SC
+    Statement(string type);
     virtual ~Statement() = default;
 };
 
 class Call : public Node {
 public:
     string type;
-    Call(Node *id);
-    Call(Node *id, ExpList *explist);
+    Call(string name);
+    Call(string name, ExpList *explist);
     virtual ~Call() = default;
 };
 
