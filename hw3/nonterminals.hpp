@@ -1,5 +1,5 @@
-#ifndef nonterminals
-#define nonterminals
+#ifndef NONTERMINALS_HPP
+#define NONTERMINALS_HPP
 #define DEBUG 1
 
 #include "hw3_output.hpp"
@@ -11,9 +11,16 @@
 #include <iostream>
 #include <algorithm>
 #include <memory>
-#include "decl.hpp"
+#include "symtable.hpp"
 
 using namespace std;
+
+class Formals;
+class FormalsList;
+class FormalDecl;
+class ExpList;
+class Exp;
+class Type;
 
 class Node {
 public:
@@ -26,26 +33,32 @@ public:
 #define YYSTYPE Node*
 
 class Program : public Node {
+public:
     Program();
     virtual ~Program() = default;
 };
 
 class Funcs : public Node {
+public:
+    Funcs() = default;
     virtual ~Funcs() = default;
 };
 
 class FuncDecl : public Node {
+public:
     FuncDecl(bool is_override, string type, string name, Formals* formals);
     virtual ~FuncDecl() = default;
 };
 
 class OverRide : public Node {
+public:    
     bool is_override;
     OverRide(bool is_override = false) : is_override(is_override) {};
     virtual ~OverRide() = default;
 };
 
 class RetType : public Node {
+public:
     string type;
     RetType(string type) : Node(), type(type) {};
     virtual ~RetType() = default;
@@ -53,7 +66,6 @@ class RetType : public Node {
 
 class Formals : public Node {
 public:
-
     vector<shared_ptr<FormalDecl>> params;
     Formals() = default;
     Formals(FormalsList* formals_list);
@@ -78,17 +90,18 @@ public:
 };
 
 class Statements : public Node {
+public:
     Statements() = default;
     virtual ~Statements() = default;
 };
 
 class Statement : public Node {
+public:
     Statement(string name, string type);
     Statement(string name, string ltype, string rtype);
     Statement(string name, Exp* exp);
     Statement(); // RETURN SC
     Statement(Exp* exp); // RETURN Exp SC
-    Statement(string type);
     virtual ~Statement() = default;
 };
 
@@ -122,12 +135,13 @@ public:
     bool is_var = false;
     Exp(Node *node, string type);
     Exp(Exp *exp);
-    Exp(Node *terminal, string op);
+    Exp(Node *terminal, string type, string op);
     Exp(Node *terminal1, Node *terminal2, string type, string op);
     Exp(Node *terminal, Node *type);
     Exp(Call *call);
+    Exp(string value) : Node(value) , type() {};
     virtual ~Exp() = default;
 
 };
 
-#endif
+#endif // NONTERMINALS_HPP

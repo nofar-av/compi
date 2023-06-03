@@ -2,6 +2,26 @@
 
 extern SymTable symtable;
 
+vector<string> convertExpToString(vector<shared_ptr<Exp>>& explist)
+{
+    vector<string> types;
+    for (auto it = explist.begin(); it != explist.end(); it++)
+    {
+        types.push_back((*it)->type);
+    }
+    return types;
+}
+
+vector<string> convertFormalDeclToString(vector<shared_ptr<FormalDecl>>& f_list)
+{
+    vector<string> types;
+    for (auto it = f_list.begin(); it != f_list.end(); it++)
+    {
+        types.push_back((*it)->type);
+    }
+    return types;
+}
+
 Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
     if (DEBUG)
         std::cout << "Exp Node+string " << type << " " << terminal->value << std::endl;
@@ -16,11 +36,9 @@ Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
 
 Exp::Exp(Exp *exp) : Node(exp->value), type(exp->type) {}
 
-Exp::Exp(Node *terminal, string op) : type("bool") {
+Exp::Exp(Node *terminal, string type, string op) : type(type) {
     Exp* exp = dynamic_cast<Exp*>(terminal);
-    if (op != "not") {
-        //TODO: some error
-    }
+    // expecting type = "bool" , op = "not"
     if (exp->is_var && !symtable.checkForSymbol(exp->value)) {
         output::errorUndef(yylineno, exp->value);
         exit(0);
@@ -128,26 +146,6 @@ Formals::Formals(FormalsList* formals_list) {
     }
 }
 
-vector<string> convertExpToString(vector<shared_ptr<Exp>>& explist)
-{
-    vector<string> types;
-    for (auto it = explist.begin(); it != explist.end(); it++)
-    {
-        types.push_back((*it)->type);
-    }
-    return types;
-}
-
-vector<string> convertFormalDeclToString(vector<shared_ptr<FormalDecl>>& f_list)
-{
-    vector<string> types;
-    for (auto it = f_list.begin(); it != f_list.end(); it++)
-    {
-        types.push_back((*it)->type);
-    }
-    return types;
-}
-
 Statement::Statement(string name, string type) : Node() {
     symtable.addSymbol(name, type);
 }
@@ -183,13 +181,6 @@ Statement::Statement(Exp *exp) : Node() {
     }
 }
 
-Statement::Statement(string type) : Node() {
-    if(type != "bool") {
-        output::errorMismatch(yylineno);
-        exit(0);
-    }
-}
-
 FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals) : Node() {
     symtable.addFunction(name, type, true, convertFormalDeclToString(formals->params), is_override);
     symtable.addScope(type);
@@ -197,5 +188,5 @@ FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals)
 }
 
 Program::Program() : Node() {
-    symtable.CheckMain(); // check if program has main, main returns void, main gets 0 args and is not overrided.
+    symtable.checkMain(); // check if program has main, main returns void, main gets 0 args and is not overrided.
 }

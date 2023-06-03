@@ -1,21 +1,17 @@
 %{
-	#include "output.hpp"
 	#include <iostream>
 	#include <stdlib.h>
-        #include "decl.hpp"
-	typedef enum { OP_AND, OP_OR } opType;
-
-	using namespace std;
+        #include "symtable.hpp"
+        #include "hw3_output.hpp"
+	
+        using namespace std;
+        
         int yylex();
+        void checkBoolExp(string type);
         extern int yylineno;
+        extern SymTable symtable;
 	void yyerror(const char * message);
-        %union
-        {
-                byte b;
-                int num;
-                bool f;
-                string s;
-        }
+        
 %}
 
 %token VOID
@@ -44,7 +40,7 @@
 %left BINOP_MUL
 %nonassoc NOT
 %left LPAREN LBRACE RPAREN RBRACE
-%nonassoc ELSE
+%right ELSE
 
 %%
 Program : Funcs { $$ = new Program(); };
@@ -68,7 +64,7 @@ FormalsList : FormalDecl { $$ = new FormalsList(dynamic_cast<FormalDecl*>($1)); 
             | FormalDecl COMMA FormalsList { $$ = new FormalsList(dynamic_cast<FormalDecl*>($1), 
                                                         dynamic_cast<FormalsList*>($3)); };
 
-FormalDecl : Type ID { $$ = new FormalDecl(dynamic_cast<Type*>($1), $2.value) };
+FormalDecl : Type ID { $$ = new FormalDecl(dynamic_cast<Type*>($1), $2->value); };
 
 Statements : Statement { $$ = new Statements(); }
             | Statements Statement { $$ = new Statements(); };
@@ -80,12 +76,9 @@ Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
         | Call SC { }
         | RETURN SC { $$ = new Statement(); }
         | RETURN Exp SC { $$ = new Statement(dynamic_cast<Exp*>($1)); }
-        | IF LPAREN Exp RPAREN AddScopeMarker Statement { $$ = new Statement((dynamic_cast<Type*>($3))->type);
-                                                          symtable.removeScope(); }
-        | IF LPAREN Exp RPAREN AddScopeMarker Statement removeScope ELSE AddScopeMarker Statement { $$ = new Statement((dynamic_cast<Type*>($3))->type);
-                                                                                                         symtable.removeScope(); }
-        | WHILE LPAREN Exp RPAREN AddLoopScopeMarker Statement { $$ = new Statement((dynamic_cast<Type*>($3))->type);
-                                                                 symtable.removeScope(); }
+        | IF LPAREN CheckBool RPAREN AddScopeMarker Statement { symtable.removeScope(); }
+        | IF LPAREN CheckBool RPAREN AddScopeMarker Statement ELSE RemoveScopeMarker AddScopeMarker Statement { symtable.removeScope(); }
+        | WHILE LPAREN CheckBool RPAREN AddLoopScopeMarker Statement { symtable.removeScope(); }
         | BREAK SC { symtable.verifyInLoop(true); }
         | CONTINUE SC { symtable.verifyInLoop(false); }
         ;
@@ -103,7 +96,7 @@ Type : INT { $$ = new Type("int"); }
 Exp : LPAREN Exp RPAREN                                            {$$ = new Exp(dynamic_cast<Exp*>($2));}
     | Exp BINOP_MUL Exp                                            {$$ = new Exp($1, $3, "int", $2->value);}
     | Exp BINOP_ADD Exp                                            {$$ = new Exp($1, $3, "int", $2->value);}
-    | ID                                                           {$$ = new Exp($1);}
+    | ID                                                           {$$ = new Exp($1->value);}
     | Call                                                         {$$ = new Exp(dynamic_cast<Call*>($1));}
     | NUM                                                          {$$ = new Exp($1, "int");}
     | NUM B                                                        {$$ = new Exp($1, "byte");}
@@ -116,12 +109,14 @@ Exp : LPAREN Exp RPAREN                                            {$$ = new Exp
     | Exp RELOP Exp                                                {$$ = new Exp($1, $3, "bool", $2->value);}
     | LPAREN Type RPAREN Exp                                       {$$ = new Exp($4, $2);};
 
+CheckBool : Exp { checkBoolExp(dynamic_cast<Exp*>($1)->type); };
+
 AddScopeMarker : /* epsilon */ {symtable.addScope(false);};
 AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true);};
 RemoveScopeMarker : /* epsilon */ {symtable.removeScope();};
 %%
 
-SymTable symtable = new SymTable(); 
+SymTable symtable = SymTable(); 
 int main()
 {
 	return yyparse();
@@ -131,4 +126,12 @@ void yyerror(const char * message)
 {
 	output::errorSyn(yylineno);
         exit(0);
+}
+
+void checkBoolExp(string type)
+{
+        if (type != "bool") {
+                output::errorMismatch(yylineno);
+                exit(0);
+        }
 }

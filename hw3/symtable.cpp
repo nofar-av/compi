@@ -1,6 +1,22 @@
-#include "decl.hpp"
+#include "symtable.hpp"
 
-void Scope::addSymbol(string name, string type, int offset, bool is_func = false, vector<string> params = {}, bool is_override = false)
+string printArgs(vector<string> params)
+{
+    if (params.empty()) {
+        return "VOID";
+    }
+    string res = "";
+    for(auto arg = params.begin(); arg != params.end(); arg++)
+    {
+        if(arg != params.begin()) {
+            res += ", ";
+        }
+        res += *arg;
+    }
+    return res;
+}
+
+void Scope::addSymbol(string name, string type, int offset, bool is_func, vector<string> params, bool is_override)
 {
     //shared_ptr<Symbol> Symbol(name, type, offset, is_func, params, is_override})
     shared_ptr<Symbol> sym = make_shared<Symbol>(name, type, offset, is_func, params, is_override);
@@ -15,7 +31,7 @@ SymTable::SymTable()
     this->tables.push_back(scope); 
 }
 
-void SymTable::addSymbol(string name, string type, bool is_func = false, vector<string> params = {}, bool is_override = false) {
+void SymTable::addSymbol(string name, string type, bool is_func, vector<string> params, bool is_override) {
     if (checkForSymbol(name)) {
         output::errorDef(yylineno, name);
         exit(0);
@@ -36,7 +52,7 @@ void SymTable::addFuncParams(vector<shared_ptr<FormalDecl>>& params) {
     }
 }
 
-void SymTable::addFunction(string name, string type, bool is_func = false, vector<string> params = {}, bool is_override = false) {
+void SymTable::addFunction(string name, string type, bool is_func, vector<string> params, bool is_override) {
     if (checkForSymbol(name)) {
         if(!is_override) {
             output::errorDef(yylineno, name);
@@ -72,7 +88,7 @@ void SymTable::addScope(string return_type) {
     this->tables.push_back(scope);
 }
 
-void SymTable::addScope(bool is_loop = false) {
+void SymTable::addScope(bool is_loop) {
     int offset = this->offsets.back();
     this->offsets.push_back(offset);
     shared_ptr<Scope> scope = make_shared<Scope>(is_loop);
@@ -80,6 +96,7 @@ void SymTable::addScope(bool is_loop = false) {
 }
 
 void SymTable::removeScope() {
+    this->printScope();
     this->offsets.pop_back();
     // Scope& scope = *(this->tables.back());
     this->tables.pop_back();
@@ -140,7 +157,7 @@ string SymTable::getCurrScopeRetType() {
     return this->tables.back()->getReturnType();
 }
 
-bool SymTable::verifyInLoop(bool is_break)
+void SymTable::verifyInLoop(bool is_break)
 {
     if (!this->tables.back()->is_loop) {
         if (is_break) {
@@ -151,36 +168,19 @@ bool SymTable::verifyInLoop(bool is_break)
         exit(0);
     }
 }
-void SymTable::printTable()
+void SymTable::printScope()
 {
-    for(auto scope = this->tables.begin(); scope != this->tables.end(); scope++)
+    shared_ptr<Scope> scope = this->tables.back();
+    for(auto symbol = scope->symbols.begin(); symbol != scope->symbols.end(); symbol++)
     {
-        for(auto symbol = (*scope)->symbols.begin(); symbol != (*scope)->symbols.end(); symbol++)
-        {
-            std::cout << (*symbol)->name << " ";
-            if ((*symbol)->is_function) {
-                std::cout << "(" << printArgs((*symbol)->params) << ")" << "->";
-                
-            }
-            std::cout << (*symbol)->type << " " << (*symbol)->offset << std::endl;
+        std::cout << (*symbol)->name << " ";
+        if ((*symbol)->is_function) {
+            std::cout << "(" << printArgs((*symbol)->params) << ")" << "->";
+            
         }
-        std::cout << "---end scope---" << std::endl;
+        std::cout << (*symbol)->type << " " << (*symbol)->offset << std::endl;
     }
-}
-string printArgs(vector<string> params)
-{
-    if (params.empty()) {
-        return "VOID";
-    }
-    string res = "";
-    for(auto arg = params.begin(); arg != params.end(); arg++)
-    {
-        if(arg != params.begin()) {
-            res += ", ";
-        }
-        res += *arg;
-    }
-    return res;
+    output::endScope();
 }
 
 void SymTable::checkMain() {
