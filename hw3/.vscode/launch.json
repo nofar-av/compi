@@ -10,7 +10,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/hw3",
-            "args": ["<", "t1.in"],
+            "args": ["<", "tests/t13-main-not-void.in"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

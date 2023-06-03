@@ -139,7 +139,7 @@ public:
     Exp(Node *terminal1, Node *terminal2, string type, string op);
     Exp(Node *terminal, Node *type);
     Exp(Call *call);
-    Exp(string value) : Node(value) , type() {};
+    Exp(string value);
     virtual ~Exp() = default;
 
 };

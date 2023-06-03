@@ -1318,7 +1318,7 @@ yyreduce:
 
   case 20: /* Statement: Type ID ASSIGN Exp SC  */
 #line 74 "parser.ypp"
-                                { yyval = new Statement(yyvsp[-3]->value, (dynamic_cast<Type*>(yyvsp[-4]))->type, (dynamic_cast<Exp*>(yyvsp[-4]))->type); }
+                                { yyval = new Statement(yyvsp[-3]->value, (dynamic_cast<Type*>(yyvsp[-4]))->type, (dynamic_cast<Exp*>(yyvsp[-1]))->type); }
 #line 1323 "parser.tab.cpp"
     break;
 
@@ -1342,7 +1342,7 @@ yyreduce:
 
   case 24: /* Statement: RETURN Exp SC  */
 #line 78 "parser.ypp"
-                        { yyval = new Statement(dynamic_cast<Exp*>(yyvsp[-2])); }
+                        { yyval = new Statement(dynamic_cast<Exp*>(yyvsp[-1])); }
 #line 1347 "parser.tab.cpp"
     break;
 
@@ -1516,13 +1516,13 @@ yyreduce:
 
   case 53: /* AddScopeMarker: %empty  */
 #line 114 "parser.ypp"
-                               {symtable.addScope(false);}
+                               {symtable.addScope(false, symtable.getCurrScopeRetType());}
 #line 1521 "parser.tab.cpp"
     break;
 
   case 54: /* AddLoopScopeMarker: %empty  */
 #line 115 "parser.ypp"
-                                   {symtable.addScope(true);}
+                                   {symtable.addScope(true, symtable.getCurrScopeRetType());}
 #line 1527 "parser.tab.cpp"
     break;
 

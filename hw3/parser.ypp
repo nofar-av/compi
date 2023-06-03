@@ -71,11 +71,11 @@ Statements : Statement { $$ = new Statements(); }
 
 Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
         | Type ID SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type); }
-        | Type ID ASSIGN Exp SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type, (dynamic_cast<Exp*>($1))->type); }
+        | Type ID ASSIGN Exp SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type, (dynamic_cast<Exp*>($4))->type); }
         | ID ASSIGN Exp SC { $$ = new Statement($1->value, dynamic_cast<Exp*>($3)); }
         | Call SC { }
         | RETURN SC { $$ = new Statement(); }
-        | RETURN Exp SC { $$ = new Statement(dynamic_cast<Exp*>($1)); }
+        | RETURN Exp SC { $$ = new Statement(dynamic_cast<Exp*>($2)); }
         | IF LPAREN CheckBool RPAREN AddScopeMarker Statement { symtable.removeScope(); }
         | IF LPAREN CheckBool RPAREN AddScopeMarker Statement ELSE RemoveScopeMarker AddScopeMarker Statement { symtable.removeScope(); }
         | WHILE LPAREN CheckBool RPAREN AddLoopScopeMarker Statement { symtable.removeScope(); }
@@ -111,8 +111,8 @@ Exp : LPAREN Exp RPAREN                                            {$$ = new Exp
 
 CheckBool : Exp { checkBoolExp(dynamic_cast<Exp*>($1)->type); };
 
-AddScopeMarker : /* epsilon */ {symtable.addScope(false);};
-AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true);};
+AddScopeMarker : /* epsilon */ {symtable.addScope(false, symtable.getCurrScopeRetType());};
+AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true, symtable.getCurrScopeRetType());};
 RemoveScopeMarker : /* epsilon */ {symtable.removeScope();};
 %%
 
