@@ -59,14 +59,13 @@ public:
     void addFuncParams(vector<shared_ptr<FormalDecl>>& params);
     void removeScope();
     bool checkForSymbol (string name);
-    bool checkForFunction (string name, vector<string> params);
+    bool checkForFunction (string name, vector<string> params, string type);
     Symbol& getSymbol (string name);
     Symbol& getFunction (string name, vector<string> params);
     string getCurrScopeRetType();
     void verifyInLoop(bool is_break);
     void printScope();
     void checkMain();
-    void exitSymTable();
 };
 
 #endif // SYMBOLTABLE_HPP

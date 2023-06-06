@@ -27,7 +27,7 @@ string printArgs(vector<string> params)
     for(auto arg = params.begin(); arg != params.end(); arg++)
     {
         if(arg != params.begin()) {
-            res += ", ";
+            res += ",";
         }
         res += *arg;
     } 
@@ -80,7 +80,7 @@ void SymTable::addFuncParams(vector<shared_ptr<FormalDecl>>& params) {
 void SymTable::addFunction(string name, string type, bool is_func, vector<string> params, bool is_override) {
     if (checkForSymbol(name)) {
         Symbol& orig_func = this->getSymbol(name);
-        if(this->checkForFunction(name, params) || (!is_override && !orig_func.is_override)) {
+        if(!is_override && !orig_func.is_override) {
             output::errorDef(yylineno, name);
             exit(0);
         }
@@ -90,6 +90,10 @@ void SymTable::addFunction(string name, string type, bool is_func, vector<string
         }
         if(!is_override && orig_func.is_override) {
             output::errorOverrideWithoutDeclaration(yylineno, name);
+            exit(0);
+        }
+        if(is_override && orig_func.is_override && type == orig_func.type && params == orig_func.params) {
+            output::errorDef(yylineno, name);
             exit(0);
         } 
     }
@@ -138,10 +142,10 @@ bool SymTable::checkForSymbol (string name) {
     return false;
 }
 
-bool SymTable::checkForFunction (string name, vector<string> params) {
+bool SymTable::checkForFunction (string name, vector<string> params, string type) {
     for(auto table = this->tables.begin(); table != this->tables.end(); table++) {
         for(auto symbol = (*table)->symbols.begin(); symbol != (*table)->symbols.end(); symbol++){
-            if((*symbol)->name == name && (*symbol)->params == params)
+            if((*symbol)->name == name && (*symbol)->params == params && (*symbol)->type == type)
                 return true;
         }
     }
@@ -234,12 +238,4 @@ void SymTable::checkMain() {
         output::errorMainMissing();
         exit(0);
     }
-}
-
-void SymTable::exitSymTable() {
-    while (!this->tables.empty())
-    {
-        this->removeScope();
-    }
-    exit(0);
 }

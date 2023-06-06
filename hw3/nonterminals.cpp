@@ -146,13 +146,6 @@ FormalsList::FormalsList(FormalDecl *formaldecl) : Node(), formals_list() {
 
 FormalsList::FormalsList(FormalDecl *formaldecl, FormalsList *f_list) 
         : Node(), formals_list() {
-    for(auto formal : f_list->formals_list) {
-        if (formal->value == formaldecl->value) {
-            output::errorDef(yylineno, formaldecl->value);
-            exit(0);
-        }
-    }
-
     this->formals_list.push_back(make_shared<FormalDecl>(*formaldecl));
     if(f_list != nullptr) {
         this->formals_list.insert(formals_list.end(), f_list->formals_list.begin(), f_list->formals_list.end());
@@ -179,6 +172,10 @@ Statement::Statement(string name, string ltype, string rtype) : Node() {
 
 Statement::Statement(string name, Exp* exp) : Node() {
     Symbol& id = symtable.getSymbol(name);
+    if(id.is_function) {
+        output::errorUndef(yylineno, name);
+        exit(0);
+    }
     if(id.type != exp->type && !(id.type == "int" && exp->type == "byte")) {
         output::errorMismatch(yylineno);
         exit(0);
