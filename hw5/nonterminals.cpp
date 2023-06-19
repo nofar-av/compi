@@ -36,7 +36,14 @@ Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
             exit(0);
         }
     }
-    generator.binopCode(*this, terminal->value, "+" ,"0");
+    
+    if (type == "byte" || type == "int") { //if number add 0 to num
+        generator.binopCode(*this, terminal->value, "+" ,"0");
+    } else if (type == "bool") {
+        generator.createSimpleBoolBranch(*this);
+    } else { //type is string
+        //TODO
+    }
 }
 
 Exp::Exp(Exp *exp) : Node(exp->value), type(exp->type) {}
@@ -50,6 +57,7 @@ Exp::Exp(string value) : Node(value) , type() {
     this->is_var = true;
     this->type = sym.type;
 }
+
 Exp::Exp(Node *terminal, string type, string op) : type(type) {
     Exp* exp = dynamic_cast<Exp*>(terminal);
     // expecting type = "bool" , op = "not"
@@ -61,12 +69,15 @@ Exp::Exp(Node *terminal, string type, string op) : type(type) {
         output::errorMismatch(yylineno);
         exit(0);
     }
-    // this->value = !exp->value;
+    //  this->value = ()!exp->value;
     generator.binopCode(*this, exp->reg, "xor", "1");
+    this->true_list = exp->false_list;
+    this->false_list = exp->true_list;
+    this->next_list = exp->next_list;
 }
 
 
-Exp::Exp(Node *terminal1, Node *terminal2, string type, string op) {
+Exp::Exp(Node *terminal1, Node *terminal2, string type, string op, string label) {
     Exp* exp1 = dynamic_cast<Exp*>(terminal1);
     Exp* exp2 = dynamic_cast<Exp*>(terminal2);
     if (exp1->is_var && !symtable.checkForSymbol(exp1->value)) {
@@ -82,7 +93,8 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op) {
             if (exp1->type != "bool" || exp2->type != "bool") {
                 output::errorMismatch(yylineno);
                 exit(0);
-            }   
+            }
+            generator.bpBoolOp(*this,exp1, op, exp2, label);   
             generator.binopCode(*this, exp1->reg, op, exp2->reg);
         } else {
             if ((exp1->type != "int" && exp1->type != "byte") || (exp2->type != "int" && exp2->type != "byte")) {
@@ -183,14 +195,38 @@ Formals::Formals(FormalsList* formals_list) {
 
 Statement::Statement(string name, string type) : Node() {
     symtable.addSymbol(name, type);
+    shared_ptr<Exp> exp = make_shared<Exp>(new Exp());
+    if (type == "bool") {
+        exp->value = "false";
+        exp->type = "bool";
+        generator.createSimpleBoolBranch(*exp);
+    } else if (type == "int" || type == "byte") {
+        exp->value = "0";
+        exp->type = type;
+        buffer.genNumVar(*exp);
+    } else { //string
+        exp->value = "";
+        exp->type = "string";
+        buffer.genString(*exp);
+    }
 }
 
-Statement::Statement(string name, string ltype, string rtype) : Node() {
-    if(ltype != rtype && !(ltype == "int" && rtype == "byte")) {
+Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
+    if(ltype != rexp->type && !(ltype == "int" && rexp->type == "byte")) {
         output::errorMismatch(yylineno);
         exit(0);
     }
     symtable.addSymbol(name, ltype);
+    if (ltype == "bool") {
+        // genBoolExp()
+        exp->value = "false";
+        exp->type = "bool";
+        generator.createSimpleBoolBranch(*exp);
+    } else if (type == "int" || type == "byte") {
+       buffer.genNumVar(*rexp);
+    } else {
+        buffer.genString(*rexp);
+    }
 }
 
 Statement::Statement(string name, Exp* exp) : Node() {

@@ -11,6 +11,11 @@ public:
 
     void binopCode(Exp& result, string& reg2, string op, string& reg2);
     void relopCode(Exp& result, Exp& exp1, string op, Exp& exp2);
+    void createSimpleBoolBranch (Exp& exp);
+    void bpBoolOp(Exp& result, Exp& exp1, string op, Exp& exp2, string& label);
+    void genBoolVar(Statement& stmnt);
+    void genNumVar(Statement& stmnt);
+
 private:
     int reg_num;
 };

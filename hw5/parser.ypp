@@ -71,7 +71,7 @@ Statements : Statement { $$ = new Statements(); }
 
 Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
         | Type ID SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type); }
-        | Type ID ASSIGN Exp SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type, (dynamic_cast<Exp*>($4))->type); }
+        | Type ID ASSIGN Exp SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type, dynamic_cast<Exp*>($4)); }
         | ID ASSIGN Exp SC { $$ = new Statement($1->value, dynamic_cast<Exp*>($3)); }
         | Call SC { }
         | RETURN SC { $$ = new Statement(); }
@@ -104,12 +104,13 @@ Exp : LPAREN Exp RPAREN                                            {$$ = new Exp
     | TRUE                                                         {$$ = new Exp($1, "bool");}
     | FALSE                                                        {$$ = new Exp($1, "bool");}
     | NOT Exp                                                      {$$ = new Exp($2, "bool", $1->value);}
-    | Exp AND Exp                                                  {$$ = new Exp($1, $3, "bool", $2->value);}
-    | Exp OR Exp                                                   {$$ = new Exp($1, $3, "bool", $2->value);}
+    | Exp AND Label Exp                                            {$$ = new Exp($1, $4, "bool", $2->value, $3->value);}
+    | Exp OR Label Exp                                             {$$ = new Exp($1, $4, "bool", $2->value, $3->value);}
     | Exp RELOP Exp                                                {$$ = new Exp($1, $3, "bool", $2->value);}
     | LPAREN Type RPAREN Exp                                       {$$ = new Exp($4, $2);};
 
 CheckBool : Exp { checkBoolExp(dynamic_cast<Exp*>($1)->type); };
+Label     :                                {$$ = new Label(); };
 
 AddScopeMarker : /* epsilon */ {symtable.addScope(false, symtable.getCurrScopeRetType());};
 AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true, symtable.getCurrScopeRetType());};

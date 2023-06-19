@@ -36,6 +36,13 @@ public:
 
 #define YYSTYPE Node*
 
+class Label : public Node {
+    Label() {
+        buffer.genLabel();
+    }
+    virtual ~Label() = default;
+}
+
 class Program : public Node {
 public:
     Program();
@@ -106,7 +113,7 @@ public:
     bp_list cont_list;
     bp_list break_list;
     Statement(string name, string type);
-    Statement(string name, string ltype, string rtype);
+    Statement(string name, string ltype, Exp* rexp);
     Statement(string name, Exp* exp);
     Statement(); // RETURN SC
     Statement(Exp* exp); // RETURN Exp SC
@@ -152,7 +159,7 @@ public:
     Exp(Node *node, string type);
     Exp(Exp *exp);
     Exp(Node *terminal, string type, string op);
-    Exp(Node *terminal1, Node *terminal2, string type, string op);
+    Exp(Node *terminal1, Node *terminal2, string type, string op, string label = "");
     Exp(Node *terminal, Node *type);
     Exp(Call *call);
     Exp(string value);

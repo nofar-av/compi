@@ -60,7 +60,7 @@ std::string Generator::fresh_var()
     return "%var_" + to_string(reg_num++);
 }
 
-void Generator::binopCode(Exp& result, string& reg2, string op, string& reg2) {
+void Generator::binopCode(Exp& result, string& reg1, string op, string& reg2) {
     result.reg = allocator.freshVar();
     op = fanCOPToIROp(op);
     string op_type = fanCTypeToIRString(result.type);
@@ -68,6 +68,9 @@ void Generator::binopCode(Exp& result, string& reg2, string op, string& reg2) {
         op_type = (result.type == "int") ? "sdiv" : "udiv";
     }
     buffer.emit(result.reg + "= " + op + op_type + " "+ reg1 + "," + reg2);
+    if (result.type == "bool") {
+        this->createSimpleBoolBranch(result);
+    }
 }
 
 void Generator::relopCode(Exp& result, Exp& exp1, string op, Exp& exp2) {
@@ -78,4 +81,45 @@ void Generator::relopCode(Exp& result, Exp& exp1, string op, Exp& exp2) {
     int address = buffer.emit("br i1 " + res->reg + ", label @, label @");
     res->true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
     res->false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+}
+
+void Generator::createSimpleBoolBranch (Exp& exp) {
+    int address = buffer.emit("br label @");
+        if (exp.value == "true") {
+            exp.true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
+        } else {
+            exp.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+        }
+}
+
+// void Generator::createBoolBranch (Exp& exp) {
+//     int address = buffer.emit("br label @");
+//     exp.true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
+//     buffer.emit(", label @");
+//     exp.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+// }
+
+void Generator::bpBoolOp(Exp& result, Exp& exp1, string op, Exp& exp2, string& label) {
+    
+    if (op == "and") {
+        buffer.bp(exp1.true_list, label);
+        result.true_list = exp2.true_list;
+        result.false_list = buffer.merge(exp1.false_list, exp2.false_list)
+    } else if (op == "or") { // op == "or"
+        buffer.bp(exp1.false_list, label);
+        result.true_list = buffer.merge(exp1.true_list, exp2.true_list);
+        result.false_list = exp2.false_list;
+    }
+}
+
+void Generator::genBoolVar(Statement& stmnt) {
+    stmnt.reg = allocator.freshVar();
+    value = (stmnt.value == "true") ?
+    buffre.emit( stmnt.reg + "= i1 add 0, " + );
+}
+
+void Generator::genNumVar(Exp& exp) {
+    exp.reg = allocator.freshVar();
+    string op_type = fanCTypeToIRString(result.type);
+    buffre.emit( exp.reg + "= " + op_type + " add 0, " + exp.value);
 }
