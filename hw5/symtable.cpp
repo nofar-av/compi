@@ -239,5 +239,3 @@ void SymTable::checkMain() {
         exit(0);
     }
 }
-
-

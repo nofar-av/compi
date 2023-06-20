@@ -46,6 +46,7 @@ class Scope {
 
 class SymTable {
 public:
+    string rbp;
     bool has_main = false;
     vector<shared_ptr<Scope>> tables;
     vector<int> offsets;

@@ -15,6 +15,7 @@ public:
     void bpBoolOp(Exp& result, Exp& exp1, string op, Exp& exp2, string& label);
     void genBoolVar(Statement& stmnt);
     void genNumVar(Statement& stmnt);
+    string Generator::allocateVar();
 
 private:
     int reg_num;

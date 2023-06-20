@@ -123,3 +123,9 @@ void Generator::genNumVar(Exp& exp) {
     string op_type = fanCTypeToIRString(result.type);
     buffre.emit( exp.reg + "= " + op_type + " add 0, " + exp.value);
 }
+
+string Generator::allocateVar() {
+    string reg_ptr = allocator.freshVar();
+    buffer.emit(reg_ptr + "= alloca i32");
+    return reg_ptr;
+}
