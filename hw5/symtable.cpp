@@ -35,6 +35,16 @@ string printArgs(vector<string> params)
     return res;
 }
 
+Scope::Scope(string return_type) : 
+                    symbols() , is_loop(false), return_type(return_type) {
+    this->rbp = buffer.freshVar();
+    buffer.emit(this->rbp + " = alloca i32, i32 50");
+}
+
+Scope::Scope(bool is_loop, string return_type) : 
+                    symbols(), is_loop(is_loop), return_type(return_type) {
+}
+
 void Scope::addSymbol(string name, string type, int offset, bool is_func, vector<string> params, bool is_override)
 {
     //shared_ptr<Symbol> Symbol(name, type, offset, is_func, params, is_override})
@@ -52,7 +62,7 @@ SymTable::SymTable()
     this->tables.push_back(scope); 
 }
 
-void SymTable::addSymbol(string name, string type, bool is_func, vector<string> params, bool is_override) {
+void SymTable::addSymbol(string name, string type, string value) {
     if (checkForSymbol(name)) {
         output::errorDef(yylineno, name);
         exit(0);
@@ -62,6 +72,15 @@ void SymTable::addSymbol(string name, string type, bool is_func, vector<string> 
     this->offsets.pop_back();
     scope.addSymbol(name, type, offset, is_func, params, is_override);
     this->offsets.push_back(offset + 1);
+    string reg_ptr = buffer.freshVar(); // should add reg to symbol????
+    buffer.emit(reg_ptr + "= add i32" + offset + ", " + scope.rbp);
+    if (type == "string") {
+        buffer.genString(name, value, offset);
+    } else {
+        // TODO: handle bool type 
+        buffer.emit("store i32 " + value + ", i32* " + reg_ptr);
+    }
+    
 }
 
 void SymTable::addFuncParams(vector<shared_ptr<FormalDecl>>& params) {
@@ -122,6 +141,7 @@ void SymTable::addScope(bool is_loop, string return_type) {
     this->offsets.push_back(offset);
     is_loop = this->tables.back()->is_loop || is_loop; 
     shared_ptr<Scope> scope = make_shared<Scope>(is_loop, return_type);
+    scope->rbp = this->tables.back()->rbp;
     this->tables.push_back(scope);
 }
 
@@ -153,8 +173,8 @@ bool SymTable::checkForFunction (string name, vector<string> params, string type
 }
 
 Symbol& SymTable::getSymbol (string name) {
-    for(auto table = this->tables.begin(); table != this->tables.end(); table++) {
-        for(auto symbol = (*table)->symbols.begin(); symbol != (*table)->symbols.end(); symbol++){
+    for(auto scope = this->tables.begin(); scope != this->tables.end(); scope++) {
+        for(auto symbol = (*scope)->symbols.begin(); symbol != (*scope)->symbols.end(); symbol++){
             if((*symbol)->name == name)
                 return **symbol;
         }
@@ -202,6 +222,10 @@ Symbol& SymTable::getFunction (string name, vector<string> params) {
 
 string SymTable::getCurrScopeRetType() {
     return this->tables.back()->getReturnType();
+}
+
+string SymTable::getCurrScopeRbp() {
+    return this->tables.back()->rbp;
 }
 
 void SymTable::verifyInLoop(bool is_break)

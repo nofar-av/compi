@@ -1,6 +1,7 @@
 #include "generator.hpp"
 
 using namespace std;
+extern CodeBuffer buffer;
 
 string fanCTypeToIRString(string type) {
     switch (type) {
@@ -55,13 +56,18 @@ string fanCRelopToIR (string op) {
 
 Generator::Generator() : reg_num(0) {}
 
-std::string Generator::fresh_var()
+std::string Generator::freshVar()
 {
     return "%var_" + to_string(reg_num++);
 }
 
-void Generator::binopCode(Exp& result, string& reg1, string op, string& reg2) {
-    result.reg = allocator.freshVar();
+std::string Generator::freshGlobalVar()
+{
+    return "@var_" + to_string(reg_num++);
+}
+
+void Generator::binopCode(Exp& result, const string& reg1, const string& op, const string& reg2) {
+    result.reg = this->freshVar();
     op = fanCOPToIROp(op);
     string op_type = fanCTypeToIRString(result.type);
     if (op_type == "div") {
@@ -73,14 +79,15 @@ void Generator::binopCode(Exp& result, string& reg1, string op, string& reg2) {
     }
 }
 
-void Generator::relopCode(Exp& result, Exp& exp1, string op, Exp& exp2) {
-    result.reg = allocator.freshVar();
+void Generator::relopCode(Exp& result, Exp& exp1, const string& op, Exp& exp2) {
+    result.reg = this->freshVar();
     string llvm_op = fanCRelopToIR(op);
     buffer.emit(result.reg + "= " + "icmp" + llvm_op + "i32"  +" "+ exp1.reg + "," + exp2.reg);
     //is this needed? can do without the branch?
-    int address = buffer.emit("br i1 " + res->reg + ", label @, label @");
-    res->true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
-    res->false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+    int address = buffer.emit("br i1 " + result.reg + ", label @, label @");
+
+    result.true_list = buffer.makelist({ address, FIRST });
+    result.false_list = buffer.makelist({ address, SECOND });
 }
 
 void Generator::createSimpleBoolBranch (Exp& exp) {
@@ -99,33 +106,46 @@ void Generator::createSimpleBoolBranch (Exp& exp) {
 //     exp.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
 // }
 
-void Generator::bpBoolOp(Exp& result, Exp& exp1, string op, Exp& exp2, string& label) {
+void Generator::bpBoolOp(Exp& result, Exp& exp1, const string& op, Exp& exp2, string& label) {
     
     if (op == "and") {
-        buffer.bp(exp1.true_list, label);
+        buffer.bpatch(exp1.true_list, label);
         result.true_list = exp2.true_list;
         result.false_list = buffer.merge(exp1.false_list, exp2.false_list)
     } else if (op == "or") { // op == "or"
-        buffer.bp(exp1.false_list, label);
+        buffer.bpatch(exp1.false_list, label);
         result.true_list = buffer.merge(exp1.true_list, exp2.true_list);
         result.false_list = exp2.false_list;
     }
 }
 
 void Generator::genBoolVar(Statement& stmnt) {
-    stmnt.reg = allocator.freshVar();
+    stmnt.reg = this->freshVar();
     value = (stmnt.value == "true") ?
-    buffre.emit( stmnt.reg + "= i1 add 0, " + );
+    buffer.emit( stmnt.reg + "= i1 add 0, " + );
 }
 
 void Generator::genNumVar(Exp& exp) {
-    exp.reg = allocator.freshVar();
-    string op_type = fanCTypeToIRString(result.type);
-    buffre.emit( exp.reg + "= " + op_type + " add 0, " + exp.value);
+    exp.reg = this->freshVar();
+    string op_type = fanCTypeToIRString(exp.type);
+    buffer.emit( exp.reg + "= " + op_type + " add 0, " + exp.value);
+}
+
+void Generator::genStringVar(Exp& exp) {
+    string str = exp.value;
+    str.pop_back();
+    string reg = this->freshGlobalVar();
+    string size_str = "[" + to_string(str.length()) + " x i8]";
+    string get_ptr = "getelementptr" + size_str + ", " + size_str + "* " + reg + ", i32 0, i32 0";
+
+    buffer.emitGlobal(reg + " = constant " + size_str + " c" + str + "\\00\"");
+    reg.replace(0, 1, "%");
+    buffer.emit(reg + ".ptr = " + get_ptr);
+    exp.reg = reg + ".ptr";
 }
 
 string Generator::allocateVar() {
-    string reg_ptr = allocator.freshVar();
+    string reg_ptr = this->freshVar();
     buffer.emit(reg_ptr + "= alloca i32");
     return reg_ptr;
 }

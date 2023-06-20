@@ -4,10 +4,6 @@ extern SymTable symtable;
 extern Generator generator;
 extern CodeBuffer buffer;
 
-
-
-
-
 vector<string> convertExpToString(vector<shared_ptr<Exp>>& explist)
 {
     vector<string> types;
@@ -38,11 +34,11 @@ Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
     }
     
     if (type == "byte" || type == "int") { //if number add 0 to num
-        generator.binopCode(*this, terminal->value, "+" ,"0");
+        generator.binopCode(*this, terminal->value, "+", "0");
     } else if (type == "bool") {
         generator.createSimpleBoolBranch(*this);
     } else { //type is string
-        //TODO
+        generator.genStringVar(*this);
     }
 }
 
@@ -195,7 +191,7 @@ Formals::Formals(FormalsList* formals_list) {
 
 Statement::Statement(string name, string type) : Node() {
     symtable.addSymbol(name, type);
-    shared_ptr<Exp> exp = make_shared<Exp>(new Exp());
+    /*shared_ptr<Exp> exp = make_shared<Exp>(new Exp());
     if (type == "bool") {
         exp->value = "false";
         exp->type = "bool";
@@ -208,7 +204,7 @@ Statement::Statement(string name, string type) : Node() {
         exp->value = "";
         exp->type = "string";
         buffer.genString(*exp);
-    }
+    }*/
 }
 
 Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
@@ -216,8 +212,8 @@ Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
         output::errorMismatch(yylineno);
         exit(0);
     }
-    symtable.addSymbol(name, ltype);
-    if (ltype == "bool") {
+    symtable.addSymbol(name, ltype, rexp->reg); // check about int byte extension
+    /*if (ltype == "bool") {
         // genBoolExp()
         exp->value = "false";
         exp->type = "bool";
@@ -226,7 +222,7 @@ Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
        buffer.genNumVar(*rexp);
     } else {
         buffer.genString(*rexp);
-    }
+    }*/
 }
 
 Statement::Statement(string name, Exp* exp) : Node() {
@@ -239,6 +235,9 @@ Statement::Statement(string name, Exp* exp) : Node() {
         output::errorMismatch(yylineno);
         exit(0);
     }
+    string reg_ptr = buffer.freshVar();
+    buffer.emit(reg_ptr + " = add i32 " + symtable.getCurrScopeRbp() + ", " + id.offset);
+    buffer.emit("store i32 " + exp->reg + ", i32* " + reg_ptr);
 }
 
 Statement::Statement() : Node() {

@@ -118,7 +118,7 @@ RemoveScopeMarker : /* epsilon */ {symtable.removeScope();};
 %%
 
 SymTable symtable = SymTable(); 
-Allocator allocator = Allocator();
+Generator generator = Generator();
 CodeBuffer buffer = CodeBuffer();
 int main()
 {

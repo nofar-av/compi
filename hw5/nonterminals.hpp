@@ -12,7 +12,8 @@
 #include <algorithm>
 #include <memory>
 #include "symtable.hpp"
-#include "allocator.hpp"
+#include "generator.hpp"
+#include "bp.hpp"
 
 using namespace std;
 
