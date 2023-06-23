@@ -1,0 +1,5 @@
+void main()
+{
+    bool y = true;
+    //int y = 1+2;
+}

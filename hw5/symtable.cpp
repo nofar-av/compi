@@ -1,5 +1,8 @@
 #include "symtable.hpp"
 
+extern Generator generator;
+extern CodeBuffer buffer;
+
 void to_upper(char &ch) {
     ch = toupper(static_cast<unsigned char>(ch));
 }
@@ -37,7 +40,7 @@ string printArgs(vector<string> params)
 
 Scope::Scope(string return_type) : 
                     symbols() , is_loop(false), return_type(return_type) {
-    this->rbp = buffer.freshVar();
+    this->rbp = generator.freshVar();
     buffer.emit(this->rbp + " = alloca i32, i32 50");
 }
 
@@ -54,7 +57,8 @@ void Scope::addSymbol(string name, string type, int offset, bool is_func, vector
 
 SymTable::SymTable()
 {
-    shared_ptr<Scope> scope = make_shared<Scope>();
+    shared_ptr<Scope> scope = make_shared<Scope>(false, "void");
+    //scope->rbp = generator.allocateVar();
     scope->addSymbol("print", "void", 0, true, {"string"}, false);
     scope->addSymbol("printi", "void", 0, true, {"int"}, false);
     this->offsets.push_back(0);
@@ -70,16 +74,18 @@ void SymTable::addSymbol(string name, string type, string value) {
     Scope& scope = *(this->tables.back());
     int offset = this->offsets.back();
     this->offsets.pop_back();
-    scope.addSymbol(name, type, offset, is_func, params, is_override);
+    scope.addSymbol(name, type, offset);
     this->offsets.push_back(offset + 1);
-    string reg_ptr = buffer.freshVar(); // should add reg to symbol????
-    buffer.emit(reg_ptr + "= add i32" + offset + ", " + scope.rbp);
-    if (type == "string") {
-        buffer.genString(name, value, offset);
-    } else {
-        // TODO: handle bool type 
-        buffer.emit("store i32 " + value + ", i32* " + reg_ptr);
-    }
+    string reg_ptr = generator.freshVar(); // should add reg to symbol????
+    buffer.emit(reg_ptr + " = add i32 " + to_string(offset) + ", " + scope.rbp);
+    // if (type == "string") {
+    //     Exp exp = Exp();
+    //     exp.reg = reg_ptr;
+    //     exp.value = value;
+    //     generator.genStringVar(exp);
+    // } 
+    // TODO: handle bool type 
+    buffer.emit("store i32 " + value + ", i32* " + reg_ptr);
     
 }
 
@@ -96,7 +102,7 @@ void SymTable::addFuncParams(vector<shared_ptr<FormalDecl>>& params) {
     }
 }
 
-void SymTable::addFunction(string name, string type, bool is_func, vector<string> params, bool is_override) {
+void SymTable::addFunction(string name, string type, vector<string> params, bool is_override) {
     if (checkForSymbol(name)) {
         Symbol& orig_func = this->getSymbol(name);
         if(!is_override && !orig_func.is_override) {
@@ -119,7 +125,7 @@ void SymTable::addFunction(string name, string type, bool is_func, vector<string
 
     Scope& scope = *(this->tables.back());
     int offset = this->offsets.back();
-    scope.addSymbol(name, type, offset, is_func, params, is_override);
+    scope.addSymbol(name, type, offset, true, params, is_override);
     if (name == "main" && params.empty() && type == "void") {
         this->has_main = true;
         if (is_override == true) {
@@ -127,6 +133,10 @@ void SymTable::addFunction(string name, string type, bool is_func, vector<string
             exit(0);
         }
     }
+}
+
+void SymTable::addGlobalFunction(string name, string type, int offset, vector<string> params, bool is_override) {
+    
 }
 
 void SymTable::addScope(string return_type) {

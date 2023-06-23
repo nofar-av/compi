@@ -17,7 +17,7 @@
 
 using namespace std;
 
-enum BranchLabelIndex {FIRST, SECOND};
+// enum BranchLabelIndex {FIRST, SECOND};
 typedef vector<std::pair<int, BranchLabelIndex>> bp_list;
 
 class Formals;
@@ -38,11 +38,10 @@ public:
 #define YYSTYPE Node*
 
 class Label : public Node {
-    Label() {
-        buffer.genLabel();
-    }
+public:
+    Label();
     virtual ~Label() = default;
-}
+};
 
 class Program : public Node {
 public:
@@ -157,6 +156,7 @@ public:
     bp_list true_list;
     bp_list false_list;
     bp_list next_list;
+    Exp() = default;
     Exp(Node *node, string type);
     Exp(Exp *exp);
     Exp(Node *terminal, string type, string op);

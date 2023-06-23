@@ -117,11 +117,13 @@ AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true, symtable.getCurrScop
 RemoveScopeMarker : /* epsilon */ {symtable.removeScope();};
 %%
 
-SymTable symtable = SymTable(); 
-Generator generator = Generator();
 CodeBuffer buffer = CodeBuffer();
+Generator generator = Generator();
+SymTable symtable = SymTable(); 
+
 int main()
 {
+        generator.generateInitCode();
 	return yyparse();
 }
 

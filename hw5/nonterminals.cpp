@@ -24,6 +24,10 @@ vector<string> convertFormalDeclToString(vector<shared_ptr<FormalDecl>>& f_list)
     return types;
 }
 
+Label::Label() {
+    buffer.genLabel();
+}
+
 Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
     if (type == "byte") {
         int value = stoi(terminal->value);
@@ -42,7 +46,9 @@ Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
     }
 }
 
-Exp::Exp(Exp *exp) : Node(exp->value), type(exp->type) {}
+Exp::Exp(Exp *exp) : Node(exp->value), type(exp->type), reg(exp->reg), false_list(exp->false_list),
+true_list(exp->true_list) , next_list(exp->next_list) {
+} 
 
 Exp::Exp(string value) : Node(value) , type() {
     Symbol &sym = symtable.getSymbol(value);
@@ -90,14 +96,14 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op, string label)
                 output::errorMismatch(yylineno);
                 exit(0);
             }
-            generator.bpBoolOp(*this,exp1, op, exp2, label);   
+            generator.bpBoolOp(*this, *exp1, op, *exp2, label);   
             generator.binopCode(*this, exp1->reg, op, exp2->reg);
         } else {
             if ((exp1->type != "int" && exp1->type != "byte") || (exp2->type != "int" && exp2->type != "byte")) {
                 output::errorMismatch(yylineno);
                 exit(0);
             }
-            generator.relopCode(*this, exp1, op, exp2);
+            generator.relopCode(*this, *exp1, op, *exp2);
         }
         this->type = "bool";
     } else {
@@ -122,7 +128,8 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
     }
     this->type = new_type->type;     
 }
-Exp::Exp(Call *call) : Node(), type(call->type) { }
+Exp::Exp(Call *call) : Node(), type(call->type), reg(call->reg), false_list(call->false_list),
+true_list(call->true_list) , next_list(call->next_list) { }
 
 ExpList::ExpList(Exp *exp) : Node(), exps() {
     this->exps.push_back(make_shared<Exp>(*exp));
@@ -191,12 +198,14 @@ Formals::Formals(FormalsList* formals_list) {
 
 Statement::Statement(string name, string type) : Node() {
     symtable.addSymbol(name, type);
-    /*shared_ptr<Exp> exp = make_shared<Exp>(new Exp());
+    
     if (type == "bool") {
-        exp->value = "false";
-        exp->type = "bool";
-        generator.createSimpleBoolBranch(*exp);
-    } else if (type == "int" || type == "byte") {
+        Exp exp = Exp(); 
+        exp.value = "false";
+        exp.type = "bool";
+        generator.createSimpleBoolBranch(exp);
+    }
+    /* else if (type == "int" || type == "byte") {
         exp->value = "0";
         exp->type = type;
         buffer.genNumVar(*exp);
@@ -213,6 +222,9 @@ Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
         exit(0);
     }
     symtable.addSymbol(name, ltype, rexp->reg); // check about int byte extension
+    if (ltype == "bool") {
+        generator.genBoolVar();
+    }
     /*if (ltype == "bool") {
         // genBoolExp()
         exp->value = "false";
@@ -228,15 +240,15 @@ Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
 Statement::Statement(string name, Exp* exp) : Node() {
     Symbol& id = symtable.getSymbol(name);
     if (id.is_function) {
-        output::errorUnDef(yylineno, name);
+        output::errorUndef(yylineno, name);
         exit(0);
     }
     if(id.type != exp->type && !(id.type == "int" && exp->type == "byte")) {
         output::errorMismatch(yylineno);
         exit(0);
     }
-    string reg_ptr = buffer.freshVar();
-    buffer.emit(reg_ptr + " = add i32 " + symtable.getCurrScopeRbp() + ", " + id.offset);
+    string reg_ptr = generator.freshVar();
+    buffer.emit(reg_ptr + " = add i32 " + symtable.getCurrScopeRbp() + ", " + to_string(id.offset));
     buffer.emit("store i32 " + exp->reg + ", i32* " + reg_ptr);
 }
 
@@ -256,7 +268,7 @@ Statement::Statement(Exp *exp) : Node() {
 }
 
 FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals) : Node() {
-    symtable.addFunction(name, type, true, convertFormalDeclToString(formals->params), is_override);
+    symtable.addFunction(name, type, convertFormalDeclToString(formals->params), is_override);
     symtable.addScope(type);
     symtable.addFuncParams(formals->params);
 }
@@ -264,4 +276,5 @@ FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals)
 Program::Program() : Node() {
     symtable.checkMain(); // check if program has main, main returns void, main gets 0 args and is not overrided.
     symtable.removeScope();
+    buffer.printCodeBuffer();
 }

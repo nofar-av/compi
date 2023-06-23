@@ -11,12 +11,13 @@ using namespace std;
 enum BranchLabelIndex {FIRST, SECOND};
 
 class CodeBuffer{
+public:
 	CodeBuffer();
 	CodeBuffer(CodeBuffer const&);
     void operator=(CodeBuffer const&);
 	std::vector<std::string> buffer;
 	std::vector<std::string> globalDefs;
-public:
+
 	static CodeBuffer &instance();
 
 	// ******** Methods to handle the code section ******** //

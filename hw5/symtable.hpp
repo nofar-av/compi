@@ -53,7 +53,8 @@ public:
     SymTable();
     ~SymTable() = default;
     void addSymbol(string name, string type, string value = "0");
-    void addFunction(string name, string type, bool is_func = false, vector<string> params = {}, bool is_override = false);
+    void addFunction(string name, string type, vector<string> params = {}, bool is_override = false);
+    void addGlobalFunction(string name, string type, int offset, vector<string> params, bool is_override);
     void addScope(string return_type); // only for functions
     void addScope(bool is_loop, string return_type);
     void addFuncParams(vector<shared_ptr<FormalDecl>>& params);
