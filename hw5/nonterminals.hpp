@@ -117,6 +117,9 @@ public:
     Statement(string name, Exp* exp);
     Statement(); // RETURN SC
     Statement(Exp* exp); // RETURN Exp SC
+    Statement(bool is_break);
+    Statement(Label* cond_label, Label* code_label, Exp* exp, Statement* code);
+    Statement(Exp* exp, Label* true_label, Statement* true_code);
     virtual ~Statement() = default;
 };
 

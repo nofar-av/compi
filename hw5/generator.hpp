@@ -25,6 +25,10 @@ public:
     //void genNumVar(Statement& stmnt);
     void genStringVar(Exp& exp);
     string allocateVar();
+    shared_ptr<Exp> genBoolExp(Exp &exp);
+    void genStoreVar(string rbp, int offset, string value);
+    string genLoadVar(string rbp, int offset);
+    void genRet(shared_ptr<Exp> exp = nullptr);
 
 private:
     int reg_num;

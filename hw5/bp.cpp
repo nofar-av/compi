@@ -13,9 +13,9 @@ CodeBuffer &CodeBuffer::instance() {
 	return inst;
 }
 
-string CodeBuffer::genLabel(){
+string CodeBuffer::genLabel(string str_label){
 	std::stringstream label;
-	label << "label_";
+	label << str_label << "label_";
 	label << buffer.size();
 	std::string ret(label.str());
 	label << ":";

@@ -52,7 +52,7 @@ public:
     
     SymTable();
     ~SymTable() = default;
-    void addSymbol(string name, string type, string value = "0");
+    int addSymbol(string name, string type);
     void addFunction(string name, string type, vector<string> params = {}, bool is_override = false);
     void addGlobalFunction(string name, string type, int offset, vector<string> params, bool is_override);
     void addScope(string return_type); // only for functions

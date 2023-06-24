@@ -112,7 +112,7 @@ void Generator::binopCode(Exp& result, const string& reg1, const string& op, con
     if (op_type == "div") {
         op_type = (result.type == "int") ? "sdiv" : "udiv";
     }
-    buffer.emit(result.reg + " = " + llvm_op + " " + op_type + " "+ reg1 + ", " + reg2);
+    buffer.emit(result.reg + " = " + llvm_op + " " + op_type + " " + reg1 + ", " + reg2);
     if (result.type == "bool") {
         this->createSimpleBoolBranch(result);
     }
@@ -138,9 +138,9 @@ void Generator::createSimpleBoolBranch (Exp& exp) {
     }
 }
 
-void Generator::genBoolVar(Exp& exp) {
+// void Generator::genBoolVar(Exp& exp) {
 
-}
+// }
 
 // void Generator::createBoolBranch (Exp& exp) {
 //     int address = buffer.emit("br label @");
@@ -171,7 +171,8 @@ void Generator::bpBoolOp(Exp& result, Exp& exp1, const string& op, Exp& exp2, st
 // void Generator::genNumVar(Exp& exp) {
 //     exp.reg = this->freshVar();
 //     string op_type = fanCTypeToIRString(exp.type);
-//     buffer.emit( exp.reg + "= " + op_type + " add 0, " + exp.value);
+//     buffer.emit(exp.reg + "= " + op_type + " add 0, " + exp.value);
+//     this->genStoreVar();
 // }
 
 void Generator::genStringVar(Exp& exp) {
@@ -191,4 +192,51 @@ string Generator::allocateVar() {
     string reg_ptr = this->freshVar();
     buffer.emit(reg_ptr + " = alloca i32");
     return reg_ptr;
+}
+
+shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
+    shared_ptr<Exp> bool_exp = make_shared<Exp>();
+    bool_exp->reg = this->allocateVar();
+    bool_exp->type = "bool";
+    string true_list_label = buffer.genLabel("TRUE_LIST_");
+    string false_list_label = buffer.genLabel("FALSE_LIST_");
+    string next_list_label = buffer.genLabel("NEXT_LIST_");
+
+    buffer.emit("br label %" + true_list_label);
+    buffer.emit(true_list_label + ":");
+    int true_address = buffer.emit("br label @");
+    buffer.emit(false_list_label + ":");
+    int false_address = buffer.emit("br label @");
+    buffer.emit(next_list_label + ":");
+
+    bp_list next_list = buffer.merge(buffer.makelist(pair<int, BranchLabelIndex>(true_address, FIRST)),
+                               buffer.makelist(pair<int, BranchLabelIndex>(false_address, FIRST)));
+    buffer.bpatch(exp.true_list, true_list_label);
+    buffer.bpatch(exp.false_list, false_list_label);
+    buffer.bpatch(next_list, next_list_label);
+    buffer.emit(bool_exp->reg + " = phi i32 [ 1, %" + true_list_label +"], [0, %" + false_list_label + "]");
+    return bool_exp;
+}
+
+void Generator::genStoreVar(string rbp, int offset, string value) {
+    string reg_ptr = this->freshVar(); // should add reg to symbol????
+    buffer.emit(reg_ptr + " = getelementptr i32, i32* " + rbp + ", i32 " + to_string(offset));
+    buffer.emit("store i32 " + value + ", i32* " + reg_ptr);
+}
+
+string Generator::genLoadVar(string rbp, int offset) {
+    string var_ptr = this->freshVar();
+    string reg = this->freshVar();
+    buffer.emit(var_ptr + " = getelementptr i32, i32* " + rbp + ", i32 " + to_string(offset));
+    buffer.emit("load i32 " + var_ptr + ", i32* " + reg);
+    return reg;
+}
+
+void Generator::genRet(shared_ptr<Exp> exp) {
+    if (exp == nullptr) {
+        buffer.emit("ret void");
+    }
+    else {
+        buffer.emit("ret " + fanCTypeToIRString(exp->type) + " " + exp->reg);
+    }
 }

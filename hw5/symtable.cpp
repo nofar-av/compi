@@ -66,7 +66,7 @@ SymTable::SymTable()
     this->tables.push_back(scope); 
 }
 
-void SymTable::addSymbol(string name, string type, string value) {
+int SymTable::addSymbol(string name, string type) {
     if (checkForSymbol(name)) {
         output::errorDef(yylineno, name);
         exit(0);
@@ -76,17 +76,7 @@ void SymTable::addSymbol(string name, string type, string value) {
     this->offsets.pop_back();
     scope.addSymbol(name, type, offset);
     this->offsets.push_back(offset + 1);
-    string reg_ptr = generator.freshVar(); // should add reg to symbol????
-    buffer.emit(reg_ptr + " = add i32 " + to_string(offset) + ", " + scope.rbp);
-    // if (type == "string") {
-    //     Exp exp = Exp();
-    //     exp.reg = reg_ptr;
-    //     exp.value = value;
-    //     generator.genStringVar(exp);
-    // } 
-    // TODO: handle bool type 
-    buffer.emit("store i32 " + value + ", i32* " + reg_ptr);
-    
+    return offset;
 }
 
 void SymTable::addFuncParams(vector<shared_ptr<FormalDecl>>& params) {

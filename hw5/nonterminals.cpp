@@ -25,7 +25,7 @@ vector<string> convertFormalDeclToString(vector<shared_ptr<FormalDecl>>& f_list)
 }
 
 Label::Label() {
-    buffer.genLabel();
+    this->value = buffer.genLabel();
 }
 
 Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
@@ -50,6 +50,7 @@ Exp::Exp(Exp *exp) : Node(exp->value), type(exp->type), reg(exp->reg), false_lis
 true_list(exp->true_list) , next_list(exp->next_list) {
 } 
 
+//EXP -> ID
 Exp::Exp(string value) : Node(value) , type() {
     Symbol &sym = symtable.getSymbol(value);
     if (sym.is_function) {
@@ -58,7 +59,22 @@ Exp::Exp(string value) : Node(value) , type() {
     }
     this->is_var = true;
     this->type = sym.type;
+
+    if (sym.offset < 0) {
+        this->reg = "%" + to_string(((-1) * sym.offset - 1));
+    } else {
+        this->reg = generator.genLoadVar(symtable.getCurrScopeRbp(), sym.offset);
+    }
+
+    if (sym.type == "bool") {
+        string cmp_reg = generator.freshVar();
+        buffer.emit(cmp_reg + " = icmp ne i32 0, " + this->reg);
+        int address = buffer.emit("br i1 " + cmp_reg + ", label @, label @");
+        this->true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
+        this->false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+    }
 }
+
 
 Exp::Exp(Node *terminal, string type, string op) : type(type) {
     Exp* exp = dynamic_cast<Exp*>(terminal);
@@ -118,7 +134,7 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op, string label)
     // this->value = allocator.freshVar();
 }
 
-
+// EXP -> LPAREN Type RPAREN Exp
 Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
     Exp* exp = dynamic_cast<Exp*>(terminal);
     Type* new_type = dynamic_cast<Type*>(type);
@@ -126,8 +142,13 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
             output::errorMismatch(yylineno);
             exit(0);
     }
-    this->type = new_type->type;     
+    this->type = new_type->type;
+    this->reg = exp->reg;
+    this->false_list = exp->false_list;
+    this->true_list = exp->true_list;     
+    this->next_list = exp->next_list;
 }
+
 Exp::Exp(Call *call) : Node(), type(call->type), reg(call->reg), false_list(call->false_list),
 true_list(call->true_list) , next_list(call->next_list) { }
 
@@ -196,47 +217,35 @@ Formals::Formals(FormalsList* formals_list) {
     }
 }
 
+//Statement -> Type ID SC
 Statement::Statement(string name, string type) : Node() {
-    symtable.addSymbol(name, type);
-    
-    if (type == "bool") {
-        Exp exp = Exp(); 
+    int offset = symtable.addSymbol(name, type);
+    Exp exp = Exp();
+    if (type == "bool") { 
         exp.value = "false";
         exp.type = "bool";
         generator.createSimpleBoolBranch(exp);
     }
-    /* else if (type == "int" || type == "byte") {
-        exp->value = "0";
-        exp->type = type;
-        buffer.genNumVar(*exp);
-    } else { //string
-        exp->value = "";
-        exp->type = "string";
-        buffer.genString(*exp);
-    }*/
+    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, "0");
 }
 
+//Statement -> Type ID = EXP SC
 Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
     if(ltype != rexp->type && !(ltype == "int" && rexp->type == "byte")) {
         output::errorMismatch(yylineno);
         exit(0);
     }
-    symtable.addSymbol(name, ltype, rexp->reg); // check about int byte extension
+    int offset = symtable.addSymbol(name, ltype); // check about int byte extension
+    string reg = rexp->reg;
     if (ltype == "bool") {
-        generator.genBoolVar();
+        shared_ptr<Exp> temp = generator.genBoolExp(*rexp);
+        reg = temp->reg;
     }
-    /*if (ltype == "bool") {
-        // genBoolExp()
-        exp->value = "false";
-        exp->type = "bool";
-        generator.createSimpleBoolBranch(*exp);
-    } else if (type == "int" || type == "byte") {
-       buffer.genNumVar(*rexp);
-    } else {
-        buffer.genString(*rexp);
-    }*/
+
+    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, reg);
 }
 
+//Statement -> ID = EXP SC
 Statement::Statement(string name, Exp* exp) : Node() {
     Symbol& id = symtable.getSymbol(name);
     if (id.is_function) {
@@ -247,17 +256,25 @@ Statement::Statement(string name, Exp* exp) : Node() {
         output::errorMismatch(yylineno);
         exit(0);
     }
-    string reg_ptr = generator.freshVar();
-    buffer.emit(reg_ptr + " = add i32 " + symtable.getCurrScopeRbp() + ", " + to_string(id.offset));
-    buffer.emit("store i32 " + exp->reg + ", i32* " + reg_ptr);
+    string reg = exp->reg;
+    if (id.type == "bool") {
+        shared_ptr<Exp> temp = generator.genBoolExp(*exp);
+        reg = temp->reg;
+    }
+
+    generator.genStoreVar(symtable.getCurrScopeRbp(), id.offset, reg);
 }
 
+// Statement -> RETURN SC
 Statement::Statement() : Node() {
     if(symtable.getCurrScopeRetType() != "void") {
         output::errorMismatch(yylineno);
         exit(0);
     }
+    generator.genRet();
 }
+
+// Statement -> RETURN EXP SC
 Statement::Statement(Exp *exp) : Node() {
     string ltype = symtable.getCurrScopeRetType();
     string rtype = exp->type;
@@ -265,6 +282,57 @@ Statement::Statement(Exp *exp) : Node() {
         output::errorMismatch(yylineno);
         exit(0);
     }
+
+    if(exp->type == "bool") {
+        shared_ptr<Exp> new_exp = generator.genBoolExp(*exp);
+        new_exp->type = "bool";
+        generator.genRet(new_exp);
+    } else {
+        generator.genRet(make_shared<Exp>(exp));
+        // if(!exp->value.empty()){
+        //     Symbol* symbol = tables.get_symbol(exp->value);
+        //     if(symbol){
+        //         // Function call
+        //         code_gen.return_value(exp->type, exp->reg);
+        //     } else {
+        //         code_gen.return_value(exp->type, exp->value);
+        //     }
+        // } else {
+        //     code_gen.return_value(exp->type, exp->reg);
+        // }
+    }
+}
+
+//Statement-> BREAK, Statement-> CONTINUE 
+Statement::Statement(bool is_break) : Node() {
+    if (is_break) {
+
+    } else {
+
+    }
+}
+
+// Statement -> WHILE
+Statement::Statement(Label* cond_label, Label* code_label, Exp* exp, Statement* code) : Node() {
+    buffer.emit("br label %" + cond_label->value);
+    string end_label = buffer.genLabel();
+    buffer.bpatch(code->cont_list, cond_label->value);
+    buffer.bpatch(exp->true_list, code_label->value);
+    buffer.bpatch(exp->false_list, end_label);
+    buffer.bpatch(exp->next_list, end_label);
+    buffer.bpatch(code->break_list, end_label);    
+    
+}
+
+// Statement -> IF EXP statement
+Statement::Statement(Exp* exp, Label* true_label, Statement* true_code) : Node() {
+    string end_label = buffer.genLabel();
+    buffer.bpatch(exp->true_list, true_label->value);
+    buffer.bpatch(exp->false_list, end_label);
+    buffer.bpatch(exp->next_list, end_label);    
+    
+    this->break_list = true_code->break_list;
+    this->cont_list = true_code->cont_list;
 }
 
 FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals) : Node() {

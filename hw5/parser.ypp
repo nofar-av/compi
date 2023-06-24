@@ -76,11 +76,12 @@ Statement : LBRACE AddScopeMarker Statements RBRACE { symtable.removeScope(); }
         | Call SC { }
         | RETURN SC { $$ = new Statement(); }
         | RETURN Exp SC { $$ = new Statement(dynamic_cast<Exp*>($2)); }
-        | IF LPAREN CheckBool RPAREN AddScopeMarker Statement { symtable.removeScope(); }
-        | IF LPAREN CheckBool RPAREN AddScopeMarker Statement ELSE RemoveScopeMarker AddScopeMarker Statement { symtable.removeScope(); }
-        | WHILE LPAREN CheckBool RPAREN AddLoopScopeMarker Statement { symtable.removeScope(); }
-        | BREAK SC { symtable.verifyInLoop(true); }
-        | CONTINUE SC { symtable.verifyInLoop(false); }
+        | IF LPAREN CheckBool RPAREN AddScopeMarker Label Statement { $$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<Label*>($6), dynamic_cast<Statement*>($7)); symtable.removeScope(); }
+        | IF LPAREN CheckBool RPAREN AddScopeMarker Label Statement ELSE RemoveScopeMarker AddScopeMarker Label Statement { symtable.removeScope(); }
+        | WHILE LPAREN Label CheckBool RPAREN AddLoopScopeMarker Label Statement { $$ = new Statement(dynamic_cast<Label*>($3), dynamic_cast<Label*>($6), dynamic_cast<Exp*>($4), dynamic_cast<Statement*>($7)); 
+                                                                                   symtable.removeScope(); }
+        | BREAK SC { symtable.verifyInLoop(true); $$ = new Statement(true); }
+        | CONTINUE SC { symtable.verifyInLoop(false); $$ = new Statement(false); }
         ;
 
 Call : ID LPAREN ExpList RPAREN         {$$ = new Call($1->value, dynamic_cast<ExpList*>($3));}
@@ -113,8 +114,9 @@ CheckBool : Exp { checkBoolExp(dynamic_cast<Exp*>($1)->type); };
 Label     :                                {$$ = new Label(); };
 
 AddScopeMarker : /* epsilon */ {symtable.addScope(false, symtable.getCurrScopeRetType());};
-AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true, symtable.getCurrScopeRetType());};
+AddLoopScopeMarker : /* epsilon */ {symtable.addScope(true, symtable.getCurrScopeRetType()); };
 RemoveScopeMarker : /* epsilon */ {symtable.removeScope();};
+
 %%
 
 CodeBuffer buffer = CodeBuffer();
