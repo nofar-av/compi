@@ -3,7 +3,7 @@
 using namespace std;
 extern CodeBuffer buffer;
 
-string fanCTypeToIRString(string type) {
+string fanCTypeToIRString(string type) { // TODO:: maybe we need everything as i32 and i8*? (Section 3 in pdf)
     if (type == "bool") {
         return "i1";
     }
@@ -72,12 +72,12 @@ void Generator::emitDeclarations() {
     buffer.emitGlobal("@.str_specifier = constant [4 x i8] c\"%s\\0A\\00\"");
 }
 void Generator::emitPrintFuncs() {
-    buffer.emitGlobal("define void @print(i8*){");
+    buffer.emitGlobal("define void @print(i8*) {");
     buffer.emitGlobal("call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)");
     buffer.emitGlobal("ret void");
     buffer.emitGlobal("}");
 
-    buffer.emitGlobal("define void @printi(i32){");
+    buffer.emitGlobal("define void @printi(i32) {");
     buffer.emitGlobal("%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0");
     buffer.emitGlobal("call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)");
     buffer.emitGlobal("ret void");
@@ -153,12 +153,12 @@ void Generator::bpBoolOp(Exp& result, Exp& exp1, const string& op, Exp& exp2, st
     
     if (op == "and") {
         buffer.bpatch(exp1.true_list, label);
-        result.true_list = exp2.true_list;
+        result.true_list = bp_list(exp2.true_list);
         result.false_list = buffer.merge(exp1.false_list, exp2.false_list);
     } else if (op == "or") { // op == "or"
         buffer.bpatch(exp1.false_list, label);
         result.true_list = buffer.merge(exp1.true_list, exp2.true_list);
-        result.false_list = exp2.false_list;
+        result.false_list = bp_list(exp2.false_list);
     }
 }
 
@@ -195,6 +195,10 @@ string Generator::allocateVar() {
 }
 
 shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
+    if (exp.type != "bool") {
+        return make_shared<Exp>(exp);
+    }
+    
     shared_ptr<Exp> bool_exp = make_shared<Exp>();
     bool_exp->reg = this->allocateVar();
     bool_exp->type = "bool";
@@ -228,7 +232,7 @@ string Generator::genLoadVar(string rbp, int offset) {
     string var_ptr = this->freshVar();
     string reg = this->freshVar();
     buffer.emit(var_ptr + " = getelementptr i32, i32* " + rbp + ", i32 " + to_string(offset));
-    buffer.emit("load i32 " + var_ptr + ", i32* " + reg);
+    buffer.emit(reg + " = load i32,  i32* " + var_ptr);
     return reg;
 }
 
@@ -239,4 +243,28 @@ void Generator::genRet(shared_ptr<Exp> exp) {
     else {
         buffer.emit("ret " + fanCTypeToIRString(exp->type) + " " + exp->reg);
     }
+}
+
+void Generator::genLabelAfterIf(Exp* exp) {
+    int address = buffer.emit("br label @");
+    exp->next_list = buffer.merge(buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST)), exp->next_list);
+}
+
+void Generator::genEndOfFunc(string type) { 
+    type == "void" ? buffer.emit("ret void") : buffer.emit("ret i32 0");
+    buffer.emit("}");
+}
+
+void Generator::genFuncDecl(string name, vector<string> params, string ret_type) {
+    string args_line = "";
+    for(auto it = params.begin(); it != params.end(); it++)
+    {
+        args_line += fanCTypeToIRString(*it) + ", ";
+    }
+
+    if (args_line != "") { // Remove the comma and space from last arg
+        args_line = args_line.substr(0, args_line.size() - 2); 
+    }
+
+    buffer.emit("define " + fanCTypeToIRString(ret_type) + " @" + name + "(" + args_line + ") {");
 }

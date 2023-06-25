@@ -89,9 +89,9 @@ Exp::Exp(Node *terminal, string type, string op) : type(type) {
     }
     //  this->value = ()!exp->value;
     generator.binopCode(*this, exp->reg, "xor", "1");
-    this->true_list = exp->false_list;
-    this->false_list = exp->true_list;
-    this->next_list = exp->next_list;
+    this->true_list = bp_list(exp->false_list);
+    this->false_list = bp_list(exp->true_list);
+    this->next_list = bp_list(exp->next_list);
 }
 
 
@@ -144,22 +144,23 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
     }
     this->type = new_type->type;
     this->reg = exp->reg;
-    this->false_list = exp->false_list;
-    this->true_list = exp->true_list;     
-    this->next_list = exp->next_list;
+    this->false_list = bp_list(exp->false_list);
+    this->true_list = bp_list(exp->true_list);     
+    this->next_list = bp_list(exp->next_list);
 }
 
 Exp::Exp(Call *call) : Node(), type(call->type), reg(call->reg), false_list(call->false_list),
 true_list(call->true_list) , next_list(call->next_list) { }
 
 ExpList::ExpList(Exp *exp) : Node(), exps() {
-    this->exps.push_back(make_shared<Exp>(*exp));
+    shared_ptr<Exp> new_exp = generator.genBoolExp(*exp);
+    this->exps.push_back(new_exp);
 }
 
 ExpList::ExpList(Exp *exp, ExpList* explist) : Node() {
     this->exps.push_back(make_shared<Exp>(*exp));
     if(explist != nullptr) {
-        exps.insert(exps.end(), explist->exps.begin(), explist->exps.end());
+        this->exps.insert(this->exps.end(), explist->exps.begin(), explist->exps.end());
     }
 }
 
@@ -265,7 +266,13 @@ Statement::Statement(string name, Exp* exp) : Node() {
     generator.genStoreVar(symtable.getCurrScopeRbp(), id.offset, reg);
 }
 
-// Statement -> RETURN SC
+// Statement -> { Statements }
+Statement::Statement(Statements* statements) : Node() {
+    this->break_list = bp_list(statements->break_list);
+    this->cont_list = bp_list(statements->cont_list);
+}
+
+// Statement ->  RETURN SC
 Statement::Statement() : Node() {
     if(symtable.getCurrScopeRetType() != "void") {
         output::errorMismatch(yylineno);
@@ -283,12 +290,12 @@ Statement::Statement(Exp *exp) : Node() {
         exit(0);
     }
 
-    if(exp->type == "bool") {
+    if(exp->type == "bool") { 
         shared_ptr<Exp> new_exp = generator.genBoolExp(*exp);
         new_exp->type = "bool";
         generator.genRet(new_exp);
     } else {
-        generator.genRet(make_shared<Exp>(exp));
+        generator.genRet(make_shared<Exp>(*exp));
         // if(!exp->value.empty()){
         //     Symbol* symbol = tables.get_symbol(exp->value);
         //     if(symbol){
@@ -305,10 +312,11 @@ Statement::Statement(Exp *exp) : Node() {
 
 //Statement-> BREAK, Statement-> CONTINUE 
 Statement::Statement(bool is_break) : Node() {
+    int address = buffer.emit("br label @");
     if (is_break) {
-
+        this->break_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
     } else {
-
+        this->cont_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
     }
 }
 
@@ -331,18 +339,43 @@ Statement::Statement(Exp* exp, Label* true_label, Statement* true_code) : Node()
     buffer.bpatch(exp->false_list, end_label);
     buffer.bpatch(exp->next_list, end_label);    
     
-    this->break_list = true_code->break_list;
-    this->cont_list = true_code->cont_list;
+    this->break_list = bp_list(true_code->break_list);
+    this->cont_list = bp_list(true_code->cont_list);
+}
+
+// Statement -> IF EXP statement ELSE statement 
+Statement::Statement(Statement* true_code, Statement* false_code, Exp* exp, Label* true_label, Label* false_label) : Node() {
+    string end_label = buffer.genLabel();
+    buffer.bpatch(exp->true_list, true_label->value);
+    buffer.bpatch(exp->false_list, false_label->value);
+    buffer.bpatch(exp->next_list, end_label);
+
+    this->break_list = buffer.merge(true_code->break_list, false_code->break_list);
+    this->cont_list = buffer.merge(true_code->cont_list, false_code->cont_list);
+}
+
+Statements::Statements(Statement* statement) : Node() {
+    this->break_list = bp_list(statement->break_list);
+    this->cont_list = bp_list(statement->cont_list);
+}
+Statements::Statements(Statements* stmnts, Statement* statement) : Node() {
+    this->break_list = buffer.merge(statement->break_list, stmnts->break_list);
+    this->cont_list = buffer.merge(statement->cont_list, stmnts->cont_list);
 }
 
 FuncDecl::FuncDecl(bool is_override, string type, string name, Formals* formals) : Node() {
-    symtable.addFunction(name, type, convertFormalDeclToString(formals->params), is_override);
+    vector<string> params = convertFormalDeclToString(formals->params);
+    symtable.addFunction(name, type, params, is_override);
     symtable.addScope(type);
     symtable.addFuncParams(formals->params);
+
+    generator.genFuncDecl(name, params, type); // TODO:: Handle OverRide !!
+    buffer.emit(symtable.getCurrScopeRbp() + " = alloca i32, i32 50");
 }
 
 Program::Program() : Node() {
     symtable.checkMain(); // check if program has main, main returns void, main gets 0 args and is not overrided.
     symtable.removeScope();
+    buffer.printGlobalBuffer();
     buffer.printCodeBuffer();
 }

@@ -26,6 +26,7 @@ class FormalDecl;
 class ExpList;
 class Exp;
 class Type;
+class Statement;
 
 class Node {
 public:
@@ -104,7 +105,8 @@ class Statements : public Node {
 public:
     bp_list cont_list;
     bp_list break_list;
-    Statements() = default;
+    Statements(Statement* statement);
+    Statements(Statements* stmnts, Statement* statement);
     virtual ~Statements() = default;
 };
 
@@ -115,11 +117,13 @@ public:
     Statement(string name, string type);
     Statement(string name, string ltype, Exp* rexp);
     Statement(string name, Exp* exp);
-    Statement(); // RETURN SC
-    Statement(Exp* exp); // RETURN Exp SC
+    Statement(Statements* statements);
+    Statement();
+    Statement(Exp* exp);
     Statement(bool is_break);
     Statement(Label* cond_label, Label* code_label, Exp* exp, Statement* code);
     Statement(Exp* exp, Label* true_label, Statement* true_code);
+    Statement(Statement* true_code, Statement* false_code, Exp* exp, Label* true_label, Label* false_label);
     virtual ~Statement() = default;
 };
 

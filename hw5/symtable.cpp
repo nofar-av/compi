@@ -41,7 +41,7 @@ string printArgs(vector<string> params)
 Scope::Scope(string return_type) : 
                     symbols() , is_loop(false), return_type(return_type) {
     this->rbp = generator.freshVar();
-    buffer.emit(this->rbp + " = alloca i32, i32 50");
+    // buffer.emit(this->rbp + " = alloca i32, i32 50");
 }
 
 Scope::Scope(bool is_loop, string return_type) : 
@@ -146,7 +146,7 @@ void SymTable::addScope(bool is_loop, string return_type) {
 }
 
 void SymTable::removeScope() {
-    this->printScope();
+    // this->printScope();
     this->offsets.pop_back();
     // Scope& scope = *(this->tables.back());
     this->tables.pop_back();

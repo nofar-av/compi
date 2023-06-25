@@ -29,6 +29,9 @@ public:
     void genStoreVar(string rbp, int offset, string value);
     string genLoadVar(string rbp, int offset);
     void genRet(shared_ptr<Exp> exp = nullptr);
+    void genLabelAfterIf(Exp* exp);
+    void genEndOfFunc(string type);
+    void genFuncDecl(string name, vector<string> params, string type);
 
 private:
     int reg_num;
