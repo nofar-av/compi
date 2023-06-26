@@ -26,6 +26,8 @@ vector<string> convertFormalDeclToString(vector<shared_ptr<FormalDecl>>& f_list)
 
 Label::Label() {
     this->value = buffer.genLabel();
+    buffer.emit("br label %" + this->value);
+    buffer.emit(this->value + ":");
 }
 
 Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
@@ -38,7 +40,7 @@ Exp::Exp(Node *terminal, string type) : Node(terminal->value), type(type) {
     }
     
     if (type == "byte" || type == "int") { //if number add 0 to num
-        generator.binopCode(*this, terminal->value, "+", "0");
+        generator.genConstVar(*this, terminal->value);
     } else if (type == "bool") {
         generator.createSimpleBoolBranch(*this);
     } else { //type is string
@@ -63,12 +65,11 @@ Exp::Exp(string value) : Node(value) , type() {
     if (sym.offset < 0) {
         this->reg = "%" + to_string(((-1) * sym.offset - 1));
     } else {
-        this->reg = generator.genLoadVar(symtable.getCurrScopeRbp(), sym.offset);
+        this->reg = generator.genLoadVar(symtable.getCurrScopeRbp(), sym.offset, sym.type);
     }
 
     if (sym.type == "bool") {
         string cmp_reg = generator.freshVar();
-        //buffer.emit(cmp_reg + " = icmp ne i32 0, " + this->reg);
         buffer.emit(cmp_reg + " = icmp ne i1 0, " + this->reg);
         int address = buffer.emit("br i1 " + cmp_reg + ", label @, label @");
         this->true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
@@ -89,7 +90,7 @@ Exp::Exp(Node *terminal, string type, string op) : type(type) {
         exit(0);
     }
     //  this->value = ()!exp->value;
-    generator.binopCode(*this, exp->reg, "xor", "1");
+    //generator.binopCode(*this, exp->reg, "xor", "1");
     this->true_list = bp_list(exp->false_list);
     this->false_list = bp_list(exp->true_list);
     this->next_list = bp_list(exp->next_list);
@@ -114,7 +115,7 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op, string label)
                 exit(0);
             }
             generator.bpBoolOp(*this, *exp1, op, *exp2, label);   
-            generator.binopCode(*this, exp1->reg, op, exp2->reg);
+            //generator.binopCode(*this, exp1->reg, op, exp2->reg);
         } else {
             if ((exp1->type != "int" && exp1->type != "byte") || (exp2->type != "int" && exp2->type != "byte")) {
                 output::errorMismatch(yylineno);
@@ -130,7 +131,7 @@ Exp::Exp(Node *terminal1, Node *terminal2, string type, string op, string label)
         }
         this->type = (exp1->type == "int" || exp2->type == "int") ?
             "int" : "byte";
-        generator.binopCode(*this, exp1->reg, op, exp2->reg);
+        generator.binopCode(*this, *exp1, op, *exp2);
     }
     // this->value = allocator.freshVar();
 }
@@ -229,11 +230,12 @@ Formals::Formals(FormalsList* formals_list) {
 Statement::Statement(string name, string type) : Node() {
     int offset = symtable.addSymbol(name, type);
     Exp exp = Exp();
-    if (type == "bool") { 
-        exp.value = "false";
-        exp.type = "bool";
-        generator.createSimpleBoolBranch(exp);
-    }
+    // if (type == "bool") { 
+    //     exp.value = "false";
+    //     exp.type = "bool";
+    //     generator.createSimpleBoolBranch(exp);
+    // }
+    
     generator.genStoreVar(symtable.getCurrScopeRbp(), offset, "0", type);
 }
 
@@ -280,7 +282,11 @@ Statement::Statement(Statements* statements) : Node() {
 }
 
 Statement::Statement(Call* func) : Node(), break_list(), cont_list() {
-
+    string end_label = buffer.genLabel();
+    buffer.emit("br label %" + end_label);
+    buffer.emit(end_label + ":");
+    buffer.bpatch(func->false_list, end_label);
+    buffer.bpatch(func->true_list, end_label);
 }
 
 // Statement ->  RETURN SC
@@ -303,7 +309,6 @@ Statement::Statement(Exp *exp) : Node() {
 
     if(exp->type == "bool") { 
         shared_ptr<Exp> new_exp = generator.genBoolExp(*exp);
-        new_exp->type = "bool";
         generator.genRet(new_exp);
     } else {
         generator.genRet(make_shared<Exp>(*exp));
@@ -335,6 +340,7 @@ Statement::Statement(bool is_break) : Node() {
 Statement::Statement(Label* cond_label, Label* code_label, Exp* exp, Statement* code) : Node() {
     buffer.emit("br label %" + cond_label->value);
     string end_label = buffer.genLabel();
+    buffer.emit(end_label + ":");
     buffer.bpatch(code->cont_list, cond_label->value);
     buffer.bpatch(exp->true_list, code_label->value);
     buffer.bpatch(exp->false_list, end_label);
@@ -352,6 +358,9 @@ Statement::Statement(Exp* exp, Label* true_label, Statement* true_code) : Node()
     
     this->break_list = bp_list(true_code->break_list);
     this->cont_list = bp_list(true_code->cont_list);
+
+    buffer.emit("br label %" + end_label);
+    buffer.emit(end_label + ":");
 }
 
 // Statement -> IF EXP statement ELSE statement 
@@ -363,6 +372,9 @@ Statement::Statement(Statement* true_code, Statement* false_code, Exp* exp, Labe
 
     this->break_list = buffer.merge(true_code->break_list, false_code->break_list);
     this->cont_list = buffer.merge(true_code->cont_list, false_code->cont_list);
+
+    buffer.emit("br label %" + end_label);
+    buffer.emit(end_label + ":");
 }
 
 Statements::Statements(Statement* statement) : Node() {

@@ -1,0 +1,33 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [5 x i8] c"true\00"
+define void @main() {
+%var_0 = alloca i32, i32 50
+br label %label_3
+br label %label_3
+label_3:
+%var_1.ptr = getelementptr[5 x i8], [5 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_7
+label_7:
+br label %label_9
+label_9:
+%var_2 = add i32 0, 1
+call void @printi_int(i32 %var_2)
+br label %label_13
+label_13:
+ret void
+}

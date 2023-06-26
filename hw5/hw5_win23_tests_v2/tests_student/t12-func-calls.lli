@@ -1,0 +1,87 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [5 x i8] c"foo!\00"
+define void @foo() {
+%var_0 = alloca i32, i32 50
+%var_1.ptr = getelementptr[5 x i8], [5 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_4
+label_4:
+ret void
+}
+define void @bar_int(i32) {
+%var_2 = alloca i32, i32 50
+call void @printi_int(i32 %0)
+br label %label_11
+label_11:
+ret void
+}
+define void @moo_bool(i1) {
+%var_3 = alloca i32, i32 50
+%var_4 = icmp ne i1 0, %0
+br i1 %var_4, label %label_19, label %label_25
+br label %label_19
+label_19:
+call void @foo()
+br label %label_22
+label_22:
+br label %label_31
+br label %label_25
+label_25:
+%var_5 = add i32 0, 110
+call void @bar_int(i32 %var_5)
+br label %label_29
+label_29:
+br label %label_31
+label_31:
+ret void
+}
+define void @main() {
+%var_6 = alloca i32, i32 50
+call void @foo()
+br label %label_38
+label_38:
+%var_7 = add i32 0, 150
+call void @bar_int(i32 %var_7)
+br label %label_42
+label_42:
+br label %TRUE_LIST_label_45
+br label %TRUE_LIST_label_45
+TRUE_LIST_label_45:
+br label %NEXT_LIST_label_45
+FALSE_LIST_label_45:
+br label %NEXT_LIST_label_45
+NEXT_LIST_label_45:
+%var_8 = phi i1 [ 1, %TRUE_LIST_label_45], [0, %FALSE_LIST_label_45]
+call void @moo_bool(i1 %var_8)
+br label %label_53
+label_53:
+call void @foo()
+br label %label_56
+label_56:
+br label %FALSE_LIST_label_59
+br label %TRUE_LIST_label_59
+TRUE_LIST_label_59:
+br label %NEXT_LIST_label_59
+FALSE_LIST_label_59:
+br label %NEXT_LIST_label_59
+NEXT_LIST_label_59:
+%var_9 = phi i1 [ 1, %TRUE_LIST_label_59], [0, %FALSE_LIST_label_59]
+call void @moo_bool(i1 %var_9)
+br label %label_67
+label_67:
+ret void
+}

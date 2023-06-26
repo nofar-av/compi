@@ -1,0 +1,58 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define i32 @gcd_int_int(i32, i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = icmp slt i32 %0, %1
+br i1 %var_1, label %label_4, label %label_8
+br label %label_4
+label_4:
+%var_2 = call i32 @gcd_int_int(i32 %1, i32 %0)
+ret i32 %var_2
+br label %label_8
+label_8:
+%var_3 = add i32 0, 0
+%var_4 = icmp eq i32 %1, %var_3
+br i1 %var_4, label %label_13, label %label_16
+br label %label_13
+label_13:
+ret i32 %0
+br label %label_16
+label_16:
+%var_5 = sdiv i32 %0, %1
+%var_7 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_5, i32* %var_7
+%var_8 = getelementptr i32, i32* %var_0, i32 0
+%var_9 = load i32,  i32* %var_8
+%var_11 = mul i32 %var_9, %1
+%var_12 = sub i32 %0, %var_11
+%var_14 = getelementptr i32, i32* %var_0, i32 1
+store i32 %var_12, i32* %var_14
+%var_15 = getelementptr i32, i32* %var_0, i32 1
+%var_16 = load i32,  i32* %var_15
+%var_18 = call i32 @gcd_int_int(i32 %1, i32 %var_16)
+ret i32 %var_18
+ret i32 0
+}
+define void @main() {
+%var_19 = alloca i32, i32 50
+%var_20 = add i32 0, 121
+%var_21 = add i32 0, 33
+%var_22 = call i32 @gcd_int_int(i32 %var_20, i32 %var_21)
+call void @printi_int(i32 %var_22)
+br label %label_39
+label_39:
+ret void
+}

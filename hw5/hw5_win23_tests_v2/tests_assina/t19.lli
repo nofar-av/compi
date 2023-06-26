@@ -1,0 +1,64 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [38 x i8] c"A little nested if test because I can\00"
+@var_2 = constant [41 x i8] c"should print incredibles and 0 (and fin)\00"
+@var_6 = constant [13 x i8] c"INCREDIBLEs!\00"
+@var_14 = constant [4 x i8] c"fin\00"
+define void @main() {
+%var_0 = alloca i32, i32 50
+%var_1.ptr = getelementptr[38 x i8], [38 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_4
+label_4:
+%var_2.ptr = getelementptr[41 x i8], [41 x i8]* @var_2, i32 0, i32 0
+call void @print_string(i8* %var_2.ptr)
+br label %label_8
+label_8:
+br label %label_11
+br label %label_11
+label_11:
+%var_3 = add i32 0, 5
+%var_4 = add i32 0, 5
+%var_5 = icmp eq i32 %var_3, %var_4
+br i1 %var_5, label %label_17, label %label_31
+br label %label_17
+label_17:
+%var_6.ptr = getelementptr[13 x i8], [13 x i8]* @var_6, i32 0, i32 0
+call void @print_string(i8* %var_6.ptr)
+br label %label_21
+label_21:
+%var_8 = getelementptr i32, i32* %var_0, i32 0
+store i32 0, i32* %var_8
+%var_9 = getelementptr i32, i32* %var_0, i32 0
+%var_10 = load i32,  i32* %var_9
+call void @printi_int(i32 %var_10)
+br label %label_28
+label_28:
+br label %label_35
+br label %label_31
+label_31:
+%var_13 = getelementptr i32, i32* %var_0, i32 0
+store i32 0, i32* %var_13
+br label %label_35
+label_35:
+br label %label_37
+label_37:
+%var_14.ptr = getelementptr[4 x i8], [4 x i8]* @var_14, i32 0, i32 0
+call void @print_string(i8* %var_14.ptr)
+br label %label_41
+label_41:
+ret void
+}

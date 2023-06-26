@@ -1,0 +1,41 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_6 = constant [168 x i8] c"Believe in yourself, take on your challenges, dig deep within yourself to conquer fears. Never let anyone bring you down. You got to keep going. – Chantal Sutherland\00"
+define void @maxTestsTestArithmeticInIf() {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 1
+%var_2 = add i32 0, 1
+%var_3 = add i32 0, 1
+%var_4 = add i32 %var_2, %var_3
+%var_5 = icmp slt i32 %var_1, %var_4
+br i1 %var_5, label %label_8, label %label_14
+br label %label_8
+label_8:
+%var_6.ptr = getelementptr[168 x i8], [168 x i8]* @var_6, i32 0, i32 0
+call void @print_string(i8* %var_6.ptr)
+br label %label_12
+label_12:
+br label %label_14
+label_14:
+ret void
+}
+define void @main() {
+%var_7 = alloca i32, i32 50
+call void @maxTestsTestArithmeticInIf()
+br label %label_21
+label_21:
+ret void
+}

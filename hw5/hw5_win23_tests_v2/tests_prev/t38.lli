@@ -1,0 +1,124 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [11 x i8] c"Print this\00"
+@var_4 = constant [16 x i8] c"Dont print this\00"
+@var_39 = constant [5 x i8] c"Good\00"
+@var_40 = constant [4 x i8] c"Bad\00"
+define i1 @foo() {
+%var_0 = alloca i32, i32 50
+%var_1.ptr = getelementptr[11 x i8], [11 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_4
+label_4:
+br label %TRUE_LIST_label_7
+br label %TRUE_LIST_label_7
+TRUE_LIST_label_7:
+br label %NEXT_LIST_label_7
+FALSE_LIST_label_7:
+br label %NEXT_LIST_label_7
+NEXT_LIST_label_7:
+%var_2 = phi i1 [ 1, %TRUE_LIST_label_7], [0, %FALSE_LIST_label_7]
+ret i1 %var_2
+ret i1 0
+}
+define i1 @fooNot() {
+%var_3 = alloca i32, i32 50
+%var_4.ptr = getelementptr[16 x i8], [16 x i8]* @var_4, i32 0, i32 0
+call void @print_string(i8* %var_4.ptr)
+br label %label_21
+label_21:
+br label %TRUE_LIST_label_24
+br label %TRUE_LIST_label_24
+TRUE_LIST_label_24:
+br label %NEXT_LIST_label_24
+FALSE_LIST_label_24:
+br label %NEXT_LIST_label_24
+NEXT_LIST_label_24:
+%var_5 = phi i1 [ 1, %TRUE_LIST_label_24], [0, %FALSE_LIST_label_24]
+ret i1 %var_5
+ret i1 0
+}
+define void @main() {
+%var_6 = alloca i32, i32 50
+%var_7 = add i32 0, 10
+%var_9 = getelementptr i32, i32* %var_6, i32 0
+store i32 %var_7, i32* %var_9
+%var_10 = add i8 0, 10
+%var_12 = getelementptr i32, i32* %var_6, i32 1
+store i32 %var_10, i32* %var_12
+%var_13 = getelementptr i32, i32* %var_6, i32 0
+%var_14 = load i32,  i32* %var_13
+%var_16 = getelementptr i32, i32* %var_6, i32 1
+%var_17 = load i32,  i32* %var_16
+%var_19 = icmp eq i32 %var_14, %var_17
+br i1 %var_19, label %TRUE_LIST_label_48, label %FALSE_LIST_label_48
+br label %TRUE_LIST_label_48
+TRUE_LIST_label_48:
+br label %NEXT_LIST_label_48
+FALSE_LIST_label_48:
+br label %NEXT_LIST_label_48
+NEXT_LIST_label_48:
+%var_20 = phi i1 [ 1, %TRUE_LIST_label_48], [0, %FALSE_LIST_label_48]
+%var_21 = zext i1 %var_20 to i32
+%var_22 = getelementptr i32, i32* %var_6, i32 2
+store i32 %var_21, i32* %var_22
+%var_23 = getelementptr i32, i32* %var_6, i32 2
+%var_24 = load i32,  i32* %var_23
+%var_25 = trunc i32 %var_24 to i1
+%var_26 = icmp ne i1 0, %var_25
+br i1 %var_26, label %label_63, label %label_80
+br label %label_63
+label_63:
+%var_27 = call i1 @foo()
+%var_28 = icmp ne i1 0, %var_27
+br i1 %var_28 , label %label_68, label %label_80
+br label %label_68
+label_68:
+%var_29 = getelementptr i32, i32* %var_6, i32 2
+%var_30 = load i32,  i32* %var_29
+%var_31 = trunc i32 %var_30 to i1
+%var_32 = icmp ne i1 0, %var_31
+br i1 %var_32, label %label_90, label %label_75
+br label %label_75
+label_75:
+%var_33 = call i1 @fooNot()
+%var_34 = icmp ne i1 0, %var_33
+br i1 %var_34 , label %label_90, label %label_80
+br label %label_80
+label_80:
+%var_35 = call i1 @fooNot()
+%var_36 = icmp ne i1 0, %var_35
+br i1 %var_36 , label %label_85, label %label_97
+br label %label_85
+label_85:
+%var_37 = call i1 @fooNot()
+%var_38 = icmp ne i1 0, %var_37
+br i1 %var_38 , label %label_90, label %label_97
+br label %label_90
+label_90:
+%var_39.ptr = getelementptr[5 x i8], [5 x i8]* @var_39, i32 0, i32 0
+call void @print_string(i8* %var_39.ptr)
+br label %label_94
+label_94:
+ret void
+br label %label_97
+label_97:
+%var_40.ptr = getelementptr[4 x i8], [4 x i8]* @var_40, i32 0, i32 0
+call void @print_string(i8* %var_40.ptr)
+br label %label_101
+label_101:
+ret void
+}

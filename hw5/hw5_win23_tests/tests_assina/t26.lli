@@ -1,0 +1,57 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [46 x i8] c"just checking order of computation real quick\00"
+@var_15 = constant [41 x i8] c"Did you get 8? because that's the answer\00"
+@var_16 = constant [13 x i8] c"No! you got:\00"
+@var_20 = constant [11 x i8] c"OK bye now\00"
+define void @main() {
+%var_0 = alloca i32, i32 50
+%var_1.ptr = getelementptr[46 x i8], [46 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_4
+label_4:
+%var_2 = add i32 0, 1
+%var_3 = add i32 0, 2
+%var_4 = add i32 0, 3
+%var_5 = mul i32 %var_3, %var_4
+%var_6 = add i32 0, 2
+%var_7 = sdiv i32 %var_5, %var_6
+%var_8 = add i32 %var_2, %var_7
+%var_9 = add i32 0, 5
+%var_10 = add i32 %var_8, %var_9
+%var_11 = add i32 0, 1
+%var_12 = sub i32 %var_10, %var_11
+%var_14 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_12, i32* %var_14
+%var_15.ptr = getelementptr[41 x i8], [41 x i8]* @var_15, i32 0, i32 0
+call void @print_string(i8* %var_15.ptr)
+br label %label_21
+label_21:
+%var_16.ptr = getelementptr[13 x i8], [13 x i8]* @var_16, i32 0, i32 0
+call void @print_string(i8* %var_16.ptr)
+br label %label_25
+label_25:
+%var_17 = getelementptr i32, i32* %var_0, i32 0
+%var_18 = load i32,  i32* %var_17
+call void @printi_int(i32 %var_18)
+br label %label_30
+label_30:
+%var_20.ptr = getelementptr[11 x i8], [11 x i8]* @var_20, i32 0, i32 0
+call void @print_string(i8* %var_20.ptr)
+br label %label_34
+label_34:
+ret void
+}

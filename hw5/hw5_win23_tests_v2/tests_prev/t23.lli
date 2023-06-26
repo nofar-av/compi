@@ -1,0 +1,311 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_58 = constant [3 x i8] c"ok\00"
+@var_71 = constant [17 x i8] c"should not print\00"
+@var_84 = constant [13 x i8] c"should print\00"
+define i1 @little_bool_bool_bool_int_int_int_int_int_int_bool(i1, i1, i1, i32, i32, i32, i32, i32, i32, i1) {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 24
+call void @printi_int(i32 %var_1)
+br label %label_4
+label_4:
+%var_2 = icmp ne i1 0, %0
+br i1 %var_2, label %label_8, label %FALSE_LIST_label_68
+br label %label_8
+label_8:
+%var_3 = icmp ne i1 0, %1
+br i1 %var_3, label %label_12, label %FALSE_LIST_label_68
+br label %label_12
+label_12:
+%var_4 = icmp ne i1 0, %2
+br i1 %var_4, label %label_16, label %FALSE_LIST_label_68
+br label %label_16
+label_16:
+%var_5 = icmp slt i32 %3, %4
+br i1 %var_5, label %label_20, label %FALSE_LIST_label_68
+br label %label_20
+label_20:
+%var_6 = icmp slt i32 %4, %5
+br i1 %var_6, label %label_24, label %FALSE_LIST_label_68
+br label %label_24
+label_24:
+%var_7 = icmp slt i32 %5, %6
+br i1 %var_7, label %label_28, label %FALSE_LIST_label_68
+br label %label_28
+label_28:
+%var_8 = icmp sle i32 %6, %7
+br i1 %var_8, label %label_32, label %FALSE_LIST_label_68
+br label %label_32
+label_32:
+%var_9 = icmp sle i32 %7, %8
+br i1 %var_9, label %label_36, label %FALSE_LIST_label_68
+br label %label_36
+label_36:
+%var_10 = icmp ne i1 0, %9
+br i1 %var_10, label %FALSE_LIST_label_68, label %label_40
+br label %label_40
+label_40:
+%var_11 = icmp ne i1 0, %0
+br i1 %var_11, label %label_44, label %FALSE_LIST_label_68
+br label %label_44
+label_44:
+%var_12 = icmp ne i1 0, %1
+br i1 %var_12, label %label_48, label %FALSE_LIST_label_68
+br label %label_48
+label_48:
+%var_13 = icmp ne i1 0, %2
+br i1 %var_13, label %label_52, label %FALSE_LIST_label_68
+br label %label_52
+label_52:
+%var_14 = icmp ne i1 0, %9
+br i1 %var_14, label %FALSE_LIST_label_68, label %label_56
+br label %label_56
+label_56:
+%var_15 = add i32 %3, %4
+%var_16 = add i32 %3, %4
+%var_17 = add i32 %var_16, %5
+%var_18 = add i32 %var_17, %6
+%var_19 = add i32 %var_18, %7
+%var_20 = add i32 %var_19, %8
+%var_21 = add i32 0, 1
+%var_22 = add i32 %var_20, %var_21
+%var_23 = icmp sle i32 %var_15, %var_22
+br i1 %var_23, label %TRUE_LIST_label_68, label %FALSE_LIST_label_68
+br label %TRUE_LIST_label_68
+TRUE_LIST_label_68:
+br label %NEXT_LIST_label_68
+FALSE_LIST_label_68:
+br label %NEXT_LIST_label_68
+NEXT_LIST_label_68:
+%var_24 = phi i1 [ 1, %TRUE_LIST_label_68], [0, %FALSE_LIST_label_68]
+ret i1 %var_24
+ret i1 0
+}
+define i1 @little2_bool_bool_bool_int_int_int_int_int_int_bool(i1, i1, i1, i32, i32, i32, i32, i32, i32, i1) {
+%var_25 = alloca i32, i32 50
+%var_26 = add i32 0, 777
+call void @printi_int(i32 %var_26)
+br label %label_82
+label_82:
+%var_27 = icmp ne i1 0, %0
+br i1 %var_27, label %TRUE_LIST_label_132, label %label_86
+br label %label_86
+label_86:
+%var_28 = icmp ne i1 0, %1
+br i1 %var_28, label %label_90, label %label_102
+br label %label_90
+label_90:
+%var_29 = icmp ne i1 0, %2
+br i1 %var_29, label %label_94, label %label_102
+br label %label_94
+label_94:
+%var_30 = icmp ne i1 0, %9
+br i1 %var_30, label %label_102, label %label_98
+br label %label_98
+label_98:
+%var_31 = icmp ne i1 0, %1
+br i1 %var_31, label %TRUE_LIST_label_132, label %label_102
+br label %label_102
+label_102:
+%var_32 = icmp ne i1 0, %0
+br i1 %var_32, label %label_110, label %label_106
+br label %label_106
+label_106:
+%var_33 = icmp ne i1 0, %1
+br i1 %var_33, label %TRUE_LIST_label_132, label %label_110
+br label %label_110
+label_110:
+%var_34 = icmp ne i1 0, %0
+br i1 %var_34, label %TRUE_LIST_label_132, label %label_114
+br label %label_114
+label_114:
+%var_35 = icmp ne i1 0, %9
+br i1 %var_35, label %label_118, label %FALSE_LIST_label_132
+br label %label_118
+label_118:
+%var_36 = icmp ne i1 0, %1
+br i1 %var_36, label %FALSE_LIST_label_132, label %label_122
+br label %label_122
+label_122:
+%var_37 = add i32 %3, %4
+%var_38 = add i32 %var_37, %5
+%var_39 = add i32 %var_38, %6
+%var_40 = add i32 %var_39, %7
+%var_41 = add i32 %var_40, %8
+%var_42 = add i32 0, 50
+%var_43 = icmp slt i32 %var_41, %var_42
+br i1 %var_43, label %TRUE_LIST_label_132, label %FALSE_LIST_label_132
+br label %TRUE_LIST_label_132
+TRUE_LIST_label_132:
+br label %NEXT_LIST_label_132
+FALSE_LIST_label_132:
+br label %NEXT_LIST_label_132
+NEXT_LIST_label_132:
+%var_44 = phi i1 [ 1, %TRUE_LIST_label_132], [0, %FALSE_LIST_label_132]
+ret i1 %var_44
+ret i1 0
+}
+define void @main() {
+%var_45 = alloca i32, i32 50
+br label %TRUE_LIST_label_145
+br label %TRUE_LIST_label_145
+TRUE_LIST_label_145:
+br label %NEXT_LIST_label_145
+FALSE_LIST_label_145:
+br label %NEXT_LIST_label_145
+NEXT_LIST_label_145:
+%var_46 = phi i1 [ 1, %TRUE_LIST_label_145], [0, %FALSE_LIST_label_145]
+br label %TRUE_LIST_label_153
+br label %TRUE_LIST_label_153
+TRUE_LIST_label_153:
+br label %NEXT_LIST_label_153
+FALSE_LIST_label_153:
+br label %NEXT_LIST_label_153
+NEXT_LIST_label_153:
+%var_47 = phi i1 [ 1, %TRUE_LIST_label_153], [0, %FALSE_LIST_label_153]
+br label %TRUE_LIST_label_161
+br label %TRUE_LIST_label_161
+TRUE_LIST_label_161:
+br label %NEXT_LIST_label_161
+FALSE_LIST_label_161:
+br label %NEXT_LIST_label_161
+NEXT_LIST_label_161:
+%var_48 = phi i1 [ 1, %TRUE_LIST_label_161], [0, %FALSE_LIST_label_161]
+%var_49 = add i32 0, 1
+%var_50 = add i32 0, 2
+%var_51 = add i32 0, 3
+%var_52 = add i32 0, 4
+%var_53 = add i32 0, 5
+%var_54 = add i32 0, 6
+br label %FALSE_LIST_label_175
+br label %TRUE_LIST_label_175
+TRUE_LIST_label_175:
+br label %NEXT_LIST_label_175
+FALSE_LIST_label_175:
+br label %NEXT_LIST_label_175
+NEXT_LIST_label_175:
+%var_55 = phi i1 [ 1, %TRUE_LIST_label_175], [0, %FALSE_LIST_label_175]
+%var_56 = call i1 @little_bool_bool_bool_int_int_int_int_int_int_bool(i1 %var_46, i1 %var_47, i1 %var_48, i32 %var_49, i32 %var_50, i32 %var_51, i32 %var_52, i32 %var_53, i32 %var_54, i1 %var_55)
+%var_57 = icmp ne i1 0, %var_56
+br i1 %var_57 , label %label_185, label %label_191
+br label %label_185
+label_185:
+%var_58.ptr = getelementptr[3 x i8], [3 x i8]* @var_58, i32 0, i32 0
+call void @print_string(i8* %var_58.ptr)
+br label %label_189
+label_189:
+br label %label_191
+label_191:
+br label %FALSE_LIST_label_194
+br label %TRUE_LIST_label_194
+TRUE_LIST_label_194:
+br label %NEXT_LIST_label_194
+FALSE_LIST_label_194:
+br label %NEXT_LIST_label_194
+NEXT_LIST_label_194:
+%var_59 = phi i1 [ 1, %TRUE_LIST_label_194], [0, %FALSE_LIST_label_194]
+br label %FALSE_LIST_label_202
+br label %TRUE_LIST_label_202
+TRUE_LIST_label_202:
+br label %NEXT_LIST_label_202
+FALSE_LIST_label_202:
+br label %NEXT_LIST_label_202
+NEXT_LIST_label_202:
+%var_60 = phi i1 [ 1, %TRUE_LIST_label_202], [0, %FALSE_LIST_label_202]
+br label %TRUE_LIST_label_210
+br label %TRUE_LIST_label_210
+TRUE_LIST_label_210:
+br label %NEXT_LIST_label_210
+FALSE_LIST_label_210:
+br label %NEXT_LIST_label_210
+NEXT_LIST_label_210:
+%var_61 = phi i1 [ 1, %TRUE_LIST_label_210], [0, %FALSE_LIST_label_210]
+%var_62 = add i32 0, 9
+%var_63 = add i32 0, 8
+%var_64 = add i32 0, 7
+%var_65 = add i32 0, 6
+%var_66 = add i32 0, 5
+%var_67 = add i32 0, 4
+br label %FALSE_LIST_label_224
+br label %TRUE_LIST_label_224
+TRUE_LIST_label_224:
+br label %NEXT_LIST_label_224
+FALSE_LIST_label_224:
+br label %NEXT_LIST_label_224
+NEXT_LIST_label_224:
+%var_68 = phi i1 [ 1, %TRUE_LIST_label_224], [0, %FALSE_LIST_label_224]
+%var_69 = call i1 @little2_bool_bool_bool_int_int_int_int_int_int_bool(i1 %var_59, i1 %var_60, i1 %var_61, i32 %var_62, i32 %var_63, i32 %var_64, i32 %var_65, i32 %var_66, i32 %var_67, i1 %var_68)
+%var_70 = icmp ne i1 0, %var_69
+br i1 %var_70 , label %label_234, label %label_240
+br label %label_234
+label_234:
+%var_71.ptr = getelementptr[17 x i8], [17 x i8]* @var_71, i32 0, i32 0
+call void @print_string(i8* %var_71.ptr)
+br label %label_238
+label_238:
+br label %label_240
+label_240:
+br label %TRUE_LIST_label_243
+br label %TRUE_LIST_label_243
+TRUE_LIST_label_243:
+br label %NEXT_LIST_label_243
+FALSE_LIST_label_243:
+br label %NEXT_LIST_label_243
+NEXT_LIST_label_243:
+%var_72 = phi i1 [ 1, %TRUE_LIST_label_243], [0, %FALSE_LIST_label_243]
+br label %FALSE_LIST_label_251
+br label %TRUE_LIST_label_251
+TRUE_LIST_label_251:
+br label %NEXT_LIST_label_251
+FALSE_LIST_label_251:
+br label %NEXT_LIST_label_251
+NEXT_LIST_label_251:
+%var_73 = phi i1 [ 1, %TRUE_LIST_label_251], [0, %FALSE_LIST_label_251]
+br label %TRUE_LIST_label_259
+br label %TRUE_LIST_label_259
+TRUE_LIST_label_259:
+br label %NEXT_LIST_label_259
+FALSE_LIST_label_259:
+br label %NEXT_LIST_label_259
+NEXT_LIST_label_259:
+%var_74 = phi i1 [ 1, %TRUE_LIST_label_259], [0, %FALSE_LIST_label_259]
+%var_75 = add i32 0, 9
+%var_76 = add i32 0, 8
+%var_77 = add i32 0, 7
+%var_78 = add i32 0, 6
+%var_79 = add i32 0, 5
+%var_80 = add i32 0, 4
+br label %FALSE_LIST_label_273
+br label %TRUE_LIST_label_273
+TRUE_LIST_label_273:
+br label %NEXT_LIST_label_273
+FALSE_LIST_label_273:
+br label %NEXT_LIST_label_273
+NEXT_LIST_label_273:
+%var_81 = phi i1 [ 1, %TRUE_LIST_label_273], [0, %FALSE_LIST_label_273]
+%var_82 = call i1 @little2_bool_bool_bool_int_int_int_int_int_int_bool(i1 %var_72, i1 %var_73, i1 %var_74, i32 %var_75, i32 %var_76, i32 %var_77, i32 %var_78, i32 %var_79, i32 %var_80, i1 %var_81)
+%var_83 = icmp ne i1 0, %var_82
+br i1 %var_83 , label %label_283, label %label_289
+br label %label_283
+label_283:
+%var_84.ptr = getelementptr[13 x i8], [13 x i8]* @var_84, i32 0, i32 0
+call void @print_string(i8* %var_84.ptr)
+br label %label_287
+label_287:
+br label %label_289
+label_289:
+ret void
+}

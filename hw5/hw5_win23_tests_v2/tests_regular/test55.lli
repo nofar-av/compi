@@ -1,0 +1,82 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_13 = constant [177 x i8] c"I learned that courage was not the absence of fear, but the triumph over it. The brave man is not he who does not feel afraid, but he who conquers that fear. – Nelson Mandela\00"
+@var_16 = constant [88 x i8] c"Too many of us are not living our dreams because we are living our fears. – Les Brown\00"
+define i1 @Func() {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 1
+%var_2 = add i32 0, 2
+%var_3 = icmp slt i32 %var_1, %var_2
+br i1 %var_3, label %TRUE_LIST_label_6, label %FALSE_LIST_label_6
+br label %TRUE_LIST_label_6
+TRUE_LIST_label_6:
+br label %NEXT_LIST_label_6
+FALSE_LIST_label_6:
+br label %NEXT_LIST_label_6
+NEXT_LIST_label_6:
+%var_4 = phi i1 [ 1, %TRUE_LIST_label_6], [0, %FALSE_LIST_label_6]
+ret i1 %var_4
+ret i1 0
+}
+define i1 @Func2() {
+%var_5 = alloca i32, i32 50
+%var_6 = add i32 0, 2
+%var_7 = add i32 0, 1
+%var_8 = icmp slt i32 %var_6, %var_7
+br i1 %var_8, label %TRUE_LIST_label_22, label %FALSE_LIST_label_22
+br label %TRUE_LIST_label_22
+TRUE_LIST_label_22:
+br label %NEXT_LIST_label_22
+FALSE_LIST_label_22:
+br label %NEXT_LIST_label_22
+NEXT_LIST_label_22:
+%var_9 = phi i1 [ 1, %TRUE_LIST_label_22], [0, %FALSE_LIST_label_22]
+ret i1 %var_9
+ret i1 0
+}
+define void @maxTestsTestReturnBooleanRelop() {
+%var_10 = alloca i32, i32 50
+%var_11 = call i1 @Func()
+%var_12 = icmp ne i1 0, %var_11
+br i1 %var_12 , label %label_37, label %label_43
+br label %label_37
+label_37:
+%var_13.ptr = getelementptr[177 x i8], [177 x i8]* @var_13, i32 0, i32 0
+call void @print_string(i8* %var_13.ptr)
+br label %label_41
+label_41:
+br label %label_43
+label_43:
+%var_14 = call i1 @Func2()
+%var_15 = icmp ne i1 0, %var_14
+br i1 %var_15 , label %label_54, label %label_48
+br label %label_48
+label_48:
+%var_16.ptr = getelementptr[88 x i8], [88 x i8]* @var_16, i32 0, i32 0
+call void @print_string(i8* %var_16.ptr)
+br label %label_52
+label_52:
+br label %label_54
+label_54:
+ret void
+}
+define void @main() {
+%var_17 = alloca i32, i32 50
+call void @maxTestsTestReturnBooleanRelop()
+br label %label_61
+label_61:
+ret void
+}

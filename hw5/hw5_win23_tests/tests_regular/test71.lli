@@ -1,0 +1,106 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_24 = constant [116 x i8] c"Your mind is a powerful thing. When you fill it with positive thoughts, your life will start to change. – Unknown\00"
+@var_29 = constant [127 x i8] c"Start by doing what’s necessary; then do what’s possible; and suddenly you are doing the impossible. – Francis of Assisi\00"
+define i1 @Func_int(i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 3
+%var_2 = icmp sgt i32 %0, %var_1
+br i1 %var_2, label %TRUE_LIST_label_5, label %FALSE_LIST_label_5
+br label %TRUE_LIST_label_5
+TRUE_LIST_label_5:
+br label %NEXT_LIST_label_5
+FALSE_LIST_label_5:
+br label %NEXT_LIST_label_5
+NEXT_LIST_label_5:
+%var_3 = phi i1 [ 1, %TRUE_LIST_label_5], [0, %FALSE_LIST_label_5]
+ret i1 %var_3
+ret i1 0
+}
+define void @maxTestsTestAndOrWithFunc() {
+%var_4 = alloca i32, i32 50
+%var_5 = add i32 0, 3
+%var_6 = call i1 @Func_int(i32 %var_5)
+%var_7 = icmp ne i1 0, %var_6
+br i1 %var_7 , label %label_21, label %FALSE_LIST_label_24
+br label %label_21
+label_21:
+br label %TRUE_LIST_label_24
+br label %TRUE_LIST_label_24
+TRUE_LIST_label_24:
+br label %NEXT_LIST_label_24
+FALSE_LIST_label_24:
+br label %NEXT_LIST_label_24
+NEXT_LIST_label_24:
+%var_8 = phi i1 [ 1, %TRUE_LIST_label_24], [0, %FALSE_LIST_label_24]
+%var_9 = zext i1 %var_8 to i32
+%var_10 = getelementptr i32, i32* %var_4, i32 0
+store i32 %var_9, i32* %var_10
+%var_11 = add i32 0, 5
+%var_12 = call i1 @Func_int(i32 %var_11)
+%var_13 = icmp ne i1 0, %var_12
+br i1 %var_13 , label %TRUE_LIST_label_44, label %label_38
+br label %label_38
+label_38:
+%var_14 = add i32 0, 5
+%var_15 = add i32 0, 4
+%var_16 = icmp slt i32 %var_14, %var_15
+br i1 %var_16, label %TRUE_LIST_label_44, label %FALSE_LIST_label_44
+br label %TRUE_LIST_label_44
+TRUE_LIST_label_44:
+br label %NEXT_LIST_label_44
+FALSE_LIST_label_44:
+br label %NEXT_LIST_label_44
+NEXT_LIST_label_44:
+%var_17 = phi i1 [ 1, %TRUE_LIST_label_44], [0, %FALSE_LIST_label_44]
+%var_18 = zext i1 %var_17 to i32
+%var_19 = getelementptr i32, i32* %var_4, i32 1
+store i32 %var_18, i32* %var_19
+%var_20 = getelementptr i32, i32* %var_4, i32 0
+%var_21 = load i32,  i32* %var_20
+%var_22 = trunc i32 %var_21 to i1
+%var_23 = icmp ne i1 0, %var_22
+br i1 %var_23, label %label_65, label %label_59
+br label %label_59
+label_59:
+%var_24.ptr = getelementptr[116 x i8], [116 x i8]* @var_24, i32 0, i32 0
+call void @print_string(i8* %var_24.ptr)
+br label %label_63
+label_63:
+br label %label_65
+label_65:
+%var_25 = getelementptr i32, i32* %var_4, i32 1
+%var_26 = load i32,  i32* %var_25
+%var_27 = trunc i32 %var_26 to i1
+%var_28 = icmp ne i1 0, %var_27
+br i1 %var_28, label %label_72, label %label_78
+br label %label_72
+label_72:
+%var_29.ptr = getelementptr[127 x i8], [127 x i8]* @var_29, i32 0, i32 0
+call void @print_string(i8* %var_29.ptr)
+br label %label_76
+label_76:
+br label %label_78
+label_78:
+ret void
+}
+define void @main() {
+%var_30 = alloca i32, i32 50
+call void @maxTestsTestAndOrWithFunc()
+br label %label_85
+label_85:
+ret void
+}

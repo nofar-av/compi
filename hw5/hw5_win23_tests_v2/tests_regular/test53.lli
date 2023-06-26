@@ -1,0 +1,67 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define i32 @Func() {
+%var_0 = alloca i32, i32 50
+%var_2 = getelementptr i32, i32* %var_0, i32 0
+store i32 0, i32* %var_2
+br label %label_4
+label_4:
+%var_3 = getelementptr i32, i32* %var_0, i32 0
+%var_4 = load i32,  i32* %var_3
+%var_6 = add i32 0, 10
+%var_7 = icmp slt i32 %var_4, %var_6
+br i1 %var_7, label %label_11, label %label_34
+br label %label_11
+label_11:
+%var_8 = getelementptr i32, i32* %var_0, i32 0
+%var_9 = load i32,  i32* %var_8
+%var_11 = add i32 0, 5
+%var_12 = icmp eq i32 %var_9, %var_11
+br i1 %var_12, label %label_18, label %label_25
+br label %label_18
+label_18:
+%var_13 = getelementptr i32, i32* %var_0, i32 0
+%var_14 = load i32,  i32* %var_13
+%var_16 = add i32 0, 2
+%var_17 = add i32 %var_14, %var_16
+ret i32 %var_17
+br label %label_25
+label_25:
+%var_18 = getelementptr i32, i32* %var_0, i32 0
+%var_19 = load i32,  i32* %var_18
+%var_21 = add i32 0, 1
+%var_22 = add i32 %var_19, %var_21
+%var_24 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_22, i32* %var_24
+br label %label_4
+label_34:
+ret i32 0
+}
+define void @maxTestsTestReturnInTheMiddle() {
+%var_25 = alloca i32, i32 50
+%var_26 = call i32 @Func()
+call void @printi_int(i32 %var_26)
+br label %label_41
+label_41:
+ret void
+}
+define void @main() {
+%var_27 = alloca i32, i32 50
+call void @maxTestsTestReturnInTheMiddle()
+br label %label_48
+label_48:
+ret void
+}

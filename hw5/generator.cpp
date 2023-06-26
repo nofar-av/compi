@@ -13,13 +13,10 @@ string fanCTypeToIRString(string type) { // TODO:: maybe we need everything as i
     else if (type == "int") {
         return "i32";
     }
-    else if (type == "void") {
-        return "void";
-    }
     else if (type == "string") {
         return "i8*";
     }
-    return ":(";
+    return type;
 }
 
 string fanCOPToIROp (string op) {
@@ -29,7 +26,7 @@ string fanCOPToIROp (string op) {
     else if (op == "-") {
         return "sub";
     }
-    else if (op == "\\") {
+    else if (op == "/") {
         return "div";
     }
     else if (op == "*") {
@@ -105,13 +102,35 @@ string Generator::freshGlobalVar()
     return "@var_" + to_string(this->reg_num++);
 }
 
-void Generator::binopCode(Exp& result, const string& reg1, const string& op, const string& reg2) {
+void Generator::genConstVar(Exp& result, string value) {
+    result.reg = this->freshVar();
+    buffer.emit(result.reg + " = add " + fanCTypeToIRString(result.type) + " 0, " + value);
+}
+
+void Generator::binopCode(Exp& result, Exp& exp1, const string& op, Exp& exp2) {
     result.reg = this->freshVar();
     string llvm_op = fanCOPToIROp(op);
     string op_type = fanCTypeToIRString(result.type);
-    if (op_type == "div") {
-        op_type = (result.type == "int") ? "sdiv" : "udiv";
+    if (llvm_op == "div") {
+        llvm_op = (result.type == "int") ? "sdiv" : "udiv";
     }
+
+    string reg1 = exp1.reg;
+    string reg2 = exp2.reg;
+    if (exp1.type == "byte" && exp2.type == "byte") {
+        op_type = "i8";
+    } else {
+        op_type = "i32";
+        if (exp1.type == "byte") {
+            reg1 = this->freshVar();
+            buffer.emit(reg1 + " = zext i8 " + exp1.reg + " to i32");
+        }
+        if (exp2.type == "byte") {
+            reg2 = this->freshVar();
+            buffer.emit(reg2 + " = zext i8 " + exp2.reg + " to i32");
+        }
+    }
+    
     buffer.emit(result.reg + " = " + llvm_op + " " + op_type + " " + reg1 + ", " + reg2);
     if (result.type == "bool") {
         this->createSimpleBoolBranch(result);
@@ -121,8 +140,23 @@ void Generator::binopCode(Exp& result, const string& reg1, const string& op, con
 void Generator::relopCode(Exp& result, Exp& exp1, const string& op, Exp& exp2) {
     result.reg = this->freshVar();
     string llvm_op = fanCRelopToIR(op);
-    buffer.emit(result.reg + " = " + "icmp " + llvm_op + " i32 " + exp1.reg + ", " + exp2.reg);
-    //is this needed? can do without the branch?
+    string llvm_type = "i32";
+    string reg1 = exp1.reg;
+    string reg2 = exp2.reg;
+    if (exp1.type == "byte" && exp2.type == "byte") {
+        llvm_type = "i8";
+    } else {
+        llvm_type = "i32";
+        if (exp1.type == "byte") {
+            reg1 = this->freshVar();
+            buffer.emit(reg1 + " = zext i8 " + exp1.reg + " to i32");
+        }
+        if (exp2.type == "byte") {
+            reg2 = this->freshVar();
+            buffer.emit(reg2 + " = zext i8 " + exp2.reg + " to i32");
+        }
+    }
+    buffer.emit(result.reg + " = icmp " + llvm_op + " " + llvm_type + " " + reg1 + ", " + reg2);
     int address = buffer.emit("br i1 " + result.reg + ", label @, label @");
 
     result.true_list = buffer.makelist({ address, FIRST });
@@ -219,25 +253,34 @@ shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
     buffer.bpatch(exp.true_list, true_list_label);
     buffer.bpatch(exp.false_list, false_list_label);
     buffer.bpatch(next_list, next_list_label);
-    buffer.emit(bool_exp->reg + " = phi i32 [ 1, %" + true_list_label +"], [0, %" + false_list_label + "]");
+    buffer.emit(bool_exp->reg + " = phi i1 [ 1, %" + true_list_label +"], [0, %" + false_list_label + "]");
     return bool_exp;
 }
 
 void Generator::genStoreVar(string rbp, int offset, string value, const string& type) {
     string reg_value = this->freshVar();
     string reg_ptr = this->freshVar(); // should add reg to symbol????
-    
-    buffer.emit(reg_value + " = zext " + fanCTypeToIRString(type) + " " + value + " to i32");
+    if (type != "int" && value != "0") {
+        buffer.emit(reg_value + " = zext " + fanCTypeToIRString(type) + " " + value + " to i32");
+    }
+    else {
+        reg_value = value;
+    }
     buffer.emit(reg_ptr + " = getelementptr i32, i32* " + rbp + ", i32 " + to_string(offset));
     buffer.emit("store i32 " + reg_value + ", i32* " + reg_ptr);
 }
 
-string Generator::genLoadVar(string rbp, int offset) {
+string Generator::genLoadVar(string rbp, int offset, const string& type) {
     string var_ptr = this->freshVar();
+    string extend_reg = this->freshVar();
     string reg = this->freshVar();
     buffer.emit(var_ptr + " = getelementptr i32, i32* " + rbp + ", i32 " + to_string(offset));
-    buffer.emit(reg + " = load i32,  i32* " + var_ptr);
-    return reg;
+    buffer.emit(extend_reg + " = load i32,  i32* " + var_ptr);
+    if (type != "int") {
+        buffer.emit(reg + " = trunc i32 " + extend_reg + " to " + fanCTypeToIRString(type));
+        return reg;
+    }
+    return extend_reg;
 }
 
 void Generator::genRet(shared_ptr<Exp> exp) {
@@ -255,7 +298,7 @@ void Generator::genLabelAfterIf(Exp* exp) {
 }
 
 void Generator::genEndOfFunc(string type) { 
-    type == "void" ? buffer.emit("ret void") : buffer.emit("ret i32 0");
+    type == "void" ? buffer.emit("ret void") : buffer.emit("ret " + fanCTypeToIRString(type) + " 0");
     buffer.emit("}");
 }
 
@@ -276,11 +319,25 @@ void Generator::genFuncDecl(string name, vector<string> params, string ret_type)
 
 void Generator::genCall(string name, Call& func, vector<shared_ptr<Exp>> params) {
     string args_line = "";
+    if (name == "printi") {
+        string reg = params[0]->reg;
+        if (params[0]->type == "byte") {
+            reg = this->freshVar();
+            buffer.emit(reg + " = zext i8 " + params[0]->reg + " to i32");
+        }
+        buffer.emit("call void @printi_int(i32 " + reg + ")");
+        return;
+    }
     for(auto it = params.begin(); it != params.end(); it++)
     {
-        args_line += fanCTypeToIRString((*it)->type) + " " + (*it)->reg;
+        args_line += fanCTypeToIRString((*it)->type) + " " + (*it)->reg + ", ";
         name += "_" + (*it)->type;
     }
+
+    if (args_line != "") { // Remove the comma and space from last arg
+        args_line = args_line.substr(0, args_line.size() - 2); 
+    }
+
     string reg_str = "";
     func.reg = "";
     if (func.type != "void") {
@@ -298,4 +355,10 @@ void Generator::genCall(string name, Call& func, vector<shared_ptr<Exp>> params)
         func.true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
         func.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
     }
+}
+
+Exp* Generator::genBoolIfNeeded(Exp* exp) {
+    shared_ptr<Exp> new_exp = this->genBoolExp(*exp); 
+    exp = new Exp(new_exp.get());
+    return exp;
 }

@@ -1,0 +1,71 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define void @Func_int_int_byte(i32, i32, i8) {
+%var_0 = alloca i32, i32 50
+call void @printi_int(i32 %0)
+br label %label_3
+label_3:
+call void @printi_int(i32 %1)
+br label %label_6
+label_6:
+%var_1 = zext i8 %2 to i32
+call void @printi_int(i32 %var_1)
+br label %label_10
+label_10:
+ret void
+}
+define void @maxTestsPassMultipleParametersToFunc() {
+%var_2 = alloca i32, i32 50
+%var_3 = add i32 0, 33
+%var_5 = getelementptr i32, i32* %var_2, i32 0
+store i32 %var_3, i32* %var_5
+%var_6 = add i8 0, 3
+%var_7 = zext i8 %var_6 to i32
+%var_8 = getelementptr i32, i32* %var_2, i32 1
+store i32 %var_7, i32* %var_8
+%var_9 = add i32 0, 8
+%var_10 = add i32 0, 2
+%var_11 = add i32 %var_9, %var_10
+%var_12 = getelementptr i32, i32* %var_2, i32 0
+%var_13 = load i32,  i32* %var_12
+%var_15 = getelementptr i32, i32* %var_2, i32 1
+%var_16 = load i32,  i32* %var_15
+%var_17 = trunc i32 %var_16 to i8
+%var_18 = add i8 0, 8
+%var_19 = add i8 %var_17, %var_18
+call void @Func_int_int_byte(i32 %var_11, i32 %var_13, i8 %var_19)
+br label %label_34
+label_34:
+%var_20 = add i32 0, 14
+%var_21 = getelementptr i32, i32* %var_2, i32 0
+%var_22 = load i32,  i32* %var_21
+%var_24 = getelementptr i32, i32* %var_2, i32 1
+%var_25 = load i32,  i32* %var_24
+%var_26 = trunc i32 %var_25 to i8
+%var_27 = add i8 0, 8
+%var_28 = add i8 %var_26, %var_27
+call void @Func_int_int_byte(i32 %var_20, i32 %var_22, i8 %var_28)
+br label %label_45
+label_45:
+ret void
+}
+define void @main() {
+%var_29 = alloca i32, i32 50
+call void @maxTestsPassMultipleParametersToFunc()
+br label %label_52
+label_52:
+ret void
+}

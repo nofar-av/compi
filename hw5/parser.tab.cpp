@@ -1489,7 +1489,7 @@ yyreduce:
 
   case 28:
 #line 83 "parser.ypp" /* yacc.c:1646  */
-    { (yyval) = new Statement(dynamic_cast<Label*>((yyvsp[-5])), dynamic_cast<Label*>((yyvsp[-2])), dynamic_cast<Exp*>((yyvsp[-4])), dynamic_cast<Statement*>((yyvsp[-1]))); 
+    { (yyval) = new Statement(dynamic_cast<Label*>((yyvsp[-5])), dynamic_cast<Label*>((yyvsp[-1])), dynamic_cast<Exp*>((yyvsp[-4])), dynamic_cast<Statement*>((yyvsp[0]))); 
                                                                                    symtable.removeScope(); }
 #line 1495 "parser.tab.cpp" /* yacc.c:1646  */
     break;
@@ -1526,13 +1526,13 @@ yyreduce:
 
   case 34:
 #line 93 "parser.ypp" /* yacc.c:1646  */
-    { (yyvsp[0]) = generator.genBoolExp(*(dynamic_cast<Exp*>((yyvsp[0])))).get(); }
+    { (yyvsp[0]) = generator.genBoolIfNeeded((dynamic_cast<Exp*>((yyvsp[0])))); }
 #line 1531 "parser.tab.cpp" /* yacc.c:1646  */
     break;
 
   case 35:
 #line 93 "parser.ypp" /* yacc.c:1646  */
-    {(yyval) = new ExpList(dynamic_cast<Exp*>((yyvsp[-3])), dynamic_cast<ExpList*>((yyvsp[-1])));}
+    {(yyval) = new ExpList(dynamic_cast<Exp*>((yyvsp[-3])), dynamic_cast<ExpList*>((yyvsp[0])));}
 #line 1537 "parser.tab.cpp" /* yacc.c:1646  */
     break;
 

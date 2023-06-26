@@ -1,0 +1,233 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [9 x i8] c"EPIC INT\00"
+@var_6 = constant [10 x i8] c"EPIC BOOL\00"
+@var_19 = constant [33 x i8] c"You should expect the following:\00"
+@var_20 = constant [74 x i8] c"EPIC INT  |  EPIC BOOL  |  Just as expected  | EPIC INT 19 |  EPIC BOOL 1\00"
+@var_33 = constant [17 x i8] c"Just as expected\00"
+@var_45 = constant [17 x i8] c"Unexpected error\00"
+@var_58 = constant [10 x i8] c"EPIC BYTE\00"
+define i32 @epicInt_int_int_int(i32, i32, i32) {
+%var_0 = alloca i32, i32 50
+%var_1.ptr = getelementptr[9 x i8], [9 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_4
+label_4:
+%var_2 = mul i32 %1, %2
+%var_3 = add i32 %0, %var_2
+%var_4 = add i32 %var_3, %0
+ret i32 %var_4
+ret i32 %0
+ret i32 0
+}
+define i32 @epicBool_bool_bool_bool(i1, i1, i1) {
+%var_5 = alloca i32, i32 50
+%var_6.ptr = getelementptr[10 x i8], [10 x i8]* @var_6, i32 0, i32 0
+call void @print_string(i8* %var_6.ptr)
+br label %label_17
+label_17:
+%var_7 = icmp ne i1 0, %0
+br i1 %var_7, label %label_21, label %label_25
+br label %label_21
+label_21:
+%var_8 = add i32 0, 1
+ret i32 %var_8
+br label %label_25
+label_25:
+%var_9 = icmp ne i1 0, %1
+br i1 %var_9, label %label_29, label %label_34
+br label %label_29
+label_29:
+%var_10 = add i32 0, 2
+ret i32 %var_10
+br label %label_44
+br label %label_34
+label_34:
+%var_11 = icmp ne i1 0, %2
+br i1 %var_11, label %label_38, label %label_42
+br label %label_38
+label_38:
+%var_12 = add i32 0, 3
+ret i32 %var_12
+br label %label_42
+label_42:
+br label %label_44
+label_44:
+%var_13 = icmp ne i1 0, %0
+br i1 %var_13, label %label_52, label %label_48
+br label %label_48
+label_48:
+%var_14 = icmp ne i1 0, %1
+br i1 %var_14, label %label_52, label %label_58
+br label %label_52
+label_52:
+%var_15 = add i32 0, 0
+%var_16 = add i32 0, 1
+%var_17 = sub i32 %var_15, %var_16
+ret i32 %var_17
+br label %label_58
+label_58:
+ret i32 0
+}
+define void @main() {
+%var_18 = alloca i32, i32 50
+%var_19.ptr = getelementptr[33 x i8], [33 x i8]* @var_19, i32 0, i32 0
+call void @print_string(i8* %var_19.ptr)
+br label %label_66
+label_66:
+%var_20.ptr = getelementptr[74 x i8], [74 x i8]* @var_20, i32 0, i32 0
+call void @print_string(i8* %var_20.ptr)
+br label %label_70
+label_70:
+%var_21 = add i32 0, 6
+%var_22 = add i32 0, 1
+%var_23 = add i32 0, 7
+%var_24 = call i32 @epicInt_int_int_int(i32 %var_21, i32 %var_22, i32 %var_23)
+br label %TRUE_LIST_label_77
+br label %TRUE_LIST_label_77
+TRUE_LIST_label_77:
+br label %NEXT_LIST_label_77
+FALSE_LIST_label_77:
+br label %NEXT_LIST_label_77
+NEXT_LIST_label_77:
+%var_25 = phi i1 [ 1, %TRUE_LIST_label_77], [0, %FALSE_LIST_label_77]
+br label %TRUE_LIST_label_85
+br label %TRUE_LIST_label_85
+TRUE_LIST_label_85:
+br label %NEXT_LIST_label_85
+FALSE_LIST_label_85:
+br label %NEXT_LIST_label_85
+NEXT_LIST_label_85:
+%var_26 = phi i1 [ 1, %TRUE_LIST_label_85], [0, %FALSE_LIST_label_85]
+%var_27 = add i32 0, 1
+%var_28 = add i32 0, 2
+%var_29 = icmp sgt i32 %var_27, %var_28
+br i1 %var_29, label %TRUE_LIST_label_96, label %FALSE_LIST_label_96
+br label %TRUE_LIST_label_96
+TRUE_LIST_label_96:
+br label %NEXT_LIST_label_96
+FALSE_LIST_label_96:
+br label %NEXT_LIST_label_96
+NEXT_LIST_label_96:
+%var_30 = phi i1 [ 1, %TRUE_LIST_label_96], [0, %FALSE_LIST_label_96]
+%var_31 = call i32 @epicBool_bool_bool_bool(i1 %var_25, i1 %var_26, i1 %var_30)
+%var_32 = icmp sgt i32 %var_24, %var_31
+br i1 %var_32, label %label_106, label %label_151
+br label %label_106
+label_106:
+%var_33.ptr = getelementptr[17 x i8], [17 x i8]* @var_33, i32 0, i32 0
+call void @print_string(i8* %var_33.ptr)
+br label %label_110
+label_110:
+%var_34 = add i32 0, 6
+%var_35 = add i32 0, 1
+%var_36 = add i32 0, 7
+%var_37 = call i32 @epicInt_int_int_int(i32 %var_34, i32 %var_35, i32 %var_36)
+call void @printi_int(i32 %var_37)
+br label %label_117
+label_117:
+br label %TRUE_LIST_label_120
+br label %TRUE_LIST_label_120
+TRUE_LIST_label_120:
+br label %NEXT_LIST_label_120
+FALSE_LIST_label_120:
+br label %NEXT_LIST_label_120
+NEXT_LIST_label_120:
+%var_38 = phi i1 [ 1, %TRUE_LIST_label_120], [0, %FALSE_LIST_label_120]
+br label %TRUE_LIST_label_128
+br label %TRUE_LIST_label_128
+TRUE_LIST_label_128:
+br label %NEXT_LIST_label_128
+FALSE_LIST_label_128:
+br label %NEXT_LIST_label_128
+NEXT_LIST_label_128:
+%var_39 = phi i1 [ 1, %TRUE_LIST_label_128], [0, %FALSE_LIST_label_128]
+%var_40 = add i32 0, 1
+%var_41 = add i32 0, 2
+%var_42 = icmp sgt i32 %var_40, %var_41
+br i1 %var_42, label %TRUE_LIST_label_139, label %FALSE_LIST_label_139
+br label %TRUE_LIST_label_139
+TRUE_LIST_label_139:
+br label %NEXT_LIST_label_139
+FALSE_LIST_label_139:
+br label %NEXT_LIST_label_139
+NEXT_LIST_label_139:
+%var_43 = phi i1 [ 1, %TRUE_LIST_label_139], [0, %FALSE_LIST_label_139]
+%var_44 = call i32 @epicBool_bool_bool_bool(i1 %var_38, i1 %var_39, i1 %var_43)
+call void @printi_int(i32 %var_44)
+br label %label_148
+label_148:
+br label %label_195
+br label %label_151
+label_151:
+%var_45.ptr = getelementptr[17 x i8], [17 x i8]* @var_45, i32 0, i32 0
+call void @print_string(i8* %var_45.ptr)
+br label %label_155
+label_155:
+%var_46 = add i32 0, 6
+%var_47 = add i32 0, 1
+%var_48 = add i32 0, 7
+%var_49 = call i32 @epicInt_int_int_int(i32 %var_46, i32 %var_47, i32 %var_48)
+call void @printi_int(i32 %var_49)
+br label %label_162
+label_162:
+br label %TRUE_LIST_label_165
+br label %TRUE_LIST_label_165
+TRUE_LIST_label_165:
+br label %NEXT_LIST_label_165
+FALSE_LIST_label_165:
+br label %NEXT_LIST_label_165
+NEXT_LIST_label_165:
+%var_50 = phi i1 [ 1, %TRUE_LIST_label_165], [0, %FALSE_LIST_label_165]
+br label %TRUE_LIST_label_173
+br label %TRUE_LIST_label_173
+TRUE_LIST_label_173:
+br label %NEXT_LIST_label_173
+FALSE_LIST_label_173:
+br label %NEXT_LIST_label_173
+NEXT_LIST_label_173:
+%var_51 = phi i1 [ 1, %TRUE_LIST_label_173], [0, %FALSE_LIST_label_173]
+%var_52 = add i32 0, 1
+%var_53 = add i32 0, 2
+%var_54 = icmp sgt i32 %var_52, %var_53
+br i1 %var_54, label %TRUE_LIST_label_184, label %FALSE_LIST_label_184
+br label %TRUE_LIST_label_184
+TRUE_LIST_label_184:
+br label %NEXT_LIST_label_184
+FALSE_LIST_label_184:
+br label %NEXT_LIST_label_184
+NEXT_LIST_label_184:
+%var_55 = phi i1 [ 1, %TRUE_LIST_label_184], [0, %FALSE_LIST_label_184]
+%var_56 = call i32 @epicBool_bool_bool_bool(i1 %var_50, i1 %var_51, i1 %var_55)
+call void @printi_int(i32 %var_56)
+br label %label_193
+label_193:
+br label %label_195
+label_195:
+ret void
+}
+define i32 @epicByte_byte_byte_byte(i8, i8, i8) {
+%var_57 = alloca i32, i32 50
+%var_58.ptr = getelementptr[10 x i8], [10 x i8]* @var_58, i32 0, i32 0
+call void @print_string(i8* %var_58.ptr)
+br label %label_203
+label_203:
+%var_59 = mul i8 %1, %2
+%var_60 = add i8 %0, %var_59
+%var_61 = add i8 %var_60, %0
+ret i8 %var_61
+ret i32 0
+}

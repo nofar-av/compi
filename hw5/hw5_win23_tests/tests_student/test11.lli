@@ -1,0 +1,40 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define i32 @returnInt() {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 3
+ret i32 %var_1
+ret i32 0
+}
+define void @maxTestsAssignFromFunc() {
+%var_2 = alloca i32, i32 50
+%var_3 = call i32 @returnInt()
+%var_5 = getelementptr i32, i32* %var_2, i32 0
+store i32 %var_3, i32* %var_5
+%var_6 = getelementptr i32, i32* %var_2, i32 0
+%var_7 = load i32,  i32* %var_6
+call void @printi_int(i32 %var_7)
+br label %label_14
+label_14:
+ret void
+}
+define void @main() {
+%var_9 = alloca i32, i32 50
+call void @maxTestsAssignFromFunc()
+br label %label_21
+label_21:
+ret void
+}

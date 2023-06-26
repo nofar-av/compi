@@ -1,0 +1,63 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_2 = constant [87 x i8] c"Definiteness of purpose is the starting point of all achievement. – W. Clement Stone\00"
+define void @Func_bool(i1) {
+%var_0 = alloca i32, i32 50
+%var_1 = icmp ne i1 0, %0
+br i1 %var_1, label %label_4, label %label_10
+br label %label_4
+label_4:
+%var_2.ptr = getelementptr[87 x i8], [87 x i8]* @var_2, i32 0, i32 0
+call void @print_string(i8* %var_2.ptr)
+br label %label_8
+label_8:
+br label %label_10
+label_10:
+ret void
+}
+define void @maxTestsTestPassRelopToFunc() {
+%var_3 = alloca i32, i32 50
+br label %FALSE_LIST_label_17
+br label %TRUE_LIST_label_17
+TRUE_LIST_label_17:
+br label %NEXT_LIST_label_17
+FALSE_LIST_label_17:
+br label %NEXT_LIST_label_17
+NEXT_LIST_label_17:
+%var_4 = phi i1 [ 1, %TRUE_LIST_label_17], [0, %FALSE_LIST_label_17]
+call void @Func_bool(i1 %var_4)
+br label %label_25
+label_25:
+br label %TRUE_LIST_label_28
+br label %TRUE_LIST_label_28
+TRUE_LIST_label_28:
+br label %NEXT_LIST_label_28
+FALSE_LIST_label_28:
+br label %NEXT_LIST_label_28
+NEXT_LIST_label_28:
+%var_5 = phi i1 [ 1, %TRUE_LIST_label_28], [0, %FALSE_LIST_label_28]
+call void @Func_bool(i1 %var_5)
+br label %label_36
+label_36:
+ret void
+}
+define void @main() {
+%var_6 = alloca i32, i32 50
+call void @maxTestsTestPassRelopToFunc()
+br label %label_43
+label_43:
+ret void
+}

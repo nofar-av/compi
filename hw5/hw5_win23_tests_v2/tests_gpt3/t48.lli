@@ -1,0 +1,217 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_1 = constant [5 x i8] c"set!\00"
+@var_4 = constant [9 x i8] c"was here\00"
+define i32 @Int() {
+%var_0 = alloca i32, i32 50
+%var_1.ptr = getelementptr[5 x i8], [5 x i8]* @var_1, i32 0, i32 0
+call void @print_string(i8* %var_1.ptr)
+br label %label_4
+label_4:
+%var_2 = add i32 0, 500
+ret i32 %var_2
+ret i32 0
+}
+define void @WasHere() {
+%var_3 = alloca i32, i32 50
+%var_4.ptr = getelementptr[9 x i8], [9 x i8]* @var_4, i32 0, i32 0
+call void @print_string(i8* %var_4.ptr)
+br label %label_14
+label_14:
+ret void
+}
+define void @main() {
+%var_5 = alloca i32, i32 50
+%var_6 = add i32 0, 0
+%var_8 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_6, i32* %var_8
+br label %label_24
+br label %label_24
+label_24:
+%var_10 = getelementptr i32, i32* %var_5, i32 1
+store i32 0, i32* %var_10
+br label %label_28
+label_28:
+br label %label_31
+br label %label_31
+label_31:
+%var_11 = call i32 @Int()
+%var_13 = getelementptr i32, i32* %var_5, i32 1
+store i32 %var_11, i32* %var_13
+br label %label_36
+label_36:
+br label %label_39
+br label %label_39
+label_39:
+%var_14 = call i32 @Int()
+%var_16 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_14, i32* %var_16
+br label %label_44
+label_44:
+%var_17 = getelementptr i32, i32* %var_5, i32 0
+%var_18 = load i32,  i32* %var_17
+call void @printi_int(i32 %var_18)
+br label %label_49
+label_49:
+%var_20 = add i32 0, 0
+%var_22 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_20, i32* %var_22
+br label %label_55
+br label %label_55
+label_55:
+call void @WasHere()
+br label %label_58
+label_58:
+br label %label_60
+label_60:
+br label %label_63
+br label %label_63
+label_63:
+%var_23 = call i32 @Int()
+%var_25 = getelementptr i32, i32* %var_5, i32 1
+store i32 %var_23, i32* %var_25
+%var_26 = getelementptr i32, i32* %var_5, i32 1
+%var_27 = load i32,  i32* %var_26
+call void @printi_int(i32 %var_27)
+br label %label_71
+label_71:
+br label %label_73
+label_73:
+br label %label_76
+br label %label_76
+label_76:
+%var_30 = getelementptr i32, i32* %var_5, i32 1
+store i32 0, i32* %var_30
+%var_31 = call i32 @Int()
+%var_33 = getelementptr i32, i32* %var_5, i32 1
+store i32 %var_31, i32* %var_33
+%var_34 = getelementptr i32, i32* %var_5, i32 1
+%var_35 = load i32,  i32* %var_34
+call void @printi_int(i32 %var_35)
+br label %label_86
+label_86:
+br label %label_88
+label_88:
+br label %label_91
+br label %label_91
+label_91:
+%var_37 = call i32 @Int()
+%var_39 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_37, i32* %var_39
+br label %label_96
+label_96:
+%var_40 = getelementptr i32, i32* %var_5, i32 0
+%var_41 = load i32,  i32* %var_40
+call void @printi_int(i32 %var_41)
+br label %label_101
+label_101:
+%var_43 = add i32 0, 0
+%var_45 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_43, i32* %var_45
+br label %label_107
+br label %label_107
+label_107:
+call void @WasHere()
+br label %label_110
+label_110:
+br label %label_112
+label_112:
+br label %label_115
+br label %label_115
+label_115:
+br label %label_118
+br label %label_118
+label_118:
+call void @WasHere()
+br label %label_121
+label_121:
+br label %label_123
+label_123:
+br label %label_125
+label_125:
+br label %label_128
+br label %label_128
+label_128:
+br label %label_131
+br label %label_131
+label_131:
+call void @WasHere()
+br label %label_134
+label_134:
+br label %label_141
+br label %label_137
+label_137:
+%var_47 = getelementptr i32, i32* %var_5, i32 1
+store i32 0, i32* %var_47
+br label %label_141
+label_141:
+br label %label_143
+label_143:
+br label %label_146
+br label %label_146
+label_146:
+br label %label_154
+br label %label_149
+label_149:
+%var_49 = getelementptr i32, i32* %var_5, i32 1
+store i32 0, i32* %var_49
+br label %label_159
+br label %label_154
+label_154:
+call void @WasHere()
+br label %label_157
+label_157:
+br label %label_159
+label_159:
+br label %label_161
+label_161:
+br label %label_164
+br label %label_164
+label_164:
+br label %label_166
+label_166:
+br label %label_169
+br label %label_169
+label_169:
+call void @WasHere()
+br label %label_172
+label_172:
+br label %label_176
+br label %label_166
+label_176:
+br label %label_177
+label_177:
+br label %label_180
+br label %label_180
+label_180:
+br label %label_182
+label_182:
+%var_50 = getelementptr i32, i32* %var_5, i32 0
+%var_51 = load i32,  i32* %var_50
+%var_53 = add i32 0, 0
+%var_54 = icmp eq i32 %var_51, %var_53
+br i1 %var_54, label %label_189, label %label_195
+br label %label_189
+label_189:
+%var_55 = call i32 @Int()
+%var_57 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_55, i32* %var_57
+br label %label_182
+label_195:
+br label %label_196
+label_196:
+ret void
+}

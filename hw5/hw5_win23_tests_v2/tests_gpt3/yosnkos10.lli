@@ -1,0 +1,50 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define i1 @trutru() {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 9001
+call void @printi_int(i32 %var_1)
+br label %label_4
+label_4:
+br label %TRUE_LIST_label_7
+br label %TRUE_LIST_label_7
+TRUE_LIST_label_7:
+br label %NEXT_LIST_label_7
+FALSE_LIST_label_7:
+br label %NEXT_LIST_label_7
+NEXT_LIST_label_7:
+%var_2 = phi i1 [ 1, %TRUE_LIST_label_7], [0, %FALSE_LIST_label_7]
+ret i1 %var_2
+ret i1 0
+}
+define void @main() {
+%var_3 = alloca i32, i32 50
+br label %label_25
+br label %label_20
+label_20:
+%var_4 = call i1 @trutru()
+%var_5 = icmp ne i1 0, %var_4
+br i1 %var_5 , label %label_25, label %label_31
+br label %label_25
+label_25:
+%var_6 = add i32 0, 9002
+call void @printi_int(i32 %var_6)
+br label %label_29
+label_29:
+br label %label_31
+label_31:
+ret void
+}

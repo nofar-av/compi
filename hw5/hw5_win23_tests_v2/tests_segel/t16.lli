@@ -1,0 +1,278 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_6 = constant [12 x i8] c"already? :(\00"
+@var_8 = constant [3 x i8] c"ok\00"
+@var_30 = constant [8 x i8] c"alright\00"
+@var_48 = constant [6 x i8] c"back!\00"
+@var_50 = constant [6 x i8] c"here!\00"
+@var_79 = constant [6 x i8] c"great\00"
+define i32 @foo_bool_int_byte(i1, i32, i8) {
+%var_0 = alloca i32, i32 50
+%var_2 = getelementptr i32, i32* %var_0, i32 0
+store i32 %1, i32* %var_2
+%var_3 = zext i8 %2 to i32
+%var_4 = getelementptr i32, i32* %var_0, i32 1
+store i32 %var_3, i32* %var_4
+%var_5 = icmp ne i1 0, %0
+br i1 %var_5, label %label_17, label %label_9
+br label %label_9
+label_9:
+%var_6.ptr = getelementptr[12 x i8], [12 x i8]* @var_6, i32 0, i32 0
+call void @print_string(i8* %var_6.ptr)
+br label %label_13
+label_13:
+%var_7 = add i32 0, 15
+ret i32 %var_7
+br label %label_17
+label_17:
+%var_8.ptr = getelementptr[3 x i8], [3 x i8]* @var_8, i32 0, i32 0
+call void @print_string(i8* %var_8.ptr)
+br label %label_21
+label_21:
+br label %label_23
+label_23:
+%var_9 = getelementptr i32, i32* %var_0, i32 0
+%var_10 = load i32,  i32* %var_9
+%var_12 = add i32 0, 10
+%var_13 = icmp slt i32 %var_10, %var_12
+br i1 %var_13, label %label_30, label %label_63
+br label %label_30
+label_30:
+%var_14 = getelementptr i32, i32* %var_0, i32 0
+%var_15 = load i32,  i32* %var_14
+%var_17 = add i32 0, 1
+%var_18 = add i32 %var_15, %var_17
+%var_20 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_18, i32* %var_20
+%var_21 = icmp ne i1 0, %0
+br i1 %var_21, label %label_40, label %label_60
+br label %label_40
+label_40:
+%var_22 = getelementptr i32, i32* %var_0, i32 0
+%var_23 = load i32,  i32* %var_22
+%var_25 = add i32 0, 7
+%var_26 = icmp eq i32 %var_23, %var_25
+br i1 %var_26, label %label_47, label %label_60
+br label %label_47
+label_47:
+%var_27 = getelementptr i32, i32* %var_0, i32 0
+%var_28 = load i32,  i32* %var_27
+call void @printi_int(i32 %var_28)
+br label %label_52
+label_52:
+%var_30.ptr = getelementptr[8 x i8], [8 x i8]* @var_30, i32 0, i32 0
+call void @print_string(i8* %var_30.ptr)
+br label %label_56
+label_56:
+%var_31 = add i32 0, 17
+ret i32 %var_31
+br label %label_60
+label_60:
+br label %label_23
+label_63:
+br label %label_64
+label_64:
+%var_32 = getelementptr i32, i32* %var_0, i32 1
+%var_33 = load i32,  i32* %var_32
+%var_34 = trunc i32 %var_33 to i8
+%var_35 = add i8 0, 12
+%var_36 = icmp sgt i8 %var_34, %var_35
+br i1 %var_36, label %label_72, label %label_96
+br label %label_72
+label_72:
+%var_37 = getelementptr i32, i32* %var_0, i32 1
+%var_38 = load i32,  i32* %var_37
+%var_39 = trunc i32 %var_38 to i8
+%var_40 = add i8 0, 1
+%var_41 = sub i8 %var_39, %var_40
+%var_42 = zext i8 %var_41 to i32
+%var_43 = getelementptr i32, i32* %var_0, i32 1
+store i32 %var_42, i32* %var_43
+%var_44 = getelementptr i32, i32* %var_0, i32 1
+%var_45 = load i32,  i32* %var_44
+%var_46 = trunc i32 %var_45 to i8
+%var_47 = zext i8 %var_46 to i32
+call void @printi_int(i32 %var_47)
+br label %label_87
+label_87:
+%var_48.ptr = getelementptr[6 x i8], [6 x i8]* @var_48, i32 0, i32 0
+call void @print_string(i8* %var_48.ptr)
+br label %label_91
+label_91:
+%var_49 = add i32 0, 18
+ret i32 %var_49
+br label %label_64
+label_96:
+%var_50.ptr = getelementptr[6 x i8], [6 x i8]* @var_50, i32 0, i32 0
+call void @print_string(i8* %var_50.ptr)
+br label %label_99
+label_99:
+%var_51 = add i32 0, 322
+ret i32 %var_51
+ret i32 0
+}
+define i1 @opposite_bool(i1) {
+%var_52 = alloca i32, i32 50
+br label %label_107
+label_107:
+br label %label_110
+br label %label_110
+label_110:
+br label %label_112
+label_112:
+br label %label_115
+br label %label_115
+label_115:
+br label %label_117
+label_117:
+br label %label_120
+br label %label_120
+label_120:
+br label %label_122
+label_122:
+br label %label_125
+br label %label_125
+label_125:
+br label %label_127
+label_127:
+br label %label_130
+br label %label_130
+label_130:
+%var_53 = icmp ne i1 0, %0
+br i1 %var_53, label %FALSE_LIST_label_134, label %TRUE_LIST_label_134
+br label %TRUE_LIST_label_134
+TRUE_LIST_label_134:
+br label %NEXT_LIST_label_134
+FALSE_LIST_label_134:
+br label %NEXT_LIST_label_134
+NEXT_LIST_label_134:
+%var_54 = phi i1 [ 1, %TRUE_LIST_label_134], [0, %FALSE_LIST_label_134]
+ret i1 %var_54
+br label %label_127
+label_143:
+br label %label_146
+br label %label_122
+label_146:
+br label %label_117
+label_148:
+br label %label_112
+label_150:
+br label %label_107
+label_152:
+%var_55 = icmp ne i1 0, %0
+br i1 %var_55, label %FALSE_LIST_label_155, label %TRUE_LIST_label_155
+br label %TRUE_LIST_label_155
+TRUE_LIST_label_155:
+br label %NEXT_LIST_label_155
+FALSE_LIST_label_155:
+br label %NEXT_LIST_label_155
+NEXT_LIST_label_155:
+%var_56 = phi i1 [ 1, %TRUE_LIST_label_155], [0, %FALSE_LIST_label_155]
+ret i1 %var_56
+ret i1 0
+}
+define i8 @multiply_byte_byte(i8, i8) {
+%var_57 = alloca i32, i32 50
+%var_58 = mul i8 %0, %1
+ret i8 %var_58
+ret i8 0
+}
+define void @main() {
+%var_59 = alloca i32, i32 50
+br label %FALSE_LIST_label_174
+br label %TRUE_LIST_label_174
+TRUE_LIST_label_174:
+br label %NEXT_LIST_label_174
+FALSE_LIST_label_174:
+br label %NEXT_LIST_label_174
+NEXT_LIST_label_174:
+%var_60 = phi i1 [ 1, %TRUE_LIST_label_174], [0, %FALSE_LIST_label_174]
+%var_61 = add i32 0, 5
+%var_62 = add i8 0, 15
+%var_63 = call i32 @foo_bool_int_byte(i1 %var_60, i32 %var_61, i8 %var_62)
+call void @printi_int(i32 %var_63)
+br label %label_185
+label_185:
+br label %TRUE_LIST_label_188
+br label %TRUE_LIST_label_188
+TRUE_LIST_label_188:
+br label %NEXT_LIST_label_188
+FALSE_LIST_label_188:
+br label %NEXT_LIST_label_188
+NEXT_LIST_label_188:
+%var_64 = phi i1 [ 1, %TRUE_LIST_label_188], [0, %FALSE_LIST_label_188]
+%var_65 = add i32 0, 5
+%var_66 = add i8 0, 21
+%var_67 = call i32 @foo_bool_int_byte(i1 %var_64, i32 %var_65, i8 %var_66)
+call void @printi_int(i32 %var_67)
+br label %label_199
+label_199:
+br label %TRUE_LIST_label_202
+br label %TRUE_LIST_label_202
+TRUE_LIST_label_202:
+br label %NEXT_LIST_label_202
+FALSE_LIST_label_202:
+br label %NEXT_LIST_label_202
+NEXT_LIST_label_202:
+%var_68 = phi i1 [ 1, %TRUE_LIST_label_202], [0, %FALSE_LIST_label_202]
+%var_69 = add i32 0, 11
+%var_70 = add i8 0, 4
+%var_71 = call i32 @foo_bool_int_byte(i1 %var_68, i32 %var_69, i8 %var_70)
+call void @printi_int(i32 %var_71)
+br label %label_213
+label_213:
+br label %TRUE_LIST_label_216
+br label %TRUE_LIST_label_216
+TRUE_LIST_label_216:
+br label %NEXT_LIST_label_216
+FALSE_LIST_label_216:
+br label %NEXT_LIST_label_216
+NEXT_LIST_label_216:
+%var_72 = phi i1 [ 1, %TRUE_LIST_label_216], [0, %FALSE_LIST_label_216]
+%var_73 = add i32 0, 10
+%var_74 = add i8 0, 13
+%var_75 = call i32 @foo_bool_int_byte(i1 %var_72, i32 %var_73, i8 %var_74)
+call void @printi_int(i32 %var_75)
+br label %label_227
+label_227:
+br label %FALSE_LIST_label_230
+br label %TRUE_LIST_label_230
+TRUE_LIST_label_230:
+br label %NEXT_LIST_label_230
+FALSE_LIST_label_230:
+br label %NEXT_LIST_label_230
+NEXT_LIST_label_230:
+%var_76 = phi i1 [ 1, %TRUE_LIST_label_230], [0, %FALSE_LIST_label_230]
+%var_77 = call i1 @opposite_bool(i1 %var_76)
+%var_78 = icmp ne i1 0, %var_77
+br i1 %var_78 , label %label_240, label %label_246
+br label %label_240
+label_240:
+%var_79.ptr = getelementptr[6 x i8], [6 x i8]* @var_79, i32 0, i32 0
+call void @print_string(i8* %var_79.ptr)
+br label %label_244
+label_244:
+br label %label_246
+label_246:
+%var_80 = add i8 0, 16
+%var_81 = add i8 0, 16
+%var_82 = call i8 @multiply_byte_byte(i8 %var_80, i8 %var_81)
+%var_83 = zext i8 %var_82 to i32
+call void @printi_int(i32 %var_83)
+br label %label_253
+label_253:
+ret void
+}

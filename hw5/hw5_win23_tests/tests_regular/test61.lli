@@ -1,0 +1,113 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_2 = constant [201 x i8] c"Permanence, perseverance and persistence in spite of all obstacles, discouragements, and impossibilities: It is this, that in all things distinguishes the strong soul from the weak. – Thomas Carlyle\00"
+define void @Func_bool(i1) {
+%var_0 = alloca i32, i32 50
+%var_1 = icmp ne i1 0, %0
+br i1 %var_1, label %label_4, label %label_10
+br label %label_4
+label_4:
+%var_2.ptr = getelementptr[201 x i8], [201 x i8]* @var_2, i32 0, i32 0
+call void @print_string(i8* %var_2.ptr)
+br label %label_8
+label_8:
+br label %label_10
+label_10:
+ret void
+}
+define void @maxTestsTestPassRelopToFunc() {
+%var_3 = alloca i32, i32 50
+%var_4 = add i32 0, 1
+%var_5 = add i32 0, 2
+%var_6 = icmp slt i32 %var_4, %var_5
+br i1 %var_6, label %TRUE_LIST_label_20, label %FALSE_LIST_label_20
+br label %TRUE_LIST_label_20
+TRUE_LIST_label_20:
+br label %NEXT_LIST_label_20
+FALSE_LIST_label_20:
+br label %NEXT_LIST_label_20
+NEXT_LIST_label_20:
+%var_7 = phi i1 [ 1, %TRUE_LIST_label_20], [0, %FALSE_LIST_label_20]
+%var_8 = zext i1 %var_7 to i32
+%var_9 = getelementptr i32, i32* %var_3, i32 0
+store i32 %var_8, i32* %var_9
+%var_10 = add i32 0, 2
+%var_11 = add i32 0, 1
+%var_12 = icmp slt i32 %var_10, %var_11
+br i1 %var_12, label %TRUE_LIST_label_34, label %FALSE_LIST_label_34
+br label %TRUE_LIST_label_34
+TRUE_LIST_label_34:
+br label %NEXT_LIST_label_34
+FALSE_LIST_label_34:
+br label %NEXT_LIST_label_34
+NEXT_LIST_label_34:
+%var_13 = phi i1 [ 1, %TRUE_LIST_label_34], [0, %FALSE_LIST_label_34]
+%var_14 = zext i1 %var_13 to i32
+%var_15 = getelementptr i32, i32* %var_3, i32 1
+store i32 %var_14, i32* %var_15
+%var_16 = getelementptr i32, i32* %var_3, i32 0
+%var_17 = load i32,  i32* %var_16
+%var_18 = trunc i32 %var_17 to i1
+%var_19 = icmp ne i1 0, %var_18
+br i1 %var_19, label %label_49, label %FALSE_LIST_label_56
+br label %label_49
+label_49:
+%var_20 = getelementptr i32, i32* %var_3, i32 1
+%var_21 = load i32,  i32* %var_20
+%var_22 = trunc i32 %var_21 to i1
+%var_23 = icmp ne i1 0, %var_22
+br i1 %var_23, label %TRUE_LIST_label_56, label %FALSE_LIST_label_56
+br label %TRUE_LIST_label_56
+TRUE_LIST_label_56:
+br label %NEXT_LIST_label_56
+FALSE_LIST_label_56:
+br label %NEXT_LIST_label_56
+NEXT_LIST_label_56:
+%var_24 = phi i1 [ 1, %TRUE_LIST_label_56], [0, %FALSE_LIST_label_56]
+call void @Func_bool(i1 %var_24)
+br label %label_64
+label_64:
+%var_25 = getelementptr i32, i32* %var_3, i32 0
+%var_26 = load i32,  i32* %var_25
+%var_27 = trunc i32 %var_26 to i1
+%var_28 = icmp ne i1 0, %var_27
+br i1 %var_28, label %TRUE_LIST_label_78, label %label_71
+br label %label_71
+label_71:
+%var_29 = getelementptr i32, i32* %var_3, i32 1
+%var_30 = load i32,  i32* %var_29
+%var_31 = trunc i32 %var_30 to i1
+%var_32 = icmp ne i1 0, %var_31
+br i1 %var_32, label %TRUE_LIST_label_78, label %FALSE_LIST_label_78
+br label %TRUE_LIST_label_78
+TRUE_LIST_label_78:
+br label %NEXT_LIST_label_78
+FALSE_LIST_label_78:
+br label %NEXT_LIST_label_78
+NEXT_LIST_label_78:
+%var_33 = phi i1 [ 1, %TRUE_LIST_label_78], [0, %FALSE_LIST_label_78]
+call void @Func_bool(i1 %var_33)
+br label %label_86
+label_86:
+ret void
+}
+define void @main() {
+%var_34 = alloca i32, i32 50
+call void @maxTestsTestPassRelopToFunc()
+br label %label_93
+label_93:
+ret void
+}

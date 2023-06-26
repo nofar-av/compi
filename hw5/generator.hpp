@@ -18,7 +18,8 @@ public:
     void generateInitCode();
     string freshVar();
     string freshGlobalVar();
-    void binopCode(Exp& result, const string& reg1, const string& op, const string& reg2);
+    void genConstVar(Exp& result, string value);
+    void binopCode(Exp& result, Exp& exp1, const string& op, Exp& exp2);
     void relopCode(Exp& result, Exp& exp1, const string& op, Exp& exp2);
     void createSimpleBoolBranch (Exp& exp);
     void bpBoolOp(Exp& result, Exp& exp1, const string& op, Exp& exp2, string& label);
@@ -28,12 +29,13 @@ public:
     // string allocateVar();
     shared_ptr<Exp> genBoolExp(Exp &exp);
     void genStoreVar(string rbp, int offset, string value, const string& type);
-    string genLoadVar(string rbp, int offset);
+    string genLoadVar(string rbp, int offset, const string& type);
     void genRet(shared_ptr<Exp> exp = nullptr);
     void genLabelAfterIf(Exp* exp);
     void genEndOfFunc(string type);
     void genFuncDecl(string name, vector<string> params, string type);
     void genCall(string name, Call& func, vector<shared_ptr<Exp>> params = {});
+    Exp* genBoolIfNeeded(Exp* exp);
 
 private:
     int reg_num;

@@ -1,0 +1,61 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_7 = constant [5 x i8] c"left\00"
+@var_20 = constant [5 x i8] c"both\00"
+define i32 @foo0_int_int(i32, i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 0
+ret i32 %var_1
+ret i32 0
+}
+define i32 @foo1_int_int(i32, i32) {
+%var_2 = alloca i32, i32 50
+%var_3 = add i32 0, 1
+ret i32 %var_3
+ret i32 0
+}
+define i32 @foo2_int_int(i32, i32) {
+%var_4 = alloca i32, i32 50
+%var_5 = add i32 0, 2
+ret i32 %var_5
+ret i32 0
+}
+define void @main() {
+%var_6 = alloca i32, i32 50
+%var_7.ptr = getelementptr[5 x i8], [5 x i8]* @var_7, i32 0, i32 0
+call void @print_string(i8* %var_7.ptr)
+br label %label_22
+label_22:
+%var_8 = add i32 0, 7
+%var_9 = add i32 0, 2
+%var_10 = add i32 0, 2
+%var_11 = call i32 @foo2_int_int(i32 %var_9, i32 %var_10)
+%var_12 = add i32 0, 8
+%var_13 = call i32 @foo1_int_int(i32 %var_11, i32 %var_12)
+%var_14 = call i32 @foo0_int_int(i32 %var_8, i32 %var_13)
+%var_16 = getelementptr i32, i32* %var_6, i32 0
+store i32 %var_14, i32* %var_16
+%var_17 = getelementptr i32, i32* %var_6, i32 0
+%var_18 = load i32,  i32* %var_17
+call void @printi_int(i32 %var_18)
+br label %label_36
+label_36:
+%var_20.ptr = getelementptr[5 x i8], [5 x i8]* @var_20, i32 0, i32 0
+call void @print_string(i8* %var_20.ptr)
+br label %label_40
+label_40:
+ret void
+}

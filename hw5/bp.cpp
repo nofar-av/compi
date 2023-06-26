@@ -18,8 +18,8 @@ string CodeBuffer::genLabel(string str_label){
 	label << str_label << "label_";
 	label << buffer.size();
 	std::string ret(label.str());
-	label << ":";
-	emit(label.str());
+	// label << ":";
+	// emit(label.str());
 	return ret;
 }
 

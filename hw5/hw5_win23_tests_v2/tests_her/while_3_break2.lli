@@ -1,0 +1,94 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_29 = constant [3 x i8] c"3!\00"
+@var_38 = constant [26 x i8] c"why are you still here ?!\00"
+define void @main() {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 1
+%var_3 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_1, i32* %var_3
+br label %label_5
+label_5:
+%var_4 = getelementptr i32, i32* %var_0, i32 0
+%var_5 = load i32,  i32* %var_4
+%var_7 = add i32 0, 3
+%var_8 = icmp eq i32 %var_5, %var_7
+br i1 %var_8, label %label_33, label %label_12
+br label %label_12
+label_12:
+%var_9 = getelementptr i32, i32* %var_0, i32 0
+%var_10 = load i32,  i32* %var_9
+%var_12 = add i32 0, 1
+%var_13 = icmp sgt i32 %var_10, %var_12
+br i1 %var_13, label %label_19, label %label_26
+br label %label_19
+label_19:
+%var_14 = getelementptr i32, i32* %var_0, i32 0
+%var_15 = load i32,  i32* %var_14
+%var_17 = add i32 0, 3
+%var_18 = icmp slt i32 %var_15, %var_17
+br i1 %var_18, label %label_33, label %label_26
+br label %label_26
+label_26:
+%var_19 = getelementptr i32, i32* %var_0, i32 0
+%var_20 = load i32,  i32* %var_19
+%var_22 = add i32 0, 1
+%var_23 = icmp eq i32 %var_20, %var_22
+br i1 %var_23, label %label_33, label %label_74
+br label %label_33
+label_33:
+%var_24 = getelementptr i32, i32* %var_0, i32 0
+%var_25 = load i32,  i32* %var_24
+%var_27 = add i32 0, 3
+%var_28 = icmp sge i32 %var_25, %var_27
+br i1 %var_28, label %label_40, label %label_47
+br label %label_40
+label_40:
+%var_29.ptr = getelementptr[3 x i8], [3 x i8]* @var_29, i32 0, i32 0
+call void @print_string(i8* %var_29.ptr)
+br label %label_44
+label_44:
+br label %label_74
+br label %label_47
+label_47:
+%var_30 = getelementptr i32, i32* %var_0, i32 0
+%var_31 = load i32,  i32* %var_30
+call void @printi_int(i32 %var_31)
+br label %label_52
+label_52:
+%var_33 = getelementptr i32, i32* %var_0, i32 0
+%var_34 = load i32,  i32* %var_33
+%var_36 = add i32 0, 3
+%var_37 = icmp sge i32 %var_34, %var_36
+br i1 %var_37, label %label_59, label %label_65
+br label %label_59
+label_59:
+%var_38.ptr = getelementptr[26 x i8], [26 x i8]* @var_38, i32 0, i32 0
+call void @print_string(i8* %var_38.ptr)
+br label %label_63
+label_63:
+br label %label_65
+label_65:
+%var_39 = getelementptr i32, i32* %var_0, i32 0
+%var_40 = load i32,  i32* %var_39
+%var_42 = add i32 0, 1
+%var_43 = add i32 %var_40, %var_42
+%var_45 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_43, i32* %var_45
+br label %label_5
+label_74:
+ret void
+}

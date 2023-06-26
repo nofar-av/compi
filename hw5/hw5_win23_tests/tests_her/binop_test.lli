@@ -1,0 +1,358 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define void @main() {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 2
+%var_2 = add i32 0, 3
+%var_3 = add i32 %var_1, %var_2
+call void @printi_int(i32 %var_3)
+br label %label_6
+label_6:
+%var_4 = add i32 0, 10
+%var_5 = add i32 0, 8
+%var_6 = sub i32 %var_4, %var_5
+call void @printi_int(i32 %var_6)
+br label %label_12
+label_12:
+%var_7 = add i32 0, 2
+%var_8 = add i32 0, 3
+%var_9 = mul i32 %var_7, %var_8
+call void @printi_int(i32 %var_9)
+br label %label_18
+label_18:
+%var_10 = add i32 0, 4
+%var_11 = add i32 0, 2
+%var_12 = sdiv i32 %var_10, %var_11
+call void @printi_int(i32 %var_12)
+br label %label_24
+label_24:
+%var_13 = add i32 0, 2
+%var_14 = add i32 0, 3
+%var_15 = add i32 0, 5
+%var_16 = mul i32 %var_14, %var_15
+%var_17 = add i32 0, 5
+%var_18 = sdiv i32 %var_16, %var_17
+%var_19 = add i32 %var_13, %var_18
+call void @printi_int(i32 %var_19)
+br label %label_34
+label_34:
+%var_20 = add i32 0, 2
+%var_21 = add i32 0, 3
+%var_22 = mul i32 %var_20, %var_21
+%var_23 = add i32 0, 5
+%var_24 = add i32 0, 5
+%var_25 = mul i32 %var_23, %var_24
+%var_26 = add i32 %var_22, %var_25
+call void @printi_int(i32 %var_26)
+br label %label_44
+label_44:
+%var_27 = add i32 0, 6
+%var_28 = add i32 0, 3
+%var_29 = sdiv i32 %var_27, %var_28
+%var_30 = add i32 0, 200
+%var_31 = add i32 0, 5
+%var_32 = sdiv i32 %var_30, %var_31
+%var_33 = add i32 %var_29, %var_32
+call void @printi_int(i32 %var_33)
+br label %label_54
+label_54:
+%var_34 = add i32 0, 5
+%var_35 = add i32 0, 5
+%var_36 = mul i32 %var_34, %var_35
+%var_37 = add i32 0, 2
+%var_38 = add i32 0, 3
+%var_39 = mul i32 %var_37, %var_38
+%var_40 = sub i32 %var_36, %var_39
+call void @printi_int(i32 %var_40)
+br label %label_64
+label_64:
+%var_41 = add i32 0, 300
+%var_42 = add i32 0, 3
+%var_43 = sdiv i32 %var_41, %var_42
+%var_44 = add i32 0, 200
+%var_45 = add i32 0, 5
+%var_46 = sdiv i32 %var_44, %var_45
+%var_47 = sub i32 %var_43, %var_46
+call void @printi_int(i32 %var_47)
+br label %label_74
+label_74:
+%var_48 = add i32 0, 5
+%var_49 = add i32 0, 5
+%var_50 = mul i32 %var_48, %var_49
+%var_51 = add i32 0, 2
+%var_52 = add i32 0, 3
+%var_53 = mul i32 %var_51, %var_52
+%var_54 = sub i32 %var_50, %var_53
+call void @printi_int(i32 %var_54)
+br label %label_84
+label_84:
+%var_55 = add i32 0, 300
+%var_56 = add i32 0, 3
+%var_57 = sdiv i32 %var_55, %var_56
+%var_58 = add i32 0, 200
+%var_59 = add i32 0, 5
+%var_60 = sdiv i32 %var_58, %var_59
+%var_61 = sub i32 %var_57, %var_60
+call void @printi_int(i32 %var_61)
+br label %label_94
+label_94:
+%var_62 = add i8 0, 2
+%var_63 = add i8 0, 3
+%var_64 = add i8 %var_62, %var_63
+%var_65 = zext i8 %var_64 to i32
+call void @printi_int(i32 %var_65)
+br label %label_101
+label_101:
+%var_66 = add i8 0, 10
+%var_67 = add i8 0, 8
+%var_68 = sub i8 %var_66, %var_67
+%var_69 = zext i8 %var_68 to i32
+call void @printi_int(i32 %var_69)
+br label %label_108
+label_108:
+%var_70 = add i8 0, 2
+%var_71 = add i8 0, 3
+%var_72 = mul i8 %var_70, %var_71
+%var_73 = zext i8 %var_72 to i32
+call void @printi_int(i32 %var_73)
+br label %label_115
+label_115:
+%var_74 = add i8 0, 4
+%var_75 = add i8 0, 2
+%var_76 = udiv i8 %var_74, %var_75
+%var_77 = zext i8 %var_76 to i32
+call void @printi_int(i32 %var_77)
+br label %label_122
+label_122:
+%var_78 = add i8 0, 2
+%var_79 = add i8 0, 3
+%var_80 = add i8 0, 5
+%var_81 = mul i8 %var_79, %var_80
+%var_82 = add i8 0, 5
+%var_83 = udiv i8 %var_81, %var_82
+%var_84 = add i8 %var_78, %var_83
+%var_85 = zext i8 %var_84 to i32
+call void @printi_int(i32 %var_85)
+br label %label_133
+label_133:
+%var_86 = add i8 0, 2
+%var_87 = add i8 0, 3
+%var_88 = mul i8 %var_86, %var_87
+%var_89 = add i8 0, 5
+%var_90 = add i8 0, 5
+%var_91 = mul i8 %var_89, %var_90
+%var_92 = add i8 %var_88, %var_91
+%var_93 = zext i8 %var_92 to i32
+call void @printi_int(i32 %var_93)
+br label %label_144
+label_144:
+%var_94 = add i8 0, 6
+%var_95 = add i8 0, 3
+%var_96 = udiv i8 %var_94, %var_95
+%var_97 = add i8 0, 200
+%var_98 = add i8 0, 5
+%var_99 = udiv i8 %var_97, %var_98
+%var_100 = add i8 %var_96, %var_99
+%var_101 = zext i8 %var_100 to i32
+call void @printi_int(i32 %var_101)
+br label %label_155
+label_155:
+%var_102 = add i8 0, 5
+%var_103 = add i8 0, 5
+%var_104 = mul i8 %var_102, %var_103
+%var_105 = add i8 0, 2
+%var_106 = add i8 0, 3
+%var_107 = mul i8 %var_105, %var_106
+%var_108 = sub i8 %var_104, %var_107
+%var_109 = zext i8 %var_108 to i32
+call void @printi_int(i32 %var_109)
+br label %label_166
+label_166:
+%var_110 = add i8 0, 100
+%var_111 = add i8 0, 2
+%var_112 = udiv i8 %var_110, %var_111
+%var_113 = add i8 0, 200
+%var_114 = add i8 0, 10
+%var_115 = udiv i8 %var_113, %var_114
+%var_116 = sub i8 %var_112, %var_115
+%var_117 = zext i8 %var_116 to i32
+call void @printi_int(i32 %var_117)
+br label %label_177
+label_177:
+%var_118 = add i8 0, 5
+%var_119 = add i8 0, 5
+%var_120 = mul i8 %var_118, %var_119
+%var_121 = add i8 0, 2
+%var_122 = add i8 0, 3
+%var_123 = mul i8 %var_121, %var_122
+%var_124 = sub i8 %var_120, %var_123
+%var_125 = zext i8 %var_124 to i32
+call void @printi_int(i32 %var_125)
+br label %label_188
+label_188:
+%var_126 = add i8 0, 100
+%var_127 = add i8 0, 2
+%var_128 = udiv i8 %var_126, %var_127
+%var_129 = add i8 0, 200
+%var_130 = add i8 0, 20
+%var_131 = udiv i8 %var_129, %var_130
+%var_132 = sub i8 %var_128, %var_131
+%var_133 = zext i8 %var_132 to i32
+call void @printi_int(i32 %var_133)
+br label %label_199
+label_199:
+%var_134 = add i8 0, 2
+%var_135 = add i32 0, 3
+%var_137 = zext i8 %var_134 to i32
+%var_136 = add i32 %var_137, %var_135
+call void @printi_int(i32 %var_136)
+br label %label_206
+label_206:
+%var_138 = add i8 0, 10
+%var_139 = add i32 0, 8
+%var_141 = zext i8 %var_138 to i32
+%var_140 = sub i32 %var_141, %var_139
+call void @printi_int(i32 %var_140)
+br label %label_213
+label_213:
+%var_142 = add i8 0, 2
+%var_143 = add i32 0, 3
+%var_145 = zext i8 %var_142 to i32
+%var_144 = mul i32 %var_145, %var_143
+call void @printi_int(i32 %var_144)
+br label %label_220
+label_220:
+%var_146 = add i8 0, 4
+%var_147 = add i32 0, 2
+%var_149 = zext i8 %var_146 to i32
+%var_148 = sdiv i32 %var_149, %var_147
+call void @printi_int(i32 %var_148)
+br label %label_227
+label_227:
+%var_150 = add i32 0, 2
+%var_151 = add i8 0, 3
+%var_153 = zext i8 %var_151 to i32
+%var_152 = add i32 %var_150, %var_153
+call void @printi_int(i32 %var_152)
+br label %label_234
+label_234:
+%var_154 = add i32 0, 10
+%var_155 = add i8 0, 8
+%var_157 = zext i8 %var_155 to i32
+%var_156 = sub i32 %var_154, %var_157
+call void @printi_int(i32 %var_156)
+br label %label_241
+label_241:
+%var_158 = add i32 0, 2
+%var_159 = add i8 0, 3
+%var_161 = zext i8 %var_159 to i32
+%var_160 = mul i32 %var_158, %var_161
+call void @printi_int(i32 %var_160)
+br label %label_248
+label_248:
+%var_162 = add i32 0, 4
+%var_163 = add i8 0, 2
+%var_165 = zext i8 %var_163 to i32
+%var_164 = sdiv i32 %var_162, %var_165
+call void @printi_int(i32 %var_164)
+br label %label_255
+label_255:
+%var_166 = add i8 0, 2
+%var_167 = add i32 0, 3
+%var_168 = add i8 0, 5
+%var_170 = zext i8 %var_168 to i32
+%var_169 = mul i32 %var_167, %var_170
+%var_171 = add i32 0, 5
+%var_172 = sdiv i32 %var_169, %var_171
+%var_174 = zext i8 %var_166 to i32
+%var_173 = add i32 %var_174, %var_172
+call void @printi_int(i32 %var_173)
+br label %label_267
+label_267:
+%var_175 = add i8 0, 2
+%var_176 = add i32 0, 3
+%var_178 = zext i8 %var_175 to i32
+%var_177 = mul i32 %var_178, %var_176
+%var_179 = add i8 0, 5
+%var_180 = add i32 0, 5
+%var_182 = zext i8 %var_179 to i32
+%var_181 = mul i32 %var_182, %var_180
+%var_183 = add i32 %var_177, %var_181
+call void @printi_int(i32 %var_183)
+br label %label_279
+label_279:
+%var_184 = add i8 0, 6
+%var_185 = add i32 0, 3
+%var_187 = zext i8 %var_184 to i32
+%var_186 = sdiv i32 %var_187, %var_185
+%var_188 = add i8 0, 200
+%var_189 = add i32 0, 5
+%var_191 = zext i8 %var_188 to i32
+%var_190 = sdiv i32 %var_191, %var_189
+%var_192 = add i32 %var_186, %var_190
+call void @printi_int(i32 %var_192)
+br label %label_291
+label_291:
+%var_193 = add i8 0, 5
+%var_194 = add i32 0, 5
+%var_196 = zext i8 %var_193 to i32
+%var_195 = mul i32 %var_196, %var_194
+%var_197 = add i8 0, 2
+%var_198 = add i32 0, 3
+%var_200 = zext i8 %var_197 to i32
+%var_199 = mul i32 %var_200, %var_198
+%var_201 = sub i32 %var_195, %var_199
+call void @printi_int(i32 %var_201)
+br label %label_303
+label_303:
+%var_202 = add i8 0, 100
+%var_203 = add i32 0, 2
+%var_205 = zext i8 %var_202 to i32
+%var_204 = sdiv i32 %var_205, %var_203
+%var_206 = add i8 0, 200
+%var_207 = add i32 0, 10
+%var_209 = zext i8 %var_206 to i32
+%var_208 = sdiv i32 %var_209, %var_207
+%var_210 = sub i32 %var_204, %var_208
+call void @printi_int(i32 %var_210)
+br label %label_315
+label_315:
+%var_211 = add i8 0, 5
+%var_212 = add i32 0, 5
+%var_214 = zext i8 %var_211 to i32
+%var_213 = mul i32 %var_214, %var_212
+%var_215 = add i8 0, 2
+%var_216 = add i32 0, 3
+%var_218 = zext i8 %var_215 to i32
+%var_217 = mul i32 %var_218, %var_216
+%var_219 = sub i32 %var_213, %var_217
+call void @printi_int(i32 %var_219)
+br label %label_327
+label_327:
+%var_220 = add i8 0, 100
+%var_221 = add i32 0, 2
+%var_223 = zext i8 %var_220 to i32
+%var_222 = sdiv i32 %var_223, %var_221
+%var_224 = add i8 0, 200
+%var_225 = add i32 0, 20
+%var_227 = zext i8 %var_224 to i32
+%var_226 = sdiv i32 %var_227, %var_225
+%var_228 = sub i32 %var_222, %var_226
+call void @printi_int(i32 %var_228)
+br label %label_339
+label_339:
+ret void
+}

@@ -1,0 +1,260 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_17 = constant [17 x i8] c"I heart Compi...\00"
+@var_19 = constant [5 x i8] c"NOT!\00"
+@var_21 = constant [17 x i8] c"I heart Compi...\00"
+@var_23 = constant [5 x i8] c"NOT!\00"
+@var_25 = constant [17 x i8] c"I heart Compi...\00"
+@var_27 = constant [5 x i8] c"NOT!\00"
+@var_28 = constant [13 x i8] c"I really do!\00"
+@var_30 = constant [19 x i8] c"max of 3 and 2 is \00"
+@var_34 = constant [21 x i8] c"max of 3b and 2b is \00"
+@var_39 = constant [27 x i8] c"Is 3 really bigger then 2?\00"
+@var_44 = constant [5 x i8] c"yes!\00"
+@var_45 = constant [4 x i8] c"no!\00"
+define i32 @max_int_int(i32, i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = icmp sge i32 %0, %1
+br i1 %var_1, label %label_4, label %label_7
+br label %label_4
+label_4:
+ret i32 %0
+br label %label_7
+label_7:
+ret i32 %1
+%var_2 = add i32 0, 42
+%var_4 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_2, i32* %var_4
+%var_5 = add i32 0, 42
+ret i32 %var_5
+ret i32 0
+}
+define i8 @maxb_byte_byte(i8, i8) {
+%var_6 = alloca i32, i32 50
+%var_7 = icmp slt i8 %0, %1
+br i1 %var_7, label %label_21, label %label_26
+br label %label_21
+label_21:
+%var_9 = getelementptr i32, i32* %var_6, i32 0
+store i32 0, i32* %var_9
+br label %label_29
+br label %label_26
+label_26:
+ret i8 %0
+br label %label_29
+label_29:
+ret i8 %1
+ret i8 0
+}
+define i1 @isFirstBigger_int_int(i32, i32) {
+%var_10 = alloca i32, i32 50
+%var_11 = icmp sge i32 %0, %1
+br i1 %var_11, label %label_38, label %label_68
+br label %label_38
+label_38:
+%var_12 = icmp ne i32 %0, %1
+br i1 %var_12, label %label_42, label %label_54
+br label %label_42
+label_42:
+br label %TRUE_LIST_label_45
+br label %TRUE_LIST_label_45
+TRUE_LIST_label_45:
+br label %NEXT_LIST_label_45
+FALSE_LIST_label_45:
+br label %NEXT_LIST_label_45
+NEXT_LIST_label_45:
+%var_13 = phi i1 [ 1, %TRUE_LIST_label_45], [0, %FALSE_LIST_label_45]
+ret i1 %var_13
+br label %label_65
+br label %label_54
+label_54:
+br label %FALSE_LIST_label_57
+br label %TRUE_LIST_label_57
+TRUE_LIST_label_57:
+br label %NEXT_LIST_label_57
+FALSE_LIST_label_57:
+br label %NEXT_LIST_label_57
+NEXT_LIST_label_57:
+%var_14 = phi i1 [ 1, %TRUE_LIST_label_57], [0, %FALSE_LIST_label_57]
+ret i1 %var_14
+br label %label_65
+label_65:
+br label %label_79
+br label %label_68
+label_68:
+br label %FALSE_LIST_label_71
+br label %TRUE_LIST_label_71
+TRUE_LIST_label_71:
+br label %NEXT_LIST_label_71
+FALSE_LIST_label_71:
+br label %NEXT_LIST_label_71
+NEXT_LIST_label_71:
+%var_15 = phi i1 [ 1, %TRUE_LIST_label_71], [0, %FALSE_LIST_label_71]
+ret i1 %var_15
+br label %label_79
+label_79:
+ret i1 0
+}
+define void @printStatement_bool(i1) {
+%var_16 = alloca i32, i32 50
+%var_17.ptr = getelementptr[17 x i8], [17 x i8]* @var_17, i32 0, i32 0
+call void @print_string(i8* %var_17.ptr)
+br label %label_87
+label_87:
+%var_18 = icmp ne i1 0, %0
+br i1 %var_18, label %label_94, label %label_91
+br label %label_91
+label_91:
+ret void
+br label %label_94
+label_94:
+%var_19.ptr = getelementptr[5 x i8], [5 x i8]* @var_19, i32 0, i32 0
+call void @print_string(i8* %var_19.ptr)
+br label %label_98
+label_98:
+ret void
+}
+define void @printStatement2_bool(i1) {
+%var_20 = alloca i32, i32 50
+%var_21.ptr = getelementptr[17 x i8], [17 x i8]* @var_21, i32 0, i32 0
+call void @print_string(i8* %var_21.ptr)
+br label %label_106
+label_106:
+%var_22 = icmp ne i1 0, %0
+br i1 %var_22, label %label_110, label %label_117
+br label %label_110
+label_110:
+%var_23.ptr = getelementptr[5 x i8], [5 x i8]* @var_23, i32 0, i32 0
+call void @print_string(i8* %var_23.ptr)
+br label %label_114
+label_114:
+br label %label_120
+br label %label_117
+label_117:
+ret void
+br label %label_120
+label_120:
+ret void
+}
+define void @printStatement3_bool(i1) {
+%var_24 = alloca i32, i32 50
+%var_25.ptr = getelementptr[17 x i8], [17 x i8]* @var_25, i32 0, i32 0
+call void @print_string(i8* %var_25.ptr)
+br label %label_128
+label_128:
+%var_26 = icmp ne i1 0, %0
+br i1 %var_26, label %label_132, label %label_140
+br label %label_132
+label_132:
+%var_27.ptr = getelementptr[5 x i8], [5 x i8]* @var_27, i32 0, i32 0
+call void @print_string(i8* %var_27.ptr)
+br label %label_136
+label_136:
+ret void
+br label %label_143
+br label %label_140
+label_140:
+ret void
+br label %label_143
+label_143:
+%var_28.ptr = getelementptr[13 x i8], [13 x i8]* @var_28, i32 0, i32 0
+call void @print_string(i8* %var_28.ptr)
+br label %label_147
+label_147:
+ret void
+}
+define void @main() {
+%var_29 = alloca i32, i32 50
+%var_30.ptr = getelementptr[19 x i8], [19 x i8]* @var_30, i32 0, i32 0
+call void @print_string(i8* %var_30.ptr)
+br label %label_155
+label_155:
+%var_31 = add i32 0, 3
+%var_32 = add i32 0, 2
+%var_33 = call i32 @max_int_int(i32 %var_31, i32 %var_32)
+call void @printi_int(i32 %var_33)
+br label %label_161
+label_161:
+%var_34.ptr = getelementptr[21 x i8], [21 x i8]* @var_34, i32 0, i32 0
+call void @print_string(i8* %var_34.ptr)
+br label %label_165
+label_165:
+%var_35 = add i8 0, 3
+%var_36 = add i8 0, 2
+%var_37 = call i8 @maxb_byte_byte(i8 %var_35, i8 %var_36)
+%var_38 = zext i8 %var_37 to i32
+call void @printi_int(i32 %var_38)
+br label %label_172
+label_172:
+%var_39.ptr = getelementptr[27 x i8], [27 x i8]* @var_39, i32 0, i32 0
+call void @print_string(i8* %var_39.ptr)
+br label %label_176
+label_176:
+%var_40 = add i32 0, 3
+%var_41 = add i32 0, 2
+%var_42 = call i1 @isFirstBigger_int_int(i32 %var_40, i32 %var_41)
+%var_43 = icmp ne i1 0, %var_42
+br i1 %var_43 , label %label_183, label %label_190
+br label %label_183
+label_183:
+%var_44.ptr = getelementptr[5 x i8], [5 x i8]* @var_44, i32 0, i32 0
+call void @print_string(i8* %var_44.ptr)
+br label %label_187
+label_187:
+br label %label_196
+br label %label_190
+label_190:
+%var_45.ptr = getelementptr[4 x i8], [4 x i8]* @var_45, i32 0, i32 0
+call void @print_string(i8* %var_45.ptr)
+br label %label_194
+label_194:
+br label %label_196
+label_196:
+br label %FALSE_LIST_label_199
+br label %TRUE_LIST_label_199
+TRUE_LIST_label_199:
+br label %NEXT_LIST_label_199
+FALSE_LIST_label_199:
+br label %NEXT_LIST_label_199
+NEXT_LIST_label_199:
+%var_46 = phi i1 [ 1, %TRUE_LIST_label_199], [0, %FALSE_LIST_label_199]
+call void @printStatement_bool(i1 %var_46)
+br label %label_207
+label_207:
+br label %FALSE_LIST_label_210
+br label %TRUE_LIST_label_210
+TRUE_LIST_label_210:
+br label %NEXT_LIST_label_210
+FALSE_LIST_label_210:
+br label %NEXT_LIST_label_210
+NEXT_LIST_label_210:
+%var_47 = phi i1 [ 1, %TRUE_LIST_label_210], [0, %FALSE_LIST_label_210]
+call void @printStatement2_bool(i1 %var_47)
+br label %label_218
+label_218:
+br label %TRUE_LIST_label_221
+br label %TRUE_LIST_label_221
+TRUE_LIST_label_221:
+br label %NEXT_LIST_label_221
+FALSE_LIST_label_221:
+br label %NEXT_LIST_label_221
+NEXT_LIST_label_221:
+%var_48 = phi i1 [ 1, %TRUE_LIST_label_221], [0, %FALSE_LIST_label_221]
+call void @printStatement3_bool(i1 %var_48)
+br label %label_229
+label_229:
+ret void
+}

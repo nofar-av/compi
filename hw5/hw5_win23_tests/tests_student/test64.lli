@@ -1,0 +1,73 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_19 = constant [145 x i8] c"If you set goals and go after them with all the determination you can muster, your gifts will take you places that will amaze you. – Les Brown\00"
+define void @maxTestsCheckTwoBooleanVariables() {
+%var_0 = alloca i32, i32 50
+%var_2 = getelementptr i32, i32* %var_0, i32 0
+store i32 0, i32* %var_2
+br label %TRUE_LIST_label_5
+br label %TRUE_LIST_label_5
+TRUE_LIST_label_5:
+br label %NEXT_LIST_label_5
+FALSE_LIST_label_5:
+br label %NEXT_LIST_label_5
+NEXT_LIST_label_5:
+%var_3 = phi i1 [ 1, %TRUE_LIST_label_5], [0, %FALSE_LIST_label_5]
+%var_4 = zext i1 %var_3 to i32
+%var_5 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_4, i32* %var_5
+%var_7 = getelementptr i32, i32* %var_0, i32 1
+store i32 0, i32* %var_7
+br label %FALSE_LIST_label_18
+br label %TRUE_LIST_label_18
+TRUE_LIST_label_18:
+br label %NEXT_LIST_label_18
+FALSE_LIST_label_18:
+br label %NEXT_LIST_label_18
+NEXT_LIST_label_18:
+%var_8 = phi i1 [ 1, %TRUE_LIST_label_18], [0, %FALSE_LIST_label_18]
+%var_9 = zext i1 %var_8 to i32
+%var_10 = getelementptr i32, i32* %var_0, i32 1
+store i32 %var_9, i32* %var_10
+%var_11 = getelementptr i32, i32* %var_0, i32 0
+%var_12 = load i32,  i32* %var_11
+%var_13 = trunc i32 %var_12 to i1
+%var_14 = icmp ne i1 0, %var_13
+br i1 %var_14, label %label_33, label %label_46
+br label %label_33
+label_33:
+%var_15 = getelementptr i32, i32* %var_0, i32 1
+%var_16 = load i32,  i32* %var_15
+%var_17 = trunc i32 %var_16 to i1
+%var_18 = icmp ne i1 0, %var_17
+br i1 %var_18, label %label_46, label %label_40
+br label %label_40
+label_40:
+%var_19.ptr = getelementptr[145 x i8], [145 x i8]* @var_19, i32 0, i32 0
+call void @print_string(i8* %var_19.ptr)
+br label %label_44
+label_44:
+br label %label_46
+label_46:
+ret void
+}
+define void @main() {
+%var_20 = alloca i32, i32 50
+call void @maxTestsCheckTwoBooleanVariables()
+br label %label_53
+label_53:
+ret void
+}

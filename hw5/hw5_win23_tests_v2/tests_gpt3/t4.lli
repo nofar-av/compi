@@ -1,0 +1,111 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+@var_3 = constant [4 x i8] c"a>3\00"
+@var_5 = constant [10 x i8] c"correct_3\00"
+@var_10 = constant [4 x i8] c"a>4\00"
+@var_12 = constant [10 x i8] c"correct_2\00"
+@var_17 = constant [4 x i8] c"a>5\00"
+@var_19 = constant [10 x i8] c"correct_1\00"
+define i32 @func3_int(i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 3
+%var_2 = icmp sgt i32 %0, %var_1
+br i1 %var_2, label %label_5, label %label_14
+br label %label_5
+label_5:
+%var_3.ptr = getelementptr[4 x i8], [4 x i8]* @var_3, i32 0, i32 0
+call void @print_string(i8* %var_3.ptr)
+br label %label_9
+label_9:
+%var_4 = add i32 0, 32
+ret i32 %var_4
+br label %label_22
+br label %label_14
+label_14:
+%var_5.ptr = getelementptr[10 x i8], [10 x i8]* @var_5, i32 0, i32 0
+call void @print_string(i8* %var_5.ptr)
+br label %label_18
+label_18:
+%var_6 = add i32 0, 22
+ret i32 %var_6
+br label %label_22
+label_22:
+ret i32 0
+}
+define i32 @func2_int(i32) {
+%var_7 = alloca i32, i32 50
+%var_8 = add i32 0, 4
+%var_9 = icmp sgt i32 %0, %var_8
+br i1 %var_9, label %label_31, label %label_40
+br label %label_31
+label_31:
+%var_10.ptr = getelementptr[4 x i8], [4 x i8]* @var_10, i32 0, i32 0
+call void @print_string(i8* %var_10.ptr)
+br label %label_35
+label_35:
+%var_11 = add i32 0, 13
+ret i32 %var_11
+br label %label_48
+br label %label_40
+label_40:
+%var_12.ptr = getelementptr[10 x i8], [10 x i8]* @var_12, i32 0, i32 0
+call void @print_string(i8* %var_12.ptr)
+br label %label_44
+label_44:
+%var_13 = add i32 0, 12
+ret i32 %var_13
+br label %label_48
+label_48:
+ret i32 0
+}
+define i32 @func1_int(i32) {
+%var_14 = alloca i32, i32 50
+%var_15 = add i32 0, 15
+%var_16 = icmp sgt i32 %0, %var_15
+br i1 %var_16, label %label_57, label %label_66
+br label %label_57
+label_57:
+%var_17.ptr = getelementptr[4 x i8], [4 x i8]* @var_17, i32 0, i32 0
+call void @print_string(i8* %var_17.ptr)
+br label %label_61
+label_61:
+%var_18 = add i32 0, 3
+ret i32 %var_18
+br label %label_75
+br label %label_66
+label_66:
+%var_19.ptr = getelementptr[10 x i8], [10 x i8]* @var_19, i32 0, i32 0
+call void @print_string(i8* %var_19.ptr)
+br label %label_70
+label_70:
+%var_20 = add i32 0, 2
+%var_21 = mul i32 %var_20, %0
+ret i32 %var_21
+br label %label_75
+label_75:
+ret i32 0
+}
+define void @main() {
+%var_22 = alloca i32, i32 50
+%var_23 = add i32 0, 4
+%var_24 = call i32 @func3_int(i32 %var_23)
+%var_25 = call i32 @func2_int(i32 %var_24)
+%var_26 = call i32 @func1_int(i32 %var_25)
+call void @printi_int(i32 %var_26)
+br label %label_86
+label_86:
+ret void
+}

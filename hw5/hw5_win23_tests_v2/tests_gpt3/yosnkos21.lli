@@ -1,0 +1,84 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define i32 @foo() {
+%var_0 = alloca i32, i32 50
+%var_2 = getelementptr i32, i32* %var_0, i32 0
+store i32 0, i32* %var_2
+%var_3 = getelementptr i32, i32* %var_0, i32 0
+%var_4 = load i32,  i32* %var_3
+ret i32 %var_4
+ret i32 0
+}
+define i8 @bar() {
+%var_6 = alloca i32, i32 50
+%var_8 = getelementptr i32, i32* %var_6, i32 0
+store i32 0, i32* %var_8
+%var_9 = getelementptr i32, i32* %var_6, i32 0
+%var_10 = load i32,  i32* %var_9
+%var_11 = trunc i32 %var_10 to i8
+ret i8 %var_11
+ret i8 0
+}
+define i1 @zoo() {
+%var_12 = alloca i32, i32 50
+%var_14 = getelementptr i32, i32* %var_12, i32 0
+store i32 0, i32* %var_14
+%var_15 = getelementptr i32, i32* %var_12, i32 0
+%var_16 = load i32,  i32* %var_15
+%var_17 = trunc i32 %var_16 to i1
+%var_18 = icmp ne i1 0, %var_17
+br i1 %var_18, label %TRUE_LIST_label_28, label %FALSE_LIST_label_28
+br label %TRUE_LIST_label_28
+TRUE_LIST_label_28:
+br label %NEXT_LIST_label_28
+FALSE_LIST_label_28:
+br label %NEXT_LIST_label_28
+NEXT_LIST_label_28:
+%var_19 = phi i1 [ 1, %TRUE_LIST_label_28], [0, %FALSE_LIST_label_28]
+ret i1 %var_19
+ret i1 0
+}
+define void @main() {
+%var_20 = alloca i32, i32 50
+%var_21 = call i32 @foo()
+call void @printi_int(i32 %var_21)
+br label %label_42
+label_42:
+%var_22 = call i8 @bar()
+%var_23 = zext i8 %var_22 to i32
+call void @printi_int(i32 %var_23)
+br label %label_47
+label_47:
+%var_24 = call i1 @zoo()
+%var_25 = icmp ne i1 0, %var_24
+br i1 %var_25 , label %label_52, label %label_59
+br label %label_52
+label_52:
+%var_26 = add i32 0, 1
+call void @printi_int(i32 %var_26)
+br label %label_56
+label_56:
+br label %label_65
+br label %label_59
+label_59:
+%var_27 = add i32 0, 0
+call void @printi_int(i32 %var_27)
+br label %label_63
+label_63:
+br label %label_65
+label_65:
+ret void
+}

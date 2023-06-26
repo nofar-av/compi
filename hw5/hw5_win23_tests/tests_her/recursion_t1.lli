@@ -1,0 +1,75 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define i32 @foo_int(i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 0
+%var_2 = icmp eq i32 %0, %var_1
+br i1 %var_2, label %label_5, label %label_9
+br label %label_5
+label_5:
+%var_3 = add i32 0, 0
+ret i32 %var_3
+br label %label_9
+label_9:
+%var_4 = add i32 0, 1
+%var_5 = icmp eq i32 %0, %var_4
+br i1 %var_5, label %label_14, label %label_18
+br label %label_14
+label_14:
+%var_6 = add i32 0, 1
+ret i32 %var_6
+br label %label_18
+label_18:
+%var_7 = add i32 0, 2
+%var_8 = sub i32 %0, %var_7
+%var_9 = call i32 @foo_int(i32 %var_8)
+ret i32 %var_9
+ret i32 0
+}
+define void @main() {
+%var_10 = alloca i32, i32 50
+%var_11 = add i32 0, 5
+%var_12 = call i32 @foo_int(i32 %var_11)
+call void @printi_int(i32 %var_12)
+br label %label_31
+label_31:
+%var_13 = add i32 0, 4
+%var_14 = call i32 @foo_int(i32 %var_13)
+call void @printi_int(i32 %var_14)
+br label %label_36
+label_36:
+%var_15 = add i32 0, 3
+%var_16 = call i32 @foo_int(i32 %var_15)
+call void @printi_int(i32 %var_16)
+br label %label_41
+label_41:
+%var_17 = add i32 0, 2
+%var_18 = call i32 @foo_int(i32 %var_17)
+call void @printi_int(i32 %var_18)
+br label %label_46
+label_46:
+%var_19 = add i32 0, 1
+%var_20 = call i32 @foo_int(i32 %var_19)
+call void @printi_int(i32 %var_20)
+br label %label_51
+label_51:
+%var_21 = add i32 0, 0
+%var_22 = call i32 @foo_int(i32 %var_21)
+call void @printi_int(i32 %var_22)
+br label %label_56
+label_56:
+ret void
+}

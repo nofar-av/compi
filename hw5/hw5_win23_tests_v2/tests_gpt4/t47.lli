@@ -1,0 +1,50 @@
+@.intFormat = internal constant [4 x i8] c"%d\0A\00"
+@.DIVIDE_BY_ZERO.str = internal constant [23 x i8] c"Error division by zero\00"
+declare i32 @printf(i8*, ...)
+declare void @exit(i32)
+@.int_specifier = constant [4 x i8] c"%d\0A\00"
+@.str_specifier = constant [4 x i8] c"%s\0A\00"
+define void @print_string(i8*) {
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)
+ret void
+}
+define void @printi_int(i32) {
+%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0
+call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
+ret void
+}
+define void @testRecursion_int(i32) {
+%var_0 = alloca i32, i32 50
+%var_1 = add i32 0, 10
+%var_2 = icmp sge i32 %0, %var_1
+br i1 %var_2, label %label_5, label %label_8
+br label %label_5
+label_5:
+ret void
+br label %label_8
+label_8:
+call void @printi_int(i32 %0)
+br label %label_11
+label_11:
+%var_3 = add i32 0, 1
+%var_4 = add i32 %0, %var_3
+call void @testRecursion_int(i32 %var_4)
+br label %label_16
+label_16:
+ret void
+}
+define void @maxTestsTestRecursion() {
+%var_5 = alloca i32, i32 50
+%var_6 = add i32 0, 0
+call void @testRecursion_int(i32 %var_6)
+br label %label_24
+label_24:
+ret void
+}
+define void @main() {
+%var_7 = alloca i32, i32 50
+call void @maxTestsTestRecursion()
+br label %label_31
+label_31:
+ret void
+}
