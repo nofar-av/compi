@@ -1452,7 +1452,7 @@ yyreduce:
 
   case 22:
 #line 77 "parser.ypp" /* yacc.c:1646  */
-    { }
+    { (yyval) = new Statement(dynamic_cast<Call*>((yyvsp[-1]))); /*code_gen.bool_exp(&exp);*/ }
 #line 1457 "parser.tab.cpp" /* yacc.c:1646  */
     break;
 

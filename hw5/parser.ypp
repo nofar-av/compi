@@ -74,7 +74,7 @@ Statement : LBRACE AddScopeMarker Statements RBRACE { $$ = new Statement(dynamic
         | Type ID SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type); }
         | Type ID ASSIGN Exp SC { $$ = new Statement($2->value, (dynamic_cast<Type*>($1))->type, dynamic_cast<Exp*>($4)); }
         | ID ASSIGN Exp SC { $$ = new Statement($1->value, dynamic_cast<Exp*>($3)); }
-        | Call SC { }
+        | Call SC { $$ = new Statement(dynamic_cast<Call*>($1)); /*code_gen.bool_exp(&exp);*/ }
         | RETURN SC { $$ = new Statement(); }
         | RETURN Exp SC { $$ = new Statement(dynamic_cast<Exp*>($2)); }
         | IF LPAREN CheckBool RPAREN AddScopeMarker Label Statement { $$ = new Statement(dynamic_cast<Exp*>($3), dynamic_cast<Label*>($6), dynamic_cast<Statement*>($7));

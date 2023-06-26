@@ -72,12 +72,12 @@ void Generator::emitDeclarations() {
     buffer.emitGlobal("@.str_specifier = constant [4 x i8] c\"%s\\0A\\00\"");
 }
 void Generator::emitPrintFuncs() {
-    buffer.emitGlobal("define void @print(i8*) {");
+    buffer.emitGlobal("define void @print_string(i8*) {");
     buffer.emitGlobal("call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.str_specifier, i32 0, i32 0), i8* %0)");
     buffer.emitGlobal("ret void");
     buffer.emitGlobal("}");
 
-    buffer.emitGlobal("define void @printi(i32) {");
+    buffer.emitGlobal("define void @printi_int(i32) {");
     buffer.emitGlobal("%format_ptr = getelementptr [4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0");
     buffer.emitGlobal("call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)");
     buffer.emitGlobal("ret void");
@@ -188,11 +188,11 @@ void Generator::genStringVar(Exp& exp) {
     exp.reg = reg + ".ptr";
 }
 
-string Generator::allocateVar() {
-    string reg_ptr = this->freshVar();
-    buffer.emit(reg_ptr + " = alloca i32");
-    return reg_ptr;
-}
+// string Generator::allocateVar() {
+//     string reg_ptr = this->freshVar();
+//     buffer.emit(reg_ptr + " = alloca i32");
+//     return reg_ptr;
+// }
 
 shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
     if (exp.type != "bool") {
@@ -200,7 +200,8 @@ shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
     }
     
     shared_ptr<Exp> bool_exp = make_shared<Exp>();
-    bool_exp->reg = this->allocateVar();
+    // bool_exp->reg = this->allocateVar();
+    bool_exp->reg = this->freshVar();
     bool_exp->type = "bool";
     string true_list_label = buffer.genLabel("TRUE_LIST_");
     string false_list_label = buffer.genLabel("FALSE_LIST_");
@@ -222,10 +223,13 @@ shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
     return bool_exp;
 }
 
-void Generator::genStoreVar(string rbp, int offset, string value) {
+void Generator::genStoreVar(string rbp, int offset, string value, const string& type) {
+    string reg_value = this->freshVar();
     string reg_ptr = this->freshVar(); // should add reg to symbol????
+    
+    buffer.emit(reg_value + " = zext " + fanCTypeToIRString(type) + " " + value + " to i32");
     buffer.emit(reg_ptr + " = getelementptr i32, i32* " + rbp + ", i32 " + to_string(offset));
-    buffer.emit("store i32 " + value + ", i32* " + reg_ptr);
+    buffer.emit("store i32 " + reg_value + ", i32* " + reg_ptr);
 }
 
 string Generator::genLoadVar(string rbp, int offset) {
@@ -260,6 +264,7 @@ void Generator::genFuncDecl(string name, vector<string> params, string ret_type)
     for(auto it = params.begin(); it != params.end(); it++)
     {
         args_line += fanCTypeToIRString(*it) + ", ";
+        name += "_" + *it;
     }
 
     if (args_line != "") { // Remove the comma and space from last arg
@@ -267,4 +272,30 @@ void Generator::genFuncDecl(string name, vector<string> params, string ret_type)
     }
 
     buffer.emit("define " + fanCTypeToIRString(ret_type) + " @" + name + "(" + args_line + ") {");
+}
+
+void Generator::genCall(string name, Call& func, vector<shared_ptr<Exp>> params) {
+    string args_line = "";
+    for(auto it = params.begin(); it != params.end(); it++)
+    {
+        args_line += fanCTypeToIRString((*it)->type) + " " + (*it)->reg;
+        name += "_" + (*it)->type;
+    }
+    string reg_str = "";
+    func.reg = "";
+    if (func.type != "void") {
+        func.reg = this->freshVar();
+        reg_str = func.reg + " = ";
+    }
+    buffer.emit(reg_str + "call " + fanCTypeToIRString(func.type) + " @" + name + "(" + args_line + ")");
+    
+    if (func.type == "bool") {
+        string reg_bool = this->freshVar();
+        //buffer.emit(reg_bool + " = icmp ne i32 0, " + func.reg);
+        buffer.emit(reg_bool + " = icmp ne i1 0, " + func.reg);
+        func.reg = reg_bool;
+        int address = buffer.emit("br i1 " + func.reg + " , label @, label @");
+        func.true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
+        func.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+    }
 }

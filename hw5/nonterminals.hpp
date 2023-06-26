@@ -27,6 +27,7 @@ class ExpList;
 class Exp;
 class Type;
 class Statement;
+class Call;
 
 class Node {
 public:
@@ -118,6 +119,7 @@ public:
     Statement(string name, string ltype, Exp* rexp);
     Statement(string name, Exp* exp);
     Statement(Statements* statements);
+    Statement(Call* func);
     Statement();
     Statement(Exp* exp);
     Statement(bool is_break);
@@ -133,7 +135,7 @@ public:
     string type;
     bp_list true_list;
     bp_list false_list;
-    bp_list next_list;
+    //bp_list next_list;
     Call(string name);
     Call(string name, ExpList *explist);
     virtual ~Call() = default;

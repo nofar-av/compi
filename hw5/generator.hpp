@@ -7,6 +7,7 @@
 
 class Exp;
 class Statement;
+class Call;
 
 class Generator
 {
@@ -24,14 +25,15 @@ public:
     //void genBoolVar(Statement& stmnt);
     //void genNumVar(Statement& stmnt);
     void genStringVar(Exp& exp);
-    string allocateVar();
+    // string allocateVar();
     shared_ptr<Exp> genBoolExp(Exp &exp);
-    void genStoreVar(string rbp, int offset, string value);
+    void genStoreVar(string rbp, int offset, string value, const string& type);
     string genLoadVar(string rbp, int offset);
     void genRet(shared_ptr<Exp> exp = nullptr);
     void genLabelAfterIf(Exp* exp);
     void genEndOfFunc(string type);
     void genFuncDecl(string name, vector<string> params, string type);
+    void genCall(string name, Call& func, vector<shared_ptr<Exp>> params = {});
 
 private:
     int reg_num;

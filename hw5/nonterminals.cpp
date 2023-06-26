@@ -68,7 +68,8 @@ Exp::Exp(string value) : Node(value) , type() {
 
     if (sym.type == "bool") {
         string cmp_reg = generator.freshVar();
-        buffer.emit(cmp_reg + " = icmp ne i32 0, " + this->reg);
+        //buffer.emit(cmp_reg + " = icmp ne i32 0, " + this->reg);
+        buffer.emit(cmp_reg + " = icmp ne i1 0, " + this->reg);
         int address = buffer.emit("br i1 " + cmp_reg + ", label @, label @");
         this->true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
         this->false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
@@ -150,7 +151,9 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
 }
 
 Exp::Exp(Call *call) : Node(), type(call->type), reg(call->reg), false_list(call->false_list),
-true_list(call->true_list) , next_list(call->next_list) { }
+true_list(call->true_list) , next_list() { 
+
+}
 
 ExpList::ExpList(Exp *exp) : Node(), exps() {
     shared_ptr<Exp> new_exp = generator.genBoolExp(*exp);
@@ -171,6 +174,8 @@ Call::Call(string name) : Node(name) {
     }
     Symbol& func = symtable.getFunction(name, {});
     this->type = func.type;
+    
+    generator.genCall(name, *this);
 }
 
 Call::Call(string name, ExpList *explist) : Node(name) {
@@ -181,6 +186,8 @@ Call::Call(string name, ExpList *explist) : Node(name) {
 
     Symbol& func = symtable.getFunction(name, convertExpToString(explist->exps));
     this->type = func.type;
+
+    generator.genCall(name, *this, explist->exps);
 }
 
 //function parameter
@@ -227,7 +234,7 @@ Statement::Statement(string name, string type) : Node() {
         exp.type = "bool";
         generator.createSimpleBoolBranch(exp);
     }
-    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, "0");
+    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, "0", type);
 }
 
 //Statement -> Type ID = EXP SC
@@ -243,7 +250,7 @@ Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
         reg = temp->reg;
     }
 
-    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, reg);
+    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, reg, ltype);
 }
 
 //Statement -> ID = EXP SC
@@ -263,13 +270,17 @@ Statement::Statement(string name, Exp* exp) : Node() {
         reg = temp->reg;
     }
 
-    generator.genStoreVar(symtable.getCurrScopeRbp(), id.offset, reg);
+    generator.genStoreVar(symtable.getCurrScopeRbp(), id.offset, reg, id.type);
 }
 
 // Statement -> { Statements }
 Statement::Statement(Statements* statements) : Node() {
     this->break_list = bp_list(statements->break_list);
     this->cont_list = bp_list(statements->cont_list);
+}
+
+Statement::Statement(Call* func) : Node(), break_list(), cont_list() {
+
 }
 
 // Statement ->  RETURN SC

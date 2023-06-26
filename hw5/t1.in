@@ -1,10 +1,23 @@
-void main()
-{
-    int x = 1;
-    if(1>2)
+void printByValue(bool val) {
+	if (val)
+		print("val is true");
+	else {
+		print("val is false");
+	}
+}
+
+void main() {
+	printByValue(true);
+	printByValue(false);
+
+	if(true)
     {
-        x = 1;
-        return;
+        print("true");
     }
-    x = 2;
+
+    if(false or false and true)
+    {
+        print("true");
+    }
+    
 }
