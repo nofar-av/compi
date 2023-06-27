@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_5 = constant [19 x i8] c"called printAndRet\00"
 @var_8 = constant [4 x i8] c"a6=\00"
 @var_9 = constant [4 x i8] c"a9=\00"
@@ -228,6 +238,7 @@ label_192:
 %var_144 = call i32 @bar_int_int(i32 %var_142, i32 %var_143)
 %var_145 = add i32 0, 0
 %var_146 = call i32 @fu_int(i32 %var_145)
+call void @check_div_error(i32 %var_146)
 %var_147 = sdiv i32 %var_144, %var_146
 %var_148 = add i32 %var_141, %var_147
 %var_149 = add i32 0, 7
@@ -237,7 +248,7 @@ label_192:
 %var_153 = call i32 @fu_int(i32 %var_152)
 %var_154 = sub i32 %var_151, %var_153
 %var_155 = call i32 @foo_int_int_int_int_int_int_int_int_int_int(i32 %var_129, i32 %var_134, i32 %var_137, i32 %var_138, i32 %var_139, i32 %var_140, i32 %var_148, i32 %var_149, i32 %var_150, i32 %var_154)
-br label %label_221
-label_221:
+br label %label_222
+label_222:
 ret void
 }

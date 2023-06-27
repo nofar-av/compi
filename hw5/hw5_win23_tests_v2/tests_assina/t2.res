@@ -4,4 +4,4 @@ now calculating 1 + 2:
 The result is:
 3
 now calculating prev_res/0 
-You shouldn't be here!
+Error division by zero

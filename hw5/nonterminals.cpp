@@ -145,7 +145,12 @@ Exp::Exp(Node *terminal, Node *type) : Node(terminal->value) {
             exit(0);
     }
     this->type = new_type->type;
-    this->reg = exp->reg;
+    if (exp->type == new_type->type) {
+        this->reg = exp->reg;        
+    }
+    else {
+        generator.genConversion(*this, *exp);
+    }
     this->false_list = bp_list(exp->false_list);
     this->true_list = bp_list(exp->true_list);     
     this->next_list = bp_list(exp->next_list);
@@ -176,7 +181,7 @@ Call::Call(string name) : Node(name) {
     Symbol& func = symtable.getFunction(name, {});
     this->type = func.type;
     
-    generator.genCall(name, *this);
+    generator.genCall(name, *this, func);
 }
 
 Call::Call(string name, ExpList *explist) : Node(name) {
@@ -188,7 +193,7 @@ Call::Call(string name, ExpList *explist) : Node(name) {
     Symbol& func = symtable.getFunction(name, convertExpToString(explist->exps));
     this->type = func.type;
 
-    generator.genCall(name, *this, explist->exps);
+    generator.genCall(name, *this, func, explist->exps);
 }
 
 //function parameter
@@ -252,7 +257,7 @@ Statement::Statement(string name, string ltype, Exp* rexp) : Node() {
         reg = temp->reg;
     }
 
-    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, reg, ltype);
+    generator.genStoreVar(symtable.getCurrScopeRbp(), offset, reg, ltype, rexp->type);
 }
 
 //Statement -> ID = EXP SC
@@ -272,7 +277,7 @@ Statement::Statement(string name, Exp* exp) : Node() {
         reg = temp->reg;
     }
 
-    generator.genStoreVar(symtable.getCurrScopeRbp(), id.offset, reg, id.type);
+    generator.genStoreVar(symtable.getCurrScopeRbp(), id.offset, reg, id.type, exp->type);
 }
 
 // Statement -> { Statements }

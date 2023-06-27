@@ -13,84 +13,96 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i32 0, 3
-%var_2 = zext i8 %var_1 to i32
-%var_3 = getelementptr i32, i32* %var_0, i32 0
-store i32 %var_2, i32* %var_3
-br label %label_6
-label_6:
+%var_2 = trunc i32 %var_1 to i8
+%var_3 = zext i8 %var_2 to i32
 %var_4 = getelementptr i32, i32* %var_0, i32 0
-%var_5 = load i32,  i32* %var_4
-%var_6 = trunc i32 %var_5 to i8
-%var_7 = add i32 0, 0
-%var_9 = zext i8 %var_6 to i32
-%var_8 = icmp sgt i32 %var_9, %var_7
-br i1 %var_8, label %label_15, label %label_78
-br label %label_15
-label_15:
-br label %label_17
-label_17:
-br label %label_20
-br label %label_20
-label_20:
-br label %label_24
-br label %label_17
-label_24:
-%var_10 = add i32 0, 2
-%var_12 = getelementptr i32, i32* %var_0, i32 1
-store i32 %var_10, i32* %var_12
-br label %label_28
-label_28:
+store i32 %var_3, i32* %var_4
+br label %label_7
+label_7:
+%var_5 = getelementptr i32, i32* %var_0, i32 0
+%var_6 = load i32,  i32* %var_5
+%var_7 = trunc i32 %var_6 to i8
+%var_8 = add i32 0, 0
+%var_10 = zext i8 %var_7 to i32
+%var_9 = icmp sgt i32 %var_10, %var_8
+br i1 %var_9, label %label_16, label %label_80
+br label %label_16
+label_16:
+br label %label_18
+label_18:
+br label %label_21
+br label %label_21
+label_21:
+br label %label_25
+br label %label_18
+label_25:
+%var_11 = add i32 0, 2
 %var_13 = getelementptr i32, i32* %var_0, i32 1
-%var_14 = load i32,  i32* %var_13
-%var_16 = add i32 0, 0
-%var_17 = icmp sgt i32 %var_14, %var_16
-br i1 %var_17, label %label_35, label %label_61
-br label %label_35
-label_35:
-%var_18 = getelementptr i32, i32* %var_0, i32 1
-%var_19 = load i32,  i32* %var_18
-%var_21 = add i32 0, 1
-%var_22 = sub i32 %var_19, %var_21
-%var_24 = getelementptr i32, i32* %var_0, i32 1
-store i32 %var_22, i32* %var_24
+store i32 %var_11, i32* %var_13
+br label %label_29
+label_29:
+%var_14 = getelementptr i32, i32* %var_0, i32 1
+%var_15 = load i32,  i32* %var_14
+%var_17 = add i32 0, 0
+%var_18 = icmp sgt i32 %var_15, %var_17
+br i1 %var_18, label %label_36, label %label_62
+br label %label_36
+label_36:
+%var_19 = getelementptr i32, i32* %var_0, i32 1
+%var_20 = load i32,  i32* %var_19
+%var_22 = add i32 0, 1
+%var_23 = sub i32 %var_20, %var_22
 %var_25 = getelementptr i32, i32* %var_0, i32 1
-%var_26 = load i32,  i32* %var_25
-%var_28 = add i32 0, 1
-%var_29 = icmp eq i32 %var_26, %var_28
-br i1 %var_29, label %label_48, label %label_51
-br label %label_48
-label_48:
-br label %label_28
-br label %label_51
-label_51:
-%var_30 = add i32 0, 10
-%var_31 = getelementptr i32, i32* %var_0, i32 1
-%var_32 = load i32,  i32* %var_31
-%var_34 = add i32 %var_30, %var_32
-call void @printi_int(i32 %var_34)
-br label %label_58
-label_58:
-br label %label_28
-label_61:
-%var_35 = getelementptr i32, i32* %var_0, i32 0
-%var_36 = load i32,  i32* %var_35
-%var_37 = trunc i32 %var_36 to i8
-%var_38 = zext i8 %var_37 to i32
-call void @printi_int(i32 %var_38)
-br label %label_67
-label_67:
-%var_39 = getelementptr i32, i32* %var_0, i32 0
-%var_40 = load i32,  i32* %var_39
-%var_41 = trunc i32 %var_40 to i8
-%var_42 = add i32 0, 1
-%var_43 = sub i8 %var_41, %var_42
-%var_44 = zext i8 %var_43 to i32
-%var_45 = getelementptr i32, i32* %var_0, i32 0
-store i32 %var_44, i32* %var_45
-br label %label_6
-label_78:
+store i32 %var_23, i32* %var_25
+%var_26 = getelementptr i32, i32* %var_0, i32 1
+%var_27 = load i32,  i32* %var_26
+%var_29 = add i32 0, 1
+%var_30 = icmp eq i32 %var_27, %var_29
+br i1 %var_30, label %label_49, label %label_52
+br label %label_49
+label_49:
+br label %label_29
+br label %label_52
+label_52:
+%var_31 = add i32 0, 10
+%var_32 = getelementptr i32, i32* %var_0, i32 1
+%var_33 = load i32,  i32* %var_32
+%var_35 = add i32 %var_31, %var_33
+call void @printi_int(i32 %var_35)
+br label %label_59
+label_59:
+br label %label_29
+label_62:
+%var_36 = getelementptr i32, i32* %var_0, i32 0
+%var_37 = load i32,  i32* %var_36
+%var_38 = trunc i32 %var_37 to i8
+%var_39 = zext i8 %var_38 to i32
+call void @printi_int(i32 %var_39)
+br label %label_68
+label_68:
+%var_40 = getelementptr i32, i32* %var_0, i32 0
+%var_41 = load i32,  i32* %var_40
+%var_42 = trunc i32 %var_41 to i8
+%var_43 = add i32 0, 1
+%var_44 = trunc i32 %var_43 to i8
+%var_45 = sub i8 %var_42, %var_44
+%var_46 = zext i8 %var_45 to i32
+%var_47 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_46, i32* %var_47
+br label %label_7
+label_80:
 ret void
 }

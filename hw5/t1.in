@@ -1,12 +1,10 @@
-byte returnByte() {
-	return 200b;
+void maxTestsBigTruncationTest() {
+	int t = 126b + 224b + 139 - 141b - 225b;
+	printi(t);
+	int s = 126b + 224b + 139b - 141b - 225b;
+	printi(s);
 }
-void maxTestsAssignFromFunc() {
-	byte x = returnByte();
-	printi(x);
-}
-
 
 void main() {
-     maxTestsAssignFromFunc();
+     maxTestsBigTruncationTest();
 }

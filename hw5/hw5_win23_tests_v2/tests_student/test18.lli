@@ -13,10 +13,21 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @maxTestscheckBasicArithmetics() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i32 0, 30
 %var_2 = add i32 0, 2
+call void @check_div_error(i32 %var_2)
 %var_3 = sdiv i32 %var_1, %var_2
 %var_4 = add i32 0, 3
 %var_5 = mul i32 %var_3, %var_4
@@ -29,12 +40,14 @@ store i32 %var_9, i32* %var_11
 %var_12 = getelementptr i32, i32* %var_0, i32 0
 %var_13 = load i32,  i32* %var_12
 call void @printi_int(i32 %var_13)
-br label %label_16
-label_16:
+br label %label_17
+label_17:
 %var_15 = add i32 0, 30
 %var_16 = add i32 0, 2
+call void @check_div_error(i32 %var_16)
 %var_17 = sdiv i32 %var_15, %var_16
 %var_18 = add i32 0, 3
+call void @check_div_error(i32 %var_18)
 %var_19 = sdiv i32 %var_17, %var_18
 %var_20 = add i32 0, 2
 %var_21 = mul i32 %var_19, %var_20
@@ -49,14 +62,14 @@ store i32 %var_27, i32* %var_29
 %var_30 = getelementptr i32, i32* %var_0, i32 0
 %var_31 = load i32,  i32* %var_30
 call void @printi_int(i32 %var_31)
-br label %label_36
-label_36:
+br label %label_39
+label_39:
 ret void
 }
 define void @main() {
 %var_33 = alloca i32, i32 50
 call void @maxTestscheckBasicArithmetics()
-br label %label_43
-label_43:
+br label %label_46
+label_46:
 ret void
 }

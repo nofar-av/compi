@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define i32 @gcd_int_int(i32, i32) {
 %var_0 = alloca i32, i32 50
 %var_1 = icmp slt i32 %0, %1
@@ -31,6 +41,7 @@ label_13:
 ret i32 %0
 br label %label_16
 label_16:
+call void @check_div_error(i32 %1)
 %var_5 = sdiv i32 %0, %1
 %var_7 = getelementptr i32, i32* %var_0, i32 0
 store i32 %var_5, i32* %var_7
@@ -52,7 +63,7 @@ define void @main() {
 %var_21 = add i32 0, 33
 %var_22 = call i32 @gcd_int_int(i32 %var_20, i32 %var_21)
 call void @printi_int(i32 %var_22)
-br label %label_39
-label_39:
+br label %label_40
+label_40:
 ret void
 }

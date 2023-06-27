@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @maxTestscheckBasicArithmetics() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i32 0, 3
@@ -43,6 +53,7 @@ br label %label_26
 label_26:
 %var_23 = add i32 0, 32
 %var_24 = add i32 0, 2
+call void @check_div_error(i32 %var_24)
 %var_25 = sdiv i32 %var_23, %var_24
 %var_26 = add i32 0, 5
 %var_27 = add i32 0, 3
@@ -53,14 +64,14 @@ store i32 %var_29, i32* %var_31
 %var_32 = getelementptr i32, i32* %var_0, i32 0
 %var_33 = load i32,  i32* %var_32
 call void @printi_int(i32 %var_33)
-br label %label_40
-label_40:
+br label %label_41
+label_41:
 ret void
 }
 define void @main() {
 %var_35 = alloca i32, i32 50
 call void @maxTestscheckBasicArithmetics()
-br label %label_47
-label_47:
+br label %label_48
+label_48:
 ret void
 }

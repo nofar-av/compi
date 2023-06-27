@@ -13,10 +13,20 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_25 = constant [32 x i8] c"Invalid input! Please try again\00"
 @var_71 = constant [2 x i8] c"*\00"
 @var_72 = constant [2 x i8] c" \00"
-@var_95 = constant [32 x i8] c"Maximum number of tries reached\00"
+@var_96 = constant [32 x i8] c"Maximum number of tries reached\00"
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i8 0, 0
@@ -37,7 +47,7 @@ label_13:
 %var_12 = trunc i32 %var_11 to i8
 %var_13 = add i8 0, 3
 %var_14 = icmp slt i8 %var_12, %var_13
-br i1 %var_14, label %label_21, label %label_148
+br i1 %var_14, label %label_21, label %label_149
 br label %label_21
 label_21:
 %var_15 = getelementptr i32, i32* %var_0, i32 1
@@ -60,7 +70,7 @@ label_37:
 call void @print_string(i8* %var_25.ptr)
 br label %label_41
 label_41:
-br label %label_145
+br label %label_146
 br label %label_44
 label_44:
 br label %label_46
@@ -159,16 +169,17 @@ label_135:
 %var_90 = add i32 0, 1
 %var_92 = zext i8 %var_89 to i32
 %var_91 = add i32 %var_92, %var_90
-%var_93 = zext i8 %var_91 to i32
-%var_94 = getelementptr i32, i32* %var_0, i32 0
-store i32 %var_93, i32* %var_94
-br label %label_145
-label_145:
+%var_93 = trunc i32 %var_91 to i8
+%var_94 = zext i8 %var_93 to i32
+%var_95 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_94, i32* %var_95
+br label %label_146
+label_146:
 br label %label_13
-label_148:
-%var_95.ptr = getelementptr[32 x i8], [32 x i8]* @var_95, i32 0, i32 0
-call void @print_string(i8* %var_95.ptr)
-br label %label_151
-label_151:
+label_149:
+%var_96.ptr = getelementptr[32 x i8], [32 x i8]* @var_96, i32 0, i32 0
+call void @print_string(i8* %var_96.ptr)
+br label %label_152
+label_152:
 ret void
 }

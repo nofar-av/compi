@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_19 = constant [2 x i8] c"a\00"
 @var_27 = constant [2 x i8] c"b\00"
 @var_46 = constant [2 x i8] c"c\00"
@@ -40,7 +50,7 @@ store i32 %var_9, i32* %var_10
 %var_12 = load i32,  i32* %var_11
 %var_13 = trunc i32 %var_12 to i1
 %var_14 = icmp ne i1 0, %var_13
-br i1 %var_14, label %label_25, label %label_71
+br i1 %var_14, label %label_25, label %label_72
 br label %label_25
 label_25:
 %var_15 = getelementptr i32, i32* %var_0, i32 2
@@ -69,7 +79,7 @@ store i32 %var_21, i32* %var_22
 %var_24 = load i32,  i32* %var_23
 %var_25 = trunc i32 %var_24 to i1
 %var_26 = icmp ne i1 0, %var_25
-br i1 %var_26, label %label_69, label %label_54
+br i1 %var_26, label %label_70, label %label_54
 br label %label_54
 label_54:
 %var_27.ptr = getelementptr[2 x i8], [2 x i8]* @var_27, i32 0, i32 0
@@ -83,12 +93,13 @@ store i32 %var_29, i32* %var_30
 %var_31 = getelementptr i32, i32* %var_0, i32 2
 %var_32 = load i32,  i32* %var_31
 %var_33 = trunc i32 %var_32 to i8
+%var_34 = zext i8 %var_33 to i32
 %var_35 = getelementptr i32, i32* %var_0, i32 5
-store i32 %var_33, i32* %var_35
-br label %label_69
-label_69:
-br label %label_71
-label_71:
+store i32 %var_34, i32* %var_35
+br label %label_70
+label_70:
+br label %label_72
+label_72:
 %var_36 = add i8 0, 2
 %var_37 = zext i8 %var_36 to i32
 %var_38 = getelementptr i32, i32* %var_0, i32 4
@@ -102,16 +113,16 @@ store i32 %var_40, i32* %var_41
 %var_44 = trunc i32 %var_43 to i8
 %var_45 = zext i8 %var_44 to i32
 call void @printi_int(i32 %var_45)
-br label %label_86
-label_86:
+br label %label_87
+label_87:
 %var_46.ptr = getelementptr[2 x i8], [2 x i8]* @var_46, i32 0, i32 0
 call void @print_string(i8* %var_46.ptr)
-br label %label_90
-label_90:
+br label %label_91
+label_91:
 %var_47 = getelementptr i32, i32* %var_0, i32 0
 %var_48 = load i32,  i32* %var_47
 call void @printi_int(i32 %var_48)
-br label %label_95
-label_95:
+br label %label_96
+label_96:
 ret void
 }

@@ -13,8 +13,18 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [28 x i8] c"100 / (256b) is div by zero\00"
-@var_16 = constant [35 x i8] c"You failed this basic test! (lmao)\00"
+@var_17 = constant [35 x i8] c"You failed this basic test! (lmao)\00"
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_1.ptr = getelementptr[28 x i8], [28 x i8]* @var_1, i32 0, i32 0
@@ -33,13 +43,15 @@ store i32 %var_3, i32* %var_4
 %var_10 = trunc i32 %var_9 to i8
 %var_11 = add i8 0, 156
 %var_12 = add i8 %var_10, %var_11
+%var_14 = zext i8 %var_12 to i32
+call void @check_div_error(i32 %var_14)
 %var_13 = udiv i8 %var_7, %var_12
-%var_14 = zext i8 %var_13 to i32
-%var_15 = getelementptr i32, i32* %var_0, i32 0
-store i32 %var_14, i32* %var_15
-%var_16.ptr = getelementptr[35 x i8], [35 x i8]* @var_16, i32 0, i32 0
-call void @print_string(i8* %var_16.ptr)
-br label %label_24
-label_24:
+%var_15 = zext i8 %var_13 to i32
+%var_16 = getelementptr i32, i32* %var_0, i32 0
+store i32 %var_15, i32* %var_16
+%var_17.ptr = getelementptr[35 x i8], [35 x i8]* @var_17, i32 0, i32 0
+call void @print_string(i8* %var_17.ptr)
+br label %label_26
+label_26:
 ret void
 }

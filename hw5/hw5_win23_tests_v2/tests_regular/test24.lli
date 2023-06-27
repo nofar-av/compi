@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @maxTestsBigTruncationTest() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i8 0, 126
@@ -43,19 +53,20 @@ label_19:
 %var_24 = sub i8 %var_22, %var_23
 %var_25 = add i8 0, 225
 %var_26 = sub i8 %var_24, %var_25
+%var_27 = zext i8 %var_26 to i32
 %var_28 = getelementptr i32, i32* %var_0, i32 1
-store i32 %var_26, i32* %var_28
+store i32 %var_27, i32* %var_28
 %var_29 = getelementptr i32, i32* %var_0, i32 1
 %var_30 = load i32,  i32* %var_29
 call void @printi_int(i32 %var_30)
-br label %label_35
-label_35:
+br label %label_36
+label_36:
 ret void
 }
 define void @main() {
 %var_32 = alloca i32, i32 50
 call void @maxTestsBigTruncationTest()
-br label %label_42
-label_42:
+br label %label_43
+label_43:
 ret void
 }

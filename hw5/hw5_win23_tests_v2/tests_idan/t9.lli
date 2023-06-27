@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_2 = getelementptr i32, i32* %var_0, i32 0
@@ -79,6 +89,7 @@ br label %label_62
 label_62:
 %var_64 = add i32 0, 10
 %var_65 = add i32 0, 2
+call void @check_div_error(i32 %var_65)
 %var_66 = sdiv i32 %var_64, %var_65
 %var_67 = add i32 0, 10
 %var_68 = mul i32 %var_66, %var_67
@@ -87,30 +98,33 @@ store i32 %var_68, i32* %var_70
 %var_71 = getelementptr i32, i32* %var_0, i32 4
 %var_72 = load i32,  i32* %var_71
 call void @printi_int(i32 %var_72)
-br label %label_74
-label_74:
+br label %label_75
+label_75:
 %var_74 = add i32 0, 10
 %var_75 = add i32 0, 2
 %var_76 = add i32 0, 10
 %var_77 = mul i32 %var_75, %var_76
+call void @check_div_error(i32 %var_77)
 %var_78 = sdiv i32 %var_74, %var_77
 %var_80 = getelementptr i32, i32* %var_0, i32 4
 store i32 %var_78, i32* %var_80
 %var_81 = getelementptr i32, i32* %var_0, i32 4
 %var_82 = load i32,  i32* %var_81
 call void @printi_int(i32 %var_82)
-br label %label_86
-label_86:
+br label %label_88
+label_88:
 %var_84 = getelementptr i32, i32* %var_0, i32 3
 %var_85 = load i32,  i32* %var_84
 %var_87 = add i32 0, 3
 %var_88 = add i32 0, 2
 %var_89 = mul i32 %var_87, %var_88
 %var_90 = add i32 0, 2
+call void @check_div_error(i32 %var_90)
 %var_91 = sdiv i32 %var_89, %var_90
 %var_92 = add i32 %var_85, %var_91
 %var_93 = add i32 0, 15
 %var_94 = add i32 0, 5
+call void @check_div_error(i32 %var_94)
 %var_95 = sdiv i32 %var_93, %var_94
 %var_96 = add i32 0, 3
 %var_97 = mul i32 %var_95, %var_96
@@ -122,18 +136,20 @@ store i32 %var_100, i32* %var_102
 %var_103 = getelementptr i32, i32* %var_0, i32 4
 %var_104 = load i32,  i32* %var_103
 call void @printi_int(i32 %var_104)
-br label %label_109
-label_109:
+br label %label_113
+label_113:
 %var_106 = getelementptr i32, i32* %var_0, i32 3
 %var_107 = load i32,  i32* %var_106
 %var_109 = add i32 0, 3
 %var_110 = add i32 0, 2
 %var_111 = mul i32 %var_109, %var_110
 %var_112 = add i32 0, 2
+call void @check_div_error(i32 %var_112)
 %var_113 = sdiv i32 %var_111, %var_112
 %var_114 = add i32 %var_107, %var_113
 %var_115 = add i32 0, 15
 %var_116 = add i32 0, 5
+call void @check_div_error(i32 %var_116)
 %var_117 = sdiv i32 %var_115, %var_116
 %var_118 = add i32 0, 3
 %var_119 = mul i32 %var_117, %var_118
@@ -145,8 +161,8 @@ store i32 %var_122, i32* %var_124
 %var_125 = getelementptr i32, i32* %var_0, i32 4
 %var_126 = load i32,  i32* %var_125
 call void @printi_int(i32 %var_126)
-br label %label_132
-label_132:
+br label %label_138
+label_138:
 %var_128 = getelementptr i32, i32* %var_0, i32 3
 %var_129 = load i32,  i32* %var_128
 %var_131 = add i32 0, 3
@@ -155,12 +171,14 @@ label_132:
 %var_134 = add i32 0, 2
 %var_135 = add i32 0, 15
 %var_136 = add i32 0, 5
+call void @check_div_error(i32 %var_136)
 %var_137 = sdiv i32 %var_135, %var_136
 %var_138 = add i32 0, 3
 %var_139 = mul i32 %var_137, %var_138
 %var_140 = sub i32 %var_134, %var_139
 %var_141 = add i32 0, 2
 %var_142 = sub i32 %var_140, %var_141
+call void @check_div_error(i32 %var_142)
 %var_143 = sdiv i32 %var_133, %var_142
 %var_144 = add i32 %var_129, %var_143
 %var_146 = getelementptr i32, i32* %var_0, i32 4
@@ -168,8 +186,8 @@ store i32 %var_144, i32* %var_146
 %var_147 = getelementptr i32, i32* %var_0, i32 4
 %var_148 = load i32,  i32* %var_147
 call void @printi_int(i32 %var_148)
-br label %label_155
-label_155:
+br label %label_163
+label_163:
 %var_150 = getelementptr i32, i32* %var_0, i32 3
 %var_151 = load i32,  i32* %var_150
 %var_153 = add i32 0, 3
@@ -179,31 +197,35 @@ label_155:
 %var_157 = add i32 0, 2
 %var_158 = add i32 0, 15
 %var_159 = add i32 0, 5
+call void @check_div_error(i32 %var_159)
 %var_160 = sdiv i32 %var_158, %var_159
 %var_161 = add i32 0, 3
 %var_162 = mul i32 %var_160, %var_161
 %var_163 = sub i32 %var_157, %var_162
 %var_164 = add i32 0, 2
 %var_165 = sub i32 %var_163, %var_164
+call void @check_div_error(i32 %var_165)
 %var_166 = sdiv i32 %var_156, %var_165
 %var_168 = getelementptr i32, i32* %var_0, i32 4
 store i32 %var_166, i32* %var_168
 %var_169 = getelementptr i32, i32* %var_0, i32 4
 %var_170 = load i32,  i32* %var_169
 call void @printi_int(i32 %var_170)
-br label %label_178
-label_178:
+br label %label_188
+label_188:
 %var_172 = getelementptr i32, i32* %var_0, i32 3
 %var_173 = load i32,  i32* %var_172
 %var_175 = add i32 0, 3
 %var_176 = add i32 %var_173, %var_175
 %var_177 = add i32 0, 2
 %var_178 = add i32 0, 2
+call void @check_div_error(i32 %var_178)
 %var_179 = sdiv i32 %var_177, %var_178
 %var_180 = add i32 0, 15
 %var_181 = add i32 0, 5
 %var_182 = add i32 0, 3
 %var_183 = mul i32 %var_181, %var_182
+call void @check_div_error(i32 %var_183)
 %var_184 = sdiv i32 %var_180, %var_183
 %var_185 = sub i32 %var_179, %var_184
 %var_186 = add i32 0, 2
@@ -214,7 +236,7 @@ store i32 %var_188, i32* %var_190
 %var_191 = getelementptr i32, i32* %var_0, i32 4
 %var_192 = load i32,  i32* %var_191
 call void @printi_int(i32 %var_192)
-br label %label_201
-label_201:
+br label %label_213
+label_213:
 ret void
 }

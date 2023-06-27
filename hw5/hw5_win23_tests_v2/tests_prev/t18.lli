@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [4 x i8] c"f1!\00"
 @var_3 = constant [4 x i8] c"f2!\00"
 @var_5 = constant [4 x i8] c"f3!\00"
@@ -144,8 +154,9 @@ FALSE_LIST_label_120:
 br label %NEXT_LIST_label_120
 NEXT_LIST_label_120:
 %var_34 = phi i1 [ 1, %TRUE_LIST_label_120], [0, %FALSE_LIST_label_120]
-call void @callMe_int_byte_byte_bool_bool_byte_int_bool(i32 %var_14, i8 %var_16, i8 %var_18, i1 %var_22, i1 %var_26, i8 %var_28, i32 %var_30, i1 %var_34)
-br label %label_128
-label_128:
+%var_35 = zext i8 %var_16 to i32
+call void @callMe_int_int_byte_bool_bool_byte_int_bool(i32 %var_14, i32 %var_35, i8 %var_18, i1 %var_22, i1 %var_26, i8 %var_28, i32 %var_30, i1 %var_34)
+br label %label_129
+label_129:
 ret void
 }

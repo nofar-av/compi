@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [17 x i8] c"MORE while tests\00"
 @var_2 = constant [63 x i8] c"will be calculating x + 1 in each iteration starting from x= 0\00"
 @var_11 = constant [7 x i8] c"x is: \00"
@@ -39,7 +49,7 @@ label_13:
 br i1 %var_10, label %label_23, label %label_20
 br label %label_20
 label_20:
-br label %label_56
+br label %label_57
 br label %label_23
 label_23:
 %var_11.ptr = getelementptr[7 x i8], [7 x i8]* @var_11, i32 0, i32 0
@@ -69,14 +79,15 @@ store i32 %var_28, i32* %var_30
 %var_32 = load i32,  i32* %var_31
 %var_34 = getelementptr i32, i32* %var_0, i32 1
 %var_35 = load i32,  i32* %var_34
+call void @check_div_error(i32 %var_35)
 %var_37 = sdiv i32 %var_32, %var_35
 %var_39 = getelementptr i32, i32* %var_0, i32 1
 store i32 %var_37, i32* %var_39
 br label %label_13
-label_56:
+label_57:
 %var_40.ptr = getelementptr[13 x i8], [13 x i8]* @var_40, i32 0, i32 0
 call void @print_string(i8* %var_40.ptr)
-br label %label_59
-label_59:
+br label %label_60
+label_60:
 ret void
 }

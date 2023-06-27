@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_33 = constant [9 x i8] c"x is odd\00"
 define void @maxTestsTestContinue() {
 %var_0 = alloca i32, i32 50
@@ -30,7 +40,7 @@ label_7:
 br i1 %var_7, label %label_14, label %label_17
 br label %label_14
 label_14:
-br label %label_53
+br label %label_55
 br label %label_17
 label_17:
 %var_8 = getelementptr i32, i32* %var_0, i32 0
@@ -42,38 +52,40 @@ store i32 %var_12, i32* %var_14
 %var_15 = getelementptr i32, i32* %var_0, i32 0
 %var_16 = load i32,  i32* %var_15
 %var_18 = add i32 0, 2
+call void @check_div_error(i32 %var_18)
 %var_19 = sdiv i32 %var_16, %var_18
 %var_20 = getelementptr i32, i32* %var_0, i32 0
 %var_21 = load i32,  i32* %var_20
 %var_23 = getelementptr i32, i32* %var_0, i32 0
 %var_24 = load i32,  i32* %var_23
 %var_26 = add i32 0, 2
+call void @check_div_error(i32 %var_26)
 %var_27 = sdiv i32 %var_24, %var_26
 %var_28 = sub i32 %var_21, %var_27
 %var_29 = icmp eq i32 %var_19, %var_28
-br i1 %var_29, label %label_38, label %label_41
-br label %label_38
-label_38:
+br i1 %var_29, label %label_40, label %label_43
+br label %label_40
+label_40:
 br label %label_4
-br label %label_41
-label_41:
+br label %label_43
+label_43:
 %var_30 = getelementptr i32, i32* %var_0, i32 0
 %var_31 = load i32,  i32* %var_30
 call void @printi_int(i32 %var_31)
-br label %label_46
-label_46:
+br label %label_48
+label_48:
 %var_33.ptr = getelementptr[9 x i8], [9 x i8]* @var_33, i32 0, i32 0
 call void @print_string(i8* %var_33.ptr)
-br label %label_50
-label_50:
+br label %label_52
+label_52:
 br label %label_4
-label_53:
+label_55:
 ret void
 }
 define void @main() {
 %var_34 = alloca i32, i32 50
 call void @maxTestsTestContinue()
-br label %label_59
-label_59:
+br label %label_61
+label_61:
 ret void
 }

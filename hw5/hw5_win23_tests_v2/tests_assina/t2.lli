@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [24 x i8] c"This is the third test!\00"
 @var_2 = constant [32 x i8] c"Here we will test division by 0\00"
 @var_3 = constant [23 x i8] c"now calculating 1 + 2:\00"
@@ -54,12 +64,13 @@ label_30:
 %var_14 = getelementptr i32, i32* %var_0, i32 0
 %var_15 = load i32,  i32* %var_14
 %var_17 = add i32 0, 0
+call void @check_div_error(i32 %var_17)
 %var_18 = sdiv i32 %var_15, %var_17
 %var_20 = getelementptr i32, i32* %var_0, i32 1
 store i32 %var_18, i32* %var_20
 %var_21.ptr = getelementptr[23 x i8], [23 x i8]* @var_21, i32 0, i32 0
 call void @print_string(i8* %var_21.ptr)
-br label %label_40
-label_40:
+br label %label_41
+label_41:
 ret void
 }

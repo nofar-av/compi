@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_49 = constant [104 x i8] c"There is only one thing that makes a dream impossible to achieve: the fear of failure. ― Paulo Coelho\00"
 @var_52 = constant [87 x i8] c"It’s not whether you get knocked down. It’s whether you get up. – Vince Lombardi\00"
 define i1 @Func() {

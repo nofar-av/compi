@@ -13,10 +13,20 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [11 x i8] c"got param:\00"
-@var_5 = constant [13 x i8] c"Expecting 39\00"
-@var_10 = constant [15 x i8] c"actual result:\00"
-@var_15 = constant [5 x i8] c"done\00"
+@var_6 = constant [13 x i8] c"Expecting 39\00"
+@var_11 = constant [15 x i8] c"actual result:\00"
+@var_16 = constant [5 x i8] c"done\00"
 define i8 @advancedFunc_int(i32) {
 %var_0 = alloca i32, i32 50
 %var_1.ptr = getelementptr[11 x i8], [11 x i8]* @var_1, i32 0, i32 0
@@ -26,47 +36,48 @@ label_4:
 call void @printi_int(i32 %0)
 br label %label_7
 label_7:
-ret i8 %0
+%var_2 = trunc i32 %0 to i8
+ret i8 %var_2
 ret i8 0
 }
 define i1 @getTrue() {
-%var_2 = alloca i32, i32 50
-br label %TRUE_LIST_label_15
-br label %TRUE_LIST_label_15
-TRUE_LIST_label_15:
-br label %NEXT_LIST_label_15
-FALSE_LIST_label_15:
-br label %NEXT_LIST_label_15
-NEXT_LIST_label_15:
-%var_3 = phi i1 [ 1, %TRUE_LIST_label_15], [0, %FALSE_LIST_label_15]
-ret i1 %var_3
+%var_3 = alloca i32, i32 50
+br label %TRUE_LIST_label_16
+br label %TRUE_LIST_label_16
+TRUE_LIST_label_16:
+br label %NEXT_LIST_label_16
+FALSE_LIST_label_16:
+br label %NEXT_LIST_label_16
+NEXT_LIST_label_16:
+%var_4 = phi i1 [ 1, %TRUE_LIST_label_16], [0, %FALSE_LIST_label_16]
+ret i1 %var_4
 ret i1 0
 }
 define void @main() {
-%var_4 = alloca i32, i32 50
-%var_5.ptr = getelementptr[13 x i8], [13 x i8]* @var_5, i32 0, i32 0
-call void @print_string(i8* %var_5.ptr)
-br label %label_29
-label_29:
-%var_6 = add i32 0, 39
-%var_7 = call i8 @advancedFunc_int(i32 %var_6)
-%var_8 = zext i8 %var_7 to i32
-%var_9 = getelementptr i32, i32* %var_4, i32 0
-store i32 %var_8, i32* %var_9
-%var_10.ptr = getelementptr[15 x i8], [15 x i8]* @var_10, i32 0, i32 0
-call void @print_string(i8* %var_10.ptr)
-br label %label_38
-label_38:
-%var_11 = getelementptr i32, i32* %var_4, i32 0
-%var_12 = load i32,  i32* %var_11
-%var_13 = trunc i32 %var_12 to i8
-%var_14 = zext i8 %var_13 to i32
-call void @printi_int(i32 %var_14)
-br label %label_45
-label_45:
-%var_15.ptr = getelementptr[5 x i8], [5 x i8]* @var_15, i32 0, i32 0
-call void @print_string(i8* %var_15.ptr)
-br label %label_49
-label_49:
+%var_5 = alloca i32, i32 50
+%var_6.ptr = getelementptr[13 x i8], [13 x i8]* @var_6, i32 0, i32 0
+call void @print_string(i8* %var_6.ptr)
+br label %label_30
+label_30:
+%var_7 = add i32 0, 39
+%var_8 = call i8 @advancedFunc_int(i32 %var_7)
+%var_9 = zext i8 %var_8 to i32
+%var_10 = getelementptr i32, i32* %var_5, i32 0
+store i32 %var_9, i32* %var_10
+%var_11.ptr = getelementptr[15 x i8], [15 x i8]* @var_11, i32 0, i32 0
+call void @print_string(i8* %var_11.ptr)
+br label %label_39
+label_39:
+%var_12 = getelementptr i32, i32* %var_5, i32 0
+%var_13 = load i32,  i32* %var_12
+%var_14 = trunc i32 %var_13 to i8
+%var_15 = zext i8 %var_14 to i32
+call void @printi_int(i32 %var_15)
+br label %label_46
+label_46:
+%var_16.ptr = getelementptr[5 x i8], [5 x i8]* @var_16, i32 0, i32 0
+call void @print_string(i8* %var_16.ptr)
+br label %label_50
+label_50:
 ret void
 }

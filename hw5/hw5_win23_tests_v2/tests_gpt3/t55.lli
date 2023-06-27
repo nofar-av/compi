@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_16 = constant [17 x i8] c"division is good\00"
 @var_20 = constant [16 x i8] c"you are stupud!\00"
 define void @main() {
@@ -23,6 +33,7 @@ store i32 %var_1, i32* %var_3
 %var_4 = add i32 0, 5
 %var_5 = getelementptr i32, i32* %var_0, i32 0
 %var_6 = load i32,  i32* %var_5
+call void @check_div_error(i32 %var_6)
 %var_8 = sdiv i32 %var_4, %var_6
 %var_10 = getelementptr i32, i32* %var_0, i32 1
 store i32 %var_8, i32* %var_10
@@ -30,26 +41,26 @@ store i32 %var_8, i32* %var_10
 %var_12 = load i32,  i32* %var_11
 %var_14 = add i32 0, 2
 %var_15 = icmp eq i32 %var_12, %var_14
-br i1 %var_15, label %label_16, label %label_28
-br label %label_16
-label_16:
+br i1 %var_15, label %label_17, label %label_29
+br label %label_17
+label_17:
 %var_16.ptr = getelementptr[17 x i8], [17 x i8]* @var_16, i32 0, i32 0
 call void @print_string(i8* %var_16.ptr)
-br label %label_20
-label_20:
+br label %label_21
+label_21:
 %var_17 = getelementptr i32, i32* %var_0, i32 1
 %var_18 = load i32,  i32* %var_17
 call void @printi_int(i32 %var_18)
-br label %label_25
-label_25:
-br label %label_34
-br label %label_28
-label_28:
+br label %label_26
+label_26:
+br label %label_35
+br label %label_29
+label_29:
 %var_20.ptr = getelementptr[16 x i8], [16 x i8]* @var_20, i32 0, i32 0
 call void @print_string(i8* %var_20.ptr)
-br label %label_32
-label_32:
-br label %label_34
-label_34:
+br label %label_33
+label_33:
+br label %label_35
+label_35:
 ret void
 }

@@ -13,11 +13,21 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [21 x i8] c"surprise while test!\00"
 @var_2 = constant [46 x i8] c"div by 0 should appear by the 256th iteration\00"
 @var_6 = constant [22 x i8] c"infinite loop coming:\00"
 @var_17 = constant [12 x i8] c"iteration: \00"
-@var_31 = constant [19 x i8] c"Shouldn't get here\00"
+@var_32 = constant [19 x i8] c"Shouldn't get here\00"
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_1.ptr = getelementptr[21 x i8], [21 x i8]* @var_1, i32 0, i32 0
@@ -70,15 +80,17 @@ label_44:
 %var_25 = getelementptr i32, i32* %var_0, i32 0
 %var_26 = load i32,  i32* %var_25
 %var_27 = trunc i32 %var_26 to i8
+%var_29 = zext i8 %var_27 to i32
+call void @check_div_error(i32 %var_29)
 %var_28 = udiv i8 %var_24, %var_27
-%var_29 = zext i8 %var_28 to i32
-%var_30 = getelementptr i32, i32* %var_0, i32 1
-store i32 %var_29, i32* %var_30
+%var_30 = zext i8 %var_28 to i32
+%var_31 = getelementptr i32, i32* %var_0, i32 1
+store i32 %var_30, i32* %var_31
 br label %label_18
-label_57:
-%var_31.ptr = getelementptr[19 x i8], [19 x i8]* @var_31, i32 0, i32 0
-call void @print_string(i8* %var_31.ptr)
-br label %label_60
-label_60:
+label_59:
+%var_32.ptr = getelementptr[19 x i8], [19 x i8]* @var_32, i32 0, i32 0
+call void @print_string(i8* %var_32.ptr)
+br label %label_62
+label_62:
 ret void
 }

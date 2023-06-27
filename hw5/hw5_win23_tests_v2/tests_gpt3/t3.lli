@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [14 x i8] c"test number 1\00"
 @var_5 = constant [14 x i8] c"test number 2\00"
 @var_9 = constant [14 x i8] c"test number 3\00"
@@ -28,28 +38,28 @@ ret void
 @var_78 = constant [15 x i8] c"test number 13\00"
 @var_83 = constant [15 x i8] c"test number 14\00"
 @var_88 = constant [15 x i8] c"test number 15\00"
-@var_93 = constant [15 x i8] c"test number 16\00"
-@var_102 = constant [15 x i8] c"test number 17\00"
-@var_111 = constant [15 x i8] c"test number 18\00"
-@var_120 = constant [15 x i8] c"test number 19\00"
-@var_129 = constant [15 x i8] c"test number 20\00"
-@var_138 = constant [15 x i8] c"test number 21\00"
-@var_147 = constant [15 x i8] c"test number 22\00"
-@var_156 = constant [15 x i8] c"test number 23\00"
-@var_161 = constant [15 x i8] c"test number 24\00"
-@var_166 = constant [15 x i8] c"test number 25\00"
-@var_171 = constant [15 x i8] c"test number 26\00"
-@var_176 = constant [15 x i8] c"test number 27\00"
-@var_181 = constant [15 x i8] c"test number 28\00"
-@var_186 = constant [15 x i8] c"test number 29\00"
-@var_191 = constant [15 x i8] c"test number 30\00"
-@var_196 = constant [15 x i8] c"test number 31\00"
-@var_206 = constant [15 x i8] c"test number 32\00"
-@var_216 = constant [15 x i8] c"test number 33\00"
-@var_226 = constant [15 x i8] c"test number 34\00"
-@var_236 = constant [15 x i8] c"test number 35\00"
-@var_246 = constant [15 x i8] c"test number 36\00"
-@var_256 = constant [15 x i8] c"test number 37\00"
+@var_94 = constant [15 x i8] c"test number 16\00"
+@var_104 = constant [15 x i8] c"test number 17\00"
+@var_113 = constant [15 x i8] c"test number 18\00"
+@var_124 = constant [15 x i8] c"test number 19\00"
+@var_133 = constant [15 x i8] c"test number 20\00"
+@var_144 = constant [15 x i8] c"test number 21\00"
+@var_153 = constant [15 x i8] c"test number 22\00"
+@var_164 = constant [15 x i8] c"test number 23\00"
+@var_169 = constant [15 x i8] c"test number 24\00"
+@var_174 = constant [15 x i8] c"test number 25\00"
+@var_179 = constant [15 x i8] c"test number 26\00"
+@var_184 = constant [15 x i8] c"test number 27\00"
+@var_189 = constant [15 x i8] c"test number 28\00"
+@var_194 = constant [15 x i8] c"test number 29\00"
+@var_199 = constant [15 x i8] c"test number 30\00"
+@var_205 = constant [15 x i8] c"test number 31\00"
+@var_215 = constant [15 x i8] c"test number 32\00"
+@var_225 = constant [15 x i8] c"test number 33\00"
+@var_235 = constant [15 x i8] c"test number 34\00"
+@var_245 = constant [15 x i8] c"test number 35\00"
+@var_255 = constant [15 x i8] c"test number 36\00"
+@var_265 = constant [15 x i8] c"test number 37\00"
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_1.ptr = getelementptr[14 x i8], [14 x i8]* @var_1, i32 0, i32 0
@@ -88,28 +98,30 @@ br label %label_34
 label_34:
 %var_14 = add i32 0, 4
 %var_15 = add i32 0, 2
+call void @check_div_error(i32 %var_15)
 %var_16 = sdiv i32 %var_14, %var_15
 call void @printi_int(i32 %var_16)
-br label %label_40
-label_40:
+br label %label_41
+label_41:
 %var_17.ptr = getelementptr[14 x i8], [14 x i8]* @var_17, i32 0, i32 0
 call void @print_string(i8* %var_17.ptr)
-br label %label_44
-label_44:
+br label %label_45
+label_45:
 %var_18 = add i32 0, 2
 %var_19 = add i32 0, 3
 %var_20 = add i32 0, 5
 %var_21 = mul i32 %var_19, %var_20
 %var_22 = add i32 0, 5
+call void @check_div_error(i32 %var_22)
 %var_23 = sdiv i32 %var_21, %var_22
 %var_24 = add i32 %var_18, %var_23
 call void @printi_int(i32 %var_24)
-br label %label_54
-label_54:
+br label %label_56
+label_56:
 %var_25.ptr = getelementptr[14 x i8], [14 x i8]* @var_25, i32 0, i32 0
 call void @print_string(i8* %var_25.ptr)
-br label %label_58
-label_58:
+br label %label_60
+label_60:
 %var_26 = add i32 0, 2
 %var_27 = add i32 0, 3
 %var_28 = mul i32 %var_26, %var_27
@@ -118,26 +130,28 @@ label_58:
 %var_31 = mul i32 %var_29, %var_30
 %var_32 = add i32 %var_28, %var_31
 call void @printi_int(i32 %var_32)
-br label %label_68
-label_68:
+br label %label_70
+label_70:
 %var_33.ptr = getelementptr[14 x i8], [14 x i8]* @var_33, i32 0, i32 0
 call void @print_string(i8* %var_33.ptr)
-br label %label_72
-label_72:
+br label %label_74
+label_74:
 %var_34 = add i32 0, 6
 %var_35 = add i32 0, 3
+call void @check_div_error(i32 %var_35)
 %var_36 = sdiv i32 %var_34, %var_35
 %var_37 = add i32 0, 200
 %var_38 = add i32 0, 5
+call void @check_div_error(i32 %var_38)
 %var_39 = sdiv i32 %var_37, %var_38
 %var_40 = add i32 %var_36, %var_39
 call void @printi_int(i32 %var_40)
-br label %label_82
-label_82:
-%var_41.ptr = getelementptr[14 x i8], [14 x i8]* @var_41, i32 0, i32 0
-call void @print_string(i8* %var_41.ptr)
 br label %label_86
 label_86:
+%var_41.ptr = getelementptr[14 x i8], [14 x i8]* @var_41, i32 0, i32 0
+call void @print_string(i8* %var_41.ptr)
+br label %label_90
+label_90:
 %var_42 = add i32 0, 5
 %var_43 = add i32 0, 5
 %var_44 = mul i32 %var_42, %var_43
@@ -146,26 +160,28 @@ label_86:
 %var_47 = mul i32 %var_45, %var_46
 %var_48 = sub i32 %var_44, %var_47
 call void @printi_int(i32 %var_48)
-br label %label_96
-label_96:
-%var_49.ptr = getelementptr[14 x i8], [14 x i8]* @var_49, i32 0, i32 0
-call void @print_string(i8* %var_49.ptr)
 br label %label_100
 label_100:
+%var_49.ptr = getelementptr[14 x i8], [14 x i8]* @var_49, i32 0, i32 0
+call void @print_string(i8* %var_49.ptr)
+br label %label_104
+label_104:
 %var_50 = add i32 0, 300
 %var_51 = add i32 0, 3
+call void @check_div_error(i32 %var_51)
 %var_52 = sdiv i32 %var_50, %var_51
 %var_53 = add i32 0, 200
 %var_54 = add i32 0, 5
+call void @check_div_error(i32 %var_54)
 %var_55 = sdiv i32 %var_53, %var_54
 %var_56 = sub i32 %var_52, %var_55
 call void @printi_int(i32 %var_56)
-br label %label_110
-label_110:
+br label %label_116
+label_116:
 %var_57.ptr = getelementptr[15 x i8], [15 x i8]* @var_57, i32 0, i32 0
 call void @print_string(i8* %var_57.ptr)
-br label %label_114
-label_114:
+br label %label_120
+label_120:
 %var_58 = add i32 0, 5
 %var_59 = add i32 0, 5
 %var_60 = mul i32 %var_58, %var_59
@@ -174,370 +190,398 @@ label_114:
 %var_63 = mul i32 %var_61, %var_62
 %var_64 = sub i32 %var_60, %var_63
 call void @printi_int(i32 %var_64)
-br label %label_124
-label_124:
+br label %label_130
+label_130:
 %var_65.ptr = getelementptr[15 x i8], [15 x i8]* @var_65, i32 0, i32 0
 call void @print_string(i8* %var_65.ptr)
-br label %label_128
-label_128:
+br label %label_134
+label_134:
 %var_66 = add i32 0, 300
 %var_67 = add i32 0, 3
+call void @check_div_error(i32 %var_67)
 %var_68 = sdiv i32 %var_66, %var_67
 %var_69 = add i32 0, 200
 %var_70 = add i32 0, 5
+call void @check_div_error(i32 %var_70)
 %var_71 = sdiv i32 %var_69, %var_70
 %var_72 = sub i32 %var_68, %var_71
 call void @printi_int(i32 %var_72)
-br label %label_138
-label_138:
+br label %label_146
+label_146:
 %var_73.ptr = getelementptr[15 x i8], [15 x i8]* @var_73, i32 0, i32 0
 call void @print_string(i8* %var_73.ptr)
-br label %label_142
-label_142:
+br label %label_150
+label_150:
 %var_74 = add i8 0, 2
 %var_75 = add i8 0, 3
 %var_76 = add i8 %var_74, %var_75
 %var_77 = zext i8 %var_76 to i32
 call void @printi_int(i32 %var_77)
-br label %label_149
-label_149:
+br label %label_157
+label_157:
 %var_78.ptr = getelementptr[15 x i8], [15 x i8]* @var_78, i32 0, i32 0
 call void @print_string(i8* %var_78.ptr)
-br label %label_153
-label_153:
+br label %label_161
+label_161:
 %var_79 = add i8 0, 10
 %var_80 = add i8 0, 8
 %var_81 = sub i8 %var_79, %var_80
 %var_82 = zext i8 %var_81 to i32
 call void @printi_int(i32 %var_82)
-br label %label_160
-label_160:
+br label %label_168
+label_168:
 %var_83.ptr = getelementptr[15 x i8], [15 x i8]* @var_83, i32 0, i32 0
 call void @print_string(i8* %var_83.ptr)
-br label %label_164
-label_164:
+br label %label_172
+label_172:
 %var_84 = add i8 0, 2
 %var_85 = add i8 0, 3
 %var_86 = mul i8 %var_84, %var_85
 %var_87 = zext i8 %var_86 to i32
 call void @printi_int(i32 %var_87)
-br label %label_171
-label_171:
+br label %label_179
+label_179:
 %var_88.ptr = getelementptr[15 x i8], [15 x i8]* @var_88, i32 0, i32 0
 call void @print_string(i8* %var_88.ptr)
-br label %label_175
-label_175:
+br label %label_183
+label_183:
 %var_89 = add i8 0, 4
 %var_90 = add i8 0, 2
+%var_92 = zext i8 %var_90 to i32
+call void @check_div_error(i32 %var_92)
 %var_91 = udiv i8 %var_89, %var_90
-%var_92 = zext i8 %var_91 to i32
-call void @printi_int(i32 %var_92)
-br label %label_182
-label_182:
-%var_93.ptr = getelementptr[15 x i8], [15 x i8]* @var_93, i32 0, i32 0
-call void @print_string(i8* %var_93.ptr)
-br label %label_186
-label_186:
-%var_94 = add i8 0, 2
-%var_95 = add i8 0, 3
-%var_96 = add i8 0, 5
-%var_97 = mul i8 %var_95, %var_96
-%var_98 = add i8 0, 5
-%var_99 = udiv i8 %var_97, %var_98
-%var_100 = add i8 %var_94, %var_99
-%var_101 = zext i8 %var_100 to i32
-call void @printi_int(i32 %var_101)
-br label %label_197
-label_197:
-%var_102.ptr = getelementptr[15 x i8], [15 x i8]* @var_102, i32 0, i32 0
-call void @print_string(i8* %var_102.ptr)
-br label %label_201
-label_201:
-%var_103 = add i8 0, 2
-%var_104 = add i8 0, 3
-%var_105 = mul i8 %var_103, %var_104
-%var_106 = add i8 0, 5
-%var_107 = add i8 0, 5
-%var_108 = mul i8 %var_106, %var_107
-%var_109 = add i8 %var_105, %var_108
-%var_110 = zext i8 %var_109 to i32
-call void @printi_int(i32 %var_110)
-br label %label_212
-label_212:
-%var_111.ptr = getelementptr[15 x i8], [15 x i8]* @var_111, i32 0, i32 0
-call void @print_string(i8* %var_111.ptr)
-br label %label_216
-label_216:
-%var_112 = add i8 0, 6
-%var_113 = add i8 0, 3
-%var_114 = udiv i8 %var_112, %var_113
-%var_115 = add i8 0, 200
-%var_116 = add i8 0, 5
-%var_117 = udiv i8 %var_115, %var_116
-%var_118 = add i8 %var_114, %var_117
-%var_119 = zext i8 %var_118 to i32
-call void @printi_int(i32 %var_119)
-br label %label_227
-label_227:
-%var_120.ptr = getelementptr[15 x i8], [15 x i8]* @var_120, i32 0, i32 0
-call void @print_string(i8* %var_120.ptr)
-br label %label_231
-label_231:
-%var_121 = add i8 0, 5
-%var_122 = add i8 0, 5
-%var_123 = mul i8 %var_121, %var_122
-%var_124 = add i8 0, 2
-%var_125 = add i8 0, 3
-%var_126 = mul i8 %var_124, %var_125
-%var_127 = sub i8 %var_123, %var_126
-%var_128 = zext i8 %var_127 to i32
-call void @printi_int(i32 %var_128)
-br label %label_242
-label_242:
-%var_129.ptr = getelementptr[15 x i8], [15 x i8]* @var_129, i32 0, i32 0
-call void @print_string(i8* %var_129.ptr)
-br label %label_246
-label_246:
-%var_130 = add i8 0, 100
-%var_131 = add i8 0, 2
-%var_132 = udiv i8 %var_130, %var_131
-%var_133 = add i8 0, 200
-%var_134 = add i8 0, 10
-%var_135 = udiv i8 %var_133, %var_134
-%var_136 = sub i8 %var_132, %var_135
-%var_137 = zext i8 %var_136 to i32
-call void @printi_int(i32 %var_137)
-br label %label_257
-label_257:
-%var_138.ptr = getelementptr[15 x i8], [15 x i8]* @var_138, i32 0, i32 0
-call void @print_string(i8* %var_138.ptr)
-br label %label_261
-label_261:
-%var_139 = add i8 0, 5
-%var_140 = add i8 0, 5
-%var_141 = mul i8 %var_139, %var_140
-%var_142 = add i8 0, 2
-%var_143 = add i8 0, 3
-%var_144 = mul i8 %var_142, %var_143
-%var_145 = sub i8 %var_141, %var_144
-%var_146 = zext i8 %var_145 to i32
-call void @printi_int(i32 %var_146)
-br label %label_272
-label_272:
-%var_147.ptr = getelementptr[15 x i8], [15 x i8]* @var_147, i32 0, i32 0
-call void @print_string(i8* %var_147.ptr)
-br label %label_276
-label_276:
-%var_148 = add i8 0, 100
-%var_149 = add i8 0, 2
-%var_150 = udiv i8 %var_148, %var_149
-%var_151 = add i8 0, 200
-%var_152 = add i8 0, 20
-%var_153 = udiv i8 %var_151, %var_152
-%var_154 = sub i8 %var_150, %var_153
-%var_155 = zext i8 %var_154 to i32
-call void @printi_int(i32 %var_155)
-br label %label_287
-label_287:
-%var_156.ptr = getelementptr[15 x i8], [15 x i8]* @var_156, i32 0, i32 0
-call void @print_string(i8* %var_156.ptr)
-br label %label_291
-label_291:
-%var_157 = add i8 0, 2
-%var_158 = add i32 0, 3
-%var_160 = zext i8 %var_157 to i32
-%var_159 = add i32 %var_160, %var_158
-call void @printi_int(i32 %var_159)
-br label %label_298
-label_298:
-%var_161.ptr = getelementptr[15 x i8], [15 x i8]* @var_161, i32 0, i32 0
-call void @print_string(i8* %var_161.ptr)
-br label %label_302
-label_302:
-%var_162 = add i8 0, 10
-%var_163 = add i32 0, 8
-%var_165 = zext i8 %var_162 to i32
-%var_164 = sub i32 %var_165, %var_163
-call void @printi_int(i32 %var_164)
-br label %label_309
-label_309:
-%var_166.ptr = getelementptr[15 x i8], [15 x i8]* @var_166, i32 0, i32 0
-call void @print_string(i8* %var_166.ptr)
-br label %label_313
-label_313:
-%var_167 = add i8 0, 2
-%var_168 = add i32 0, 3
-%var_170 = zext i8 %var_167 to i32
-%var_169 = mul i32 %var_170, %var_168
-call void @printi_int(i32 %var_169)
-br label %label_320
-label_320:
-%var_171.ptr = getelementptr[15 x i8], [15 x i8]* @var_171, i32 0, i32 0
-call void @print_string(i8* %var_171.ptr)
-br label %label_324
-label_324:
-%var_172 = add i8 0, 4
-%var_173 = add i32 0, 2
-%var_175 = zext i8 %var_172 to i32
-%var_174 = sdiv i32 %var_175, %var_173
-call void @printi_int(i32 %var_174)
-br label %label_331
-label_331:
-%var_176.ptr = getelementptr[15 x i8], [15 x i8]* @var_176, i32 0, i32 0
-call void @print_string(i8* %var_176.ptr)
-br label %label_335
-label_335:
-%var_177 = add i32 0, 2
-%var_178 = add i8 0, 3
-%var_180 = zext i8 %var_178 to i32
-%var_179 = add i32 %var_177, %var_180
-call void @printi_int(i32 %var_179)
-br label %label_342
-label_342:
-%var_181.ptr = getelementptr[15 x i8], [15 x i8]* @var_181, i32 0, i32 0
-call void @print_string(i8* %var_181.ptr)
-br label %label_346
-label_346:
-%var_182 = add i32 0, 10
-%var_183 = add i8 0, 8
-%var_185 = zext i8 %var_183 to i32
-%var_184 = sub i32 %var_182, %var_185
-call void @printi_int(i32 %var_184)
-br label %label_353
-label_353:
-%var_186.ptr = getelementptr[15 x i8], [15 x i8]* @var_186, i32 0, i32 0
-call void @print_string(i8* %var_186.ptr)
-br label %label_357
-label_357:
-%var_187 = add i32 0, 2
-%var_188 = add i8 0, 3
-%var_190 = zext i8 %var_188 to i32
-%var_189 = mul i32 %var_187, %var_190
-call void @printi_int(i32 %var_189)
-br label %label_364
-label_364:
-%var_191.ptr = getelementptr[15 x i8], [15 x i8]* @var_191, i32 0, i32 0
-call void @print_string(i8* %var_191.ptr)
-br label %label_368
-label_368:
-%var_192 = add i32 0, 4
-%var_193 = add i8 0, 2
-%var_195 = zext i8 %var_193 to i32
-%var_194 = sdiv i32 %var_192, %var_195
-call void @printi_int(i32 %var_194)
-br label %label_375
-label_375:
-%var_196.ptr = getelementptr[15 x i8], [15 x i8]* @var_196, i32 0, i32 0
-call void @print_string(i8* %var_196.ptr)
-br label %label_379
-label_379:
-%var_197 = add i8 0, 2
-%var_198 = add i32 0, 3
-%var_199 = add i8 0, 5
-%var_201 = zext i8 %var_199 to i32
-%var_200 = mul i32 %var_198, %var_201
-%var_202 = add i32 0, 5
-%var_203 = sdiv i32 %var_200, %var_202
-%var_205 = zext i8 %var_197 to i32
-%var_204 = add i32 %var_205, %var_203
-call void @printi_int(i32 %var_204)
-br label %label_391
-label_391:
-%var_206.ptr = getelementptr[15 x i8], [15 x i8]* @var_206, i32 0, i32 0
-call void @print_string(i8* %var_206.ptr)
-br label %label_395
-label_395:
-%var_207 = add i8 0, 2
-%var_208 = add i32 0, 3
-%var_210 = zext i8 %var_207 to i32
-%var_209 = mul i32 %var_210, %var_208
-%var_211 = add i8 0, 5
-%var_212 = add i32 0, 5
-%var_214 = zext i8 %var_211 to i32
-%var_213 = mul i32 %var_214, %var_212
-%var_215 = add i32 %var_209, %var_213
-call void @printi_int(i32 %var_215)
-br label %label_407
-label_407:
-%var_216.ptr = getelementptr[15 x i8], [15 x i8]* @var_216, i32 0, i32 0
-call void @print_string(i8* %var_216.ptr)
-br label %label_411
-label_411:
-%var_217 = add i8 0, 6
-%var_218 = add i32 0, 3
-%var_220 = zext i8 %var_217 to i32
-%var_219 = sdiv i32 %var_220, %var_218
-%var_221 = add i8 0, 200
-%var_222 = add i32 0, 5
-%var_224 = zext i8 %var_221 to i32
-%var_223 = sdiv i32 %var_224, %var_222
-%var_225 = add i32 %var_219, %var_223
-call void @printi_int(i32 %var_225)
+%var_93 = zext i8 %var_91 to i32
+call void @printi_int(i32 %var_93)
+br label %label_192
+label_192:
+%var_94.ptr = getelementptr[15 x i8], [15 x i8]* @var_94, i32 0, i32 0
+call void @print_string(i8* %var_94.ptr)
+br label %label_196
+label_196:
+%var_95 = add i8 0, 2
+%var_96 = add i8 0, 3
+%var_97 = add i8 0, 5
+%var_98 = mul i8 %var_96, %var_97
+%var_99 = add i8 0, 5
+%var_101 = zext i8 %var_99 to i32
+call void @check_div_error(i32 %var_101)
+%var_100 = udiv i8 %var_98, %var_99
+%var_102 = add i8 %var_95, %var_100
+%var_103 = zext i8 %var_102 to i32
+call void @printi_int(i32 %var_103)
+br label %label_209
+label_209:
+%var_104.ptr = getelementptr[15 x i8], [15 x i8]* @var_104, i32 0, i32 0
+call void @print_string(i8* %var_104.ptr)
+br label %label_213
+label_213:
+%var_105 = add i8 0, 2
+%var_106 = add i8 0, 3
+%var_107 = mul i8 %var_105, %var_106
+%var_108 = add i8 0, 5
+%var_109 = add i8 0, 5
+%var_110 = mul i8 %var_108, %var_109
+%var_111 = add i8 %var_107, %var_110
+%var_112 = zext i8 %var_111 to i32
+call void @printi_int(i32 %var_112)
+br label %label_224
+label_224:
+%var_113.ptr = getelementptr[15 x i8], [15 x i8]* @var_113, i32 0, i32 0
+call void @print_string(i8* %var_113.ptr)
+br label %label_228
+label_228:
+%var_114 = add i8 0, 6
+%var_115 = add i8 0, 3
+%var_117 = zext i8 %var_115 to i32
+call void @check_div_error(i32 %var_117)
+%var_116 = udiv i8 %var_114, %var_115
+%var_118 = add i8 0, 200
+%var_119 = add i8 0, 5
+%var_121 = zext i8 %var_119 to i32
+call void @check_div_error(i32 %var_121)
+%var_120 = udiv i8 %var_118, %var_119
+%var_122 = add i8 %var_116, %var_120
+%var_123 = zext i8 %var_122 to i32
+call void @printi_int(i32 %var_123)
+br label %label_243
+label_243:
+%var_124.ptr = getelementptr[15 x i8], [15 x i8]* @var_124, i32 0, i32 0
+call void @print_string(i8* %var_124.ptr)
+br label %label_247
+label_247:
+%var_125 = add i8 0, 5
+%var_126 = add i8 0, 5
+%var_127 = mul i8 %var_125, %var_126
+%var_128 = add i8 0, 2
+%var_129 = add i8 0, 3
+%var_130 = mul i8 %var_128, %var_129
+%var_131 = sub i8 %var_127, %var_130
+%var_132 = zext i8 %var_131 to i32
+call void @printi_int(i32 %var_132)
+br label %label_258
+label_258:
+%var_133.ptr = getelementptr[15 x i8], [15 x i8]* @var_133, i32 0, i32 0
+call void @print_string(i8* %var_133.ptr)
+br label %label_262
+label_262:
+%var_134 = add i8 0, 100
+%var_135 = add i8 0, 2
+%var_137 = zext i8 %var_135 to i32
+call void @check_div_error(i32 %var_137)
+%var_136 = udiv i8 %var_134, %var_135
+%var_138 = add i8 0, 200
+%var_139 = add i8 0, 10
+%var_141 = zext i8 %var_139 to i32
+call void @check_div_error(i32 %var_141)
+%var_140 = udiv i8 %var_138, %var_139
+%var_142 = sub i8 %var_136, %var_140
+%var_143 = zext i8 %var_142 to i32
+call void @printi_int(i32 %var_143)
+br label %label_277
+label_277:
+%var_144.ptr = getelementptr[15 x i8], [15 x i8]* @var_144, i32 0, i32 0
+call void @print_string(i8* %var_144.ptr)
+br label %label_281
+label_281:
+%var_145 = add i8 0, 5
+%var_146 = add i8 0, 5
+%var_147 = mul i8 %var_145, %var_146
+%var_148 = add i8 0, 2
+%var_149 = add i8 0, 3
+%var_150 = mul i8 %var_148, %var_149
+%var_151 = sub i8 %var_147, %var_150
+%var_152 = zext i8 %var_151 to i32
+call void @printi_int(i32 %var_152)
+br label %label_292
+label_292:
+%var_153.ptr = getelementptr[15 x i8], [15 x i8]* @var_153, i32 0, i32 0
+call void @print_string(i8* %var_153.ptr)
+br label %label_296
+label_296:
+%var_154 = add i8 0, 100
+%var_155 = add i8 0, 2
+%var_157 = zext i8 %var_155 to i32
+call void @check_div_error(i32 %var_157)
+%var_156 = udiv i8 %var_154, %var_155
+%var_158 = add i8 0, 200
+%var_159 = add i8 0, 20
+%var_161 = zext i8 %var_159 to i32
+call void @check_div_error(i32 %var_161)
+%var_160 = udiv i8 %var_158, %var_159
+%var_162 = sub i8 %var_156, %var_160
+%var_163 = zext i8 %var_162 to i32
+call void @printi_int(i32 %var_163)
+br label %label_311
+label_311:
+%var_164.ptr = getelementptr[15 x i8], [15 x i8]* @var_164, i32 0, i32 0
+call void @print_string(i8* %var_164.ptr)
+br label %label_315
+label_315:
+%var_165 = add i8 0, 2
+%var_166 = add i32 0, 3
+%var_168 = zext i8 %var_165 to i32
+%var_167 = add i32 %var_168, %var_166
+call void @printi_int(i32 %var_167)
+br label %label_322
+label_322:
+%var_169.ptr = getelementptr[15 x i8], [15 x i8]* @var_169, i32 0, i32 0
+call void @print_string(i8* %var_169.ptr)
+br label %label_326
+label_326:
+%var_170 = add i8 0, 10
+%var_171 = add i32 0, 8
+%var_173 = zext i8 %var_170 to i32
+%var_172 = sub i32 %var_173, %var_171
+call void @printi_int(i32 %var_172)
+br label %label_333
+label_333:
+%var_174.ptr = getelementptr[15 x i8], [15 x i8]* @var_174, i32 0, i32 0
+call void @print_string(i8* %var_174.ptr)
+br label %label_337
+label_337:
+%var_175 = add i8 0, 2
+%var_176 = add i32 0, 3
+%var_178 = zext i8 %var_175 to i32
+%var_177 = mul i32 %var_178, %var_176
+call void @printi_int(i32 %var_177)
+br label %label_344
+label_344:
+%var_179.ptr = getelementptr[15 x i8], [15 x i8]* @var_179, i32 0, i32 0
+call void @print_string(i8* %var_179.ptr)
+br label %label_348
+label_348:
+%var_180 = add i8 0, 4
+%var_181 = add i32 0, 2
+call void @check_div_error(i32 %var_181)
+%var_183 = zext i8 %var_180 to i32
+%var_182 = sdiv i32 %var_183, %var_181
+call void @printi_int(i32 %var_182)
+br label %label_356
+label_356:
+%var_184.ptr = getelementptr[15 x i8], [15 x i8]* @var_184, i32 0, i32 0
+call void @print_string(i8* %var_184.ptr)
+br label %label_360
+label_360:
+%var_185 = add i32 0, 2
+%var_186 = add i8 0, 3
+%var_188 = zext i8 %var_186 to i32
+%var_187 = add i32 %var_185, %var_188
+call void @printi_int(i32 %var_187)
+br label %label_367
+label_367:
+%var_189.ptr = getelementptr[15 x i8], [15 x i8]* @var_189, i32 0, i32 0
+call void @print_string(i8* %var_189.ptr)
+br label %label_371
+label_371:
+%var_190 = add i32 0, 10
+%var_191 = add i8 0, 8
+%var_193 = zext i8 %var_191 to i32
+%var_192 = sub i32 %var_190, %var_193
+call void @printi_int(i32 %var_192)
+br label %label_378
+label_378:
+%var_194.ptr = getelementptr[15 x i8], [15 x i8]* @var_194, i32 0, i32 0
+call void @print_string(i8* %var_194.ptr)
+br label %label_382
+label_382:
+%var_195 = add i32 0, 2
+%var_196 = add i8 0, 3
+%var_198 = zext i8 %var_196 to i32
+%var_197 = mul i32 %var_195, %var_198
+call void @printi_int(i32 %var_197)
+br label %label_389
+label_389:
+%var_199.ptr = getelementptr[15 x i8], [15 x i8]* @var_199, i32 0, i32 0
+call void @print_string(i8* %var_199.ptr)
+br label %label_393
+label_393:
+%var_200 = add i32 0, 4
+%var_201 = add i8 0, 2
+%var_203 = zext i8 %var_201 to i32
+call void @check_div_error(i32 %var_203)
+%var_204 = zext i8 %var_201 to i32
+%var_202 = sdiv i32 %var_200, %var_204
+call void @printi_int(i32 %var_202)
+br label %label_402
+label_402:
+%var_205.ptr = getelementptr[15 x i8], [15 x i8]* @var_205, i32 0, i32 0
+call void @print_string(i8* %var_205.ptr)
+br label %label_406
+label_406:
+%var_206 = add i8 0, 2
+%var_207 = add i32 0, 3
+%var_208 = add i8 0, 5
+%var_210 = zext i8 %var_208 to i32
+%var_209 = mul i32 %var_207, %var_210
+%var_211 = add i32 0, 5
+call void @check_div_error(i32 %var_211)
+%var_212 = sdiv i32 %var_209, %var_211
+%var_214 = zext i8 %var_206 to i32
+%var_213 = add i32 %var_214, %var_212
+call void @printi_int(i32 %var_213)
+br label %label_419
+label_419:
+%var_215.ptr = getelementptr[15 x i8], [15 x i8]* @var_215, i32 0, i32 0
+call void @print_string(i8* %var_215.ptr)
 br label %label_423
 label_423:
-%var_226.ptr = getelementptr[15 x i8], [15 x i8]* @var_226, i32 0, i32 0
-call void @print_string(i8* %var_226.ptr)
-br label %label_427
-label_427:
-%var_227 = add i8 0, 5
-%var_228 = add i32 0, 5
-%var_230 = zext i8 %var_227 to i32
-%var_229 = mul i32 %var_230, %var_228
-%var_231 = add i8 0, 2
-%var_232 = add i32 0, 3
-%var_234 = zext i8 %var_231 to i32
-%var_233 = mul i32 %var_234, %var_232
-%var_235 = sub i32 %var_229, %var_233
-call void @printi_int(i32 %var_235)
+%var_216 = add i8 0, 2
+%var_217 = add i32 0, 3
+%var_219 = zext i8 %var_216 to i32
+%var_218 = mul i32 %var_219, %var_217
+%var_220 = add i8 0, 5
+%var_221 = add i32 0, 5
+%var_223 = zext i8 %var_220 to i32
+%var_222 = mul i32 %var_223, %var_221
+%var_224 = add i32 %var_218, %var_222
+call void @printi_int(i32 %var_224)
+br label %label_435
+label_435:
+%var_225.ptr = getelementptr[15 x i8], [15 x i8]* @var_225, i32 0, i32 0
+call void @print_string(i8* %var_225.ptr)
 br label %label_439
 label_439:
-%var_236.ptr = getelementptr[15 x i8], [15 x i8]* @var_236, i32 0, i32 0
-call void @print_string(i8* %var_236.ptr)
-br label %label_443
-label_443:
-%var_237 = add i8 0, 100
-%var_238 = add i32 0, 2
-%var_240 = zext i8 %var_237 to i32
-%var_239 = sdiv i32 %var_240, %var_238
-%var_241 = add i8 0, 200
-%var_242 = add i32 0, 10
-%var_244 = zext i8 %var_241 to i32
-%var_243 = sdiv i32 %var_244, %var_242
-%var_245 = sub i32 %var_239, %var_243
-call void @printi_int(i32 %var_245)
-br label %label_455
-label_455:
-%var_246.ptr = getelementptr[15 x i8], [15 x i8]* @var_246, i32 0, i32 0
-call void @print_string(i8* %var_246.ptr)
-br label %label_459
-label_459:
-%var_247 = add i8 0, 5
-%var_248 = add i32 0, 5
-%var_250 = zext i8 %var_247 to i32
-%var_249 = mul i32 %var_250, %var_248
-%var_251 = add i8 0, 2
-%var_252 = add i32 0, 3
-%var_254 = zext i8 %var_251 to i32
-%var_253 = mul i32 %var_254, %var_252
-%var_255 = sub i32 %var_249, %var_253
-call void @printi_int(i32 %var_255)
-br label %label_471
-label_471:
-%var_256.ptr = getelementptr[15 x i8], [15 x i8]* @var_256, i32 0, i32 0
-call void @print_string(i8* %var_256.ptr)
-br label %label_475
-label_475:
-%var_257 = add i8 0, 100
-%var_258 = add i32 0, 2
-%var_260 = zext i8 %var_257 to i32
-%var_259 = sdiv i32 %var_260, %var_258
-%var_261 = add i8 0, 200
-%var_262 = add i32 0, 20
-%var_264 = zext i8 %var_261 to i32
-%var_263 = sdiv i32 %var_264, %var_262
-%var_265 = sub i32 %var_259, %var_263
-call void @printi_int(i32 %var_265)
+%var_226 = add i8 0, 6
+%var_227 = add i32 0, 3
+call void @check_div_error(i32 %var_227)
+%var_229 = zext i8 %var_226 to i32
+%var_228 = sdiv i32 %var_229, %var_227
+%var_230 = add i8 0, 200
+%var_231 = add i32 0, 5
+call void @check_div_error(i32 %var_231)
+%var_233 = zext i8 %var_230 to i32
+%var_232 = sdiv i32 %var_233, %var_231
+%var_234 = add i32 %var_228, %var_232
+call void @printi_int(i32 %var_234)
+br label %label_453
+label_453:
+%var_235.ptr = getelementptr[15 x i8], [15 x i8]* @var_235, i32 0, i32 0
+call void @print_string(i8* %var_235.ptr)
+br label %label_457
+label_457:
+%var_236 = add i8 0, 5
+%var_237 = add i32 0, 5
+%var_239 = zext i8 %var_236 to i32
+%var_238 = mul i32 %var_239, %var_237
+%var_240 = add i8 0, 2
+%var_241 = add i32 0, 3
+%var_243 = zext i8 %var_240 to i32
+%var_242 = mul i32 %var_243, %var_241
+%var_244 = sub i32 %var_238, %var_242
+call void @printi_int(i32 %var_244)
+br label %label_469
+label_469:
+%var_245.ptr = getelementptr[15 x i8], [15 x i8]* @var_245, i32 0, i32 0
+call void @print_string(i8* %var_245.ptr)
+br label %label_473
+label_473:
+%var_246 = add i8 0, 100
+%var_247 = add i32 0, 2
+call void @check_div_error(i32 %var_247)
+%var_249 = zext i8 %var_246 to i32
+%var_248 = sdiv i32 %var_249, %var_247
+%var_250 = add i8 0, 200
+%var_251 = add i32 0, 10
+call void @check_div_error(i32 %var_251)
+%var_253 = zext i8 %var_250 to i32
+%var_252 = sdiv i32 %var_253, %var_251
+%var_254 = sub i32 %var_248, %var_252
+call void @printi_int(i32 %var_254)
 br label %label_487
 label_487:
+%var_255.ptr = getelementptr[15 x i8], [15 x i8]* @var_255, i32 0, i32 0
+call void @print_string(i8* %var_255.ptr)
+br label %label_491
+label_491:
+%var_256 = add i8 0, 5
+%var_257 = add i32 0, 5
+%var_259 = zext i8 %var_256 to i32
+%var_258 = mul i32 %var_259, %var_257
+%var_260 = add i8 0, 2
+%var_261 = add i32 0, 3
+%var_263 = zext i8 %var_260 to i32
+%var_262 = mul i32 %var_263, %var_261
+%var_264 = sub i32 %var_258, %var_262
+call void @printi_int(i32 %var_264)
+br label %label_503
+label_503:
+%var_265.ptr = getelementptr[15 x i8], [15 x i8]* @var_265, i32 0, i32 0
+call void @print_string(i8* %var_265.ptr)
+br label %label_507
+label_507:
+%var_266 = add i8 0, 100
+%var_267 = add i32 0, 2
+call void @check_div_error(i32 %var_267)
+%var_269 = zext i8 %var_266 to i32
+%var_268 = sdiv i32 %var_269, %var_267
+%var_270 = add i8 0, 200
+%var_271 = add i32 0, 20
+call void @check_div_error(i32 %var_271)
+%var_273 = zext i8 %var_270 to i32
+%var_272 = sdiv i32 %var_273, %var_271
+%var_274 = sub i32 %var_268, %var_272
+call void @printi_int(i32 %var_274)
+br label %label_521
+label_521:
 ret void
 }

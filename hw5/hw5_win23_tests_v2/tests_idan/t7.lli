@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_2 = getelementptr i32, i32* %var_0, i32 0
@@ -92,41 +102,48 @@ label_73:
 %var_50 = load i32,  i32* %var_49
 %var_52 = add i8 0, 1
 %var_54 = zext i8 %var_52 to i32
-%var_53 = sdiv i32 %var_50, %var_54
+call void @check_div_error(i32 %var_54)
+%var_55 = zext i8 %var_52 to i32
+%var_53 = sdiv i32 %var_50, %var_55
 call void @printi_int(i32 %var_53)
-br label %label_81
-label_81:
-%var_55 = getelementptr i32, i32* %var_0, i32 1
-%var_56 = load i32,  i32* %var_55
-%var_57 = trunc i32 %var_56 to i8
-%var_58 = add i32 0, 1
-%var_60 = zext i8 %var_57 to i32
-%var_59 = sdiv i32 %var_60, %var_58
-call void @printi_int(i32 %var_59)
-br label %label_90
-label_90:
-%var_61 = add i8 0, 8
-%var_62 = add i32 0, 2
-%var_64 = zext i8 %var_61 to i32
-%var_63 = sdiv i32 %var_64, %var_62
-call void @printi_int(i32 %var_63)
-br label %label_97
-label_97:
-%var_65 = add i32 0, 10
-%var_66 = add i8 0, 4
-%var_68 = zext i8 %var_66 to i32
-%var_67 = sdiv i32 %var_65, %var_68
-call void @printi_int(i32 %var_67)
-br label %label_104
-label_104:
-%var_69 = getelementptr i32, i32* %var_0, i32 0
-%var_70 = load i32,  i32* %var_69
-%var_72 = getelementptr i32, i32* %var_0, i32 0
-%var_73 = load i32,  i32* %var_72
-%var_75 = sdiv i32 %var_70, %var_73
-call void @printi_int(i32 %var_75)
-br label %label_112
-label_112:
+br label %label_83
+label_83:
+%var_56 = getelementptr i32, i32* %var_0, i32 1
+%var_57 = load i32,  i32* %var_56
+%var_58 = trunc i32 %var_57 to i8
+%var_59 = add i32 0, 1
+call void @check_div_error(i32 %var_59)
+%var_61 = zext i8 %var_58 to i32
+%var_60 = sdiv i32 %var_61, %var_59
+call void @printi_int(i32 %var_60)
+br label %label_93
+label_93:
+%var_62 = add i8 0, 8
+%var_63 = add i32 0, 2
+call void @check_div_error(i32 %var_63)
+%var_65 = zext i8 %var_62 to i32
+%var_64 = sdiv i32 %var_65, %var_63
+call void @printi_int(i32 %var_64)
+br label %label_101
+label_101:
+%var_66 = add i32 0, 10
+%var_67 = add i8 0, 4
+%var_69 = zext i8 %var_67 to i32
+call void @check_div_error(i32 %var_69)
+%var_70 = zext i8 %var_67 to i32
+%var_68 = sdiv i32 %var_66, %var_70
+call void @printi_int(i32 %var_68)
+br label %label_110
+label_110:
+%var_71 = getelementptr i32, i32* %var_0, i32 0
+%var_72 = load i32,  i32* %var_71
+%var_74 = getelementptr i32, i32* %var_0, i32 0
+%var_75 = load i32,  i32* %var_74
+call void @check_div_error(i32 %var_75)
+%var_77 = sdiv i32 %var_72, %var_75
+call void @printi_int(i32 %var_77)
+br label %label_119
+label_119:
 ret void
 ret void
 }

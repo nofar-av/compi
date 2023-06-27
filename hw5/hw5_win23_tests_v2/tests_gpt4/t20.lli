@@ -13,20 +13,36 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @maxTestsStressArithmeticOperations() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i32 0, 10
 %var_2 = add i32 0, 1
+call void @check_div_error(i32 %var_2)
 %var_3 = sdiv i32 %var_1, %var_2
 %var_4 = add i32 0, 1
+call void @check_div_error(i32 %var_4)
 %var_5 = sdiv i32 %var_3, %var_4
 %var_6 = add i32 0, 1
+call void @check_div_error(i32 %var_6)
 %var_7 = sdiv i32 %var_5, %var_6
 %var_8 = add i32 0, 1
+call void @check_div_error(i32 %var_8)
 %var_9 = sdiv i32 %var_7, %var_8
 %var_10 = add i32 0, 1
+call void @check_div_error(i32 %var_10)
 %var_11 = sdiv i32 %var_9, %var_10
 %var_12 = add i32 0, 1
+call void @check_div_error(i32 %var_12)
 %var_13 = sdiv i32 %var_11, %var_12
 %var_14 = add i32 0, 1
 %var_15 = mul i32 %var_13, %var_14
@@ -39,17 +55,21 @@ define void @maxTestsStressArithmeticOperations() {
 %var_22 = add i32 0, 1
 %var_23 = mul i32 %var_21, %var_22
 %var_24 = add i32 0, 1
+call void @check_div_error(i32 %var_24)
 %var_25 = sdiv i32 %var_23, %var_24
 %var_26 = add i32 0, 1
 %var_27 = mul i32 %var_25, %var_26
 %var_28 = add i32 0, 1
+call void @check_div_error(i32 %var_28)
 %var_29 = sdiv i32 %var_27, %var_28
 %var_30 = add i32 0, 1
 %var_31 = add i32 0, 1
+call void @check_div_error(i32 %var_31)
 %var_32 = sdiv i32 %var_30, %var_31
 %var_33 = add i32 0, 1
 %var_34 = mul i32 %var_32, %var_33
 %var_35 = add i32 0, 1
+call void @check_div_error(i32 %var_35)
 %var_36 = sdiv i32 %var_34, %var_35
 %var_37 = add i32 %var_29, %var_36
 %var_39 = getelementptr i32, i32* %var_0, i32 0
@@ -57,14 +77,14 @@ store i32 %var_37, i32* %var_39
 %var_40 = getelementptr i32, i32* %var_0, i32 0
 %var_41 = load i32,  i32* %var_40
 call void @printi_int(i32 %var_41)
-br label %label_44
-label_44:
+br label %label_54
+label_54:
 ret void
 }
 define void @main() {
 %var_43 = alloca i32, i32 50
 call void @maxTestsStressArithmeticOperations()
-br label %label_51
-label_51:
+br label %label_61
+label_61:
 ret void
 }

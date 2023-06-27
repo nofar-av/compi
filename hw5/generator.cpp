@@ -2,6 +2,7 @@
 
 using namespace std;
 extern CodeBuffer buffer;
+extern SymTable symtable;
 
 string fanCTypeToIRString(string type) { // TODO:: maybe we need everything as i32 and i8*? (Section 3 in pdf)
     if (type == "bool") {
@@ -79,6 +80,17 @@ void Generator::emitPrintFuncs() {
     buffer.emitGlobal("call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)");
     buffer.emitGlobal("ret void");
     buffer.emitGlobal("}");
+
+    buffer.emitGlobal("define void @check_div_error(i32) {");
+    buffer.emitGlobal("%valid = icmp eq i32 %0, 0");
+    buffer.emitGlobal("br i1 %valid, label %ILLEGAL, label %LEGAL");
+    buffer.emitGlobal("ILLEGAL:");
+    buffer.emitGlobal("call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))");
+    buffer.emitGlobal("call void @exit(i32 0)");
+    buffer.emitGlobal("ret void");
+    buffer.emitGlobal("LEGAL:");
+    buffer.emitGlobal("ret void");
+    buffer.emitGlobal("}");
 }
 
 
@@ -113,6 +125,12 @@ void Generator::binopCode(Exp& result, Exp& exp1, const string& op, Exp& exp2) {
     string op_type = fanCTypeToIRString(result.type);
     if (llvm_op == "div") {
         llvm_op = (result.type == "int") ? "sdiv" : "udiv";
+        string temp = exp2.reg;
+        if (exp2.type == "byte") {
+            temp = this->freshVar();
+            buffer.emit(temp + " = zext i8 " + exp2.reg + " to i32");
+        }
+        buffer.emit("call void @check_div_error(i32 " + temp + ")");
     }
 
     string reg1 = exp1.reg;
@@ -257,10 +275,11 @@ shared_ptr<Exp> Generator::genBoolExp(Exp &exp) {
     return bool_exp;
 }
 
-void Generator::genStoreVar(string rbp, int offset, string value, const string& type) {
+void Generator::genStoreVar(string rbp, int offset, string value, const string& ltype, const string& rtype) {
     string reg_value = this->freshVar();
     string reg_ptr = this->freshVar(); // should add reg to symbol????
-    if (type != "int" && value != "0") {
+    if ((ltype != "int" && value != "0") || (rtype != "int" && rtype != "")) {
+        string type = (ltype == "int") ? rtype : ltype; 
         buffer.emit(reg_value + " = zext " + fanCTypeToIRString(type) + " " + value + " to i32");
     }
     else {
@@ -288,7 +307,13 @@ void Generator::genRet(shared_ptr<Exp> exp) {
         buffer.emit("ret void");
     }
     else {
-        buffer.emit("ret " + fanCTypeToIRString(exp->type) + " " + exp->reg);
+        string reg = exp->reg;
+        string ret_type = symtable.getCurrScopeRetType();
+        if (exp->type != ret_type) {
+            reg = this->freshVar();
+            buffer.emit(reg + " = zext " + fanCTypeToIRString(exp->type) + " " + exp->reg + " to i32");
+        }
+        buffer.emit("ret " + fanCTypeToIRString(ret_type) + " " + reg);
     }
 }
 
@@ -317,21 +342,27 @@ void Generator::genFuncDecl(string name, vector<string> params, string ret_type)
     buffer.emit("define " + fanCTypeToIRString(ret_type) + " @" + name + "(" + args_line + ") {");
 }
 
-void Generator::genCall(string name, Call& func, vector<shared_ptr<Exp>> params) {
+void Generator::genCall(string name, Call& call, const Symbol& func, vector<shared_ptr<Exp>> params) {
     string args_line = "";
-    if (name == "printi") {
-        string reg = params[0]->reg;
-        if (params[0]->type == "byte") {
-            reg = this->freshVar();
-            buffer.emit(reg + " = zext i8 " + params[0]->reg + " to i32");
-        }
-        buffer.emit("call void @printi_int(i32 " + reg + ")");
-        return;
-    }
-    for(auto it = params.begin(); it != params.end(); it++)
+    // if (name == "printi") {
+    //     string reg = params[0]->reg;
+    //     if (params[0]->type == "byte") {
+    //         reg = this->freshVar();
+    //         buffer.emit(reg + " = zext i8 " + params[0]->reg + " to i32");
+    //     }
+    //     buffer.emit("call void @printi_int(i32 " + reg + ")");
+    //     return;
+    // }
+    
+    for(int i = 0; i < params.size(); i++)
     {
-        args_line += fanCTypeToIRString((*it)->type) + " " + (*it)->reg + ", ";
-        name += "_" + (*it)->type;
+        string reg = params[i]->reg;
+        if (params[i]->type != func.params[i]) {
+            reg = this->freshVar();
+            buffer.emit(reg + " = zext i8 " + params[i]->reg + " to i32");
+        }
+        args_line += fanCTypeToIRString(func.params[i]) + " " + reg + ", ";
+        name += "_" + func.params[i];
     }
 
     if (args_line != "") { // Remove the comma and space from last arg
@@ -339,21 +370,21 @@ void Generator::genCall(string name, Call& func, vector<shared_ptr<Exp>> params)
     }
 
     string reg_str = "";
-    func.reg = "";
-    if (func.type != "void") {
-        func.reg = this->freshVar();
-        reg_str = func.reg + " = ";
+    call.reg = "";
+    if (call.type != "void") {
+        call.reg = this->freshVar();
+        reg_str = call.reg + " = ";
     }
-    buffer.emit(reg_str + "call " + fanCTypeToIRString(func.type) + " @" + name + "(" + args_line + ")");
+    buffer.emit(reg_str + "call " + fanCTypeToIRString(call.type) + " @" + name + "(" + args_line + ")");
     
-    if (func.type == "bool") {
+    if (call.type == "bool") {
         string reg_bool = this->freshVar();
         //buffer.emit(reg_bool + " = icmp ne i32 0, " + func.reg);
-        buffer.emit(reg_bool + " = icmp ne i1 0, " + func.reg);
-        func.reg = reg_bool;
-        int address = buffer.emit("br i1 " + func.reg + " , label @, label @");
-        func.true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
-        func.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
+        buffer.emit(reg_bool + " = icmp ne i1 0, " + call.reg);
+        call.reg = reg_bool;
+        int address = buffer.emit("br i1 " + call.reg + " , label @, label @");
+        call.true_list = buffer.makelist(pair<int, BranchLabelIndex>(address, FIRST));
+        call.false_list = buffer.makelist(pair<int, BranchLabelIndex>(address, SECOND));
     }
 }
 
@@ -361,4 +392,15 @@ Exp* Generator::genBoolIfNeeded(Exp* exp) {
     shared_ptr<Exp> new_exp = this->genBoolExp(*exp); 
     exp = new Exp(new_exp.get());
     return exp;
+}
+
+void Generator::genConversion(Exp& result, const Exp& exp) {
+    string reg = this->freshVar();
+    if(result.type == "int") {
+        
+        buffer.emit(reg + " = zext i8 " + exp.reg + " to i32");
+    } else {
+        buffer.emit(reg + " = trunc i32 " + exp.reg + " to i8");
+    }
+    result.reg = reg;
 }

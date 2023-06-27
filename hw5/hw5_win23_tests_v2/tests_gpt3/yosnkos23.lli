@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 define void @main() {
 %var_0 = alloca i32, i32 50
 %var_1 = add i8 0, 3
@@ -33,13 +43,14 @@ label_13:
 store i32 %var_10, i32* %var_12
 %var_13 = getelementptr i32, i32* %var_0, i32 1
 %var_14 = load i32,  i32* %var_13
-%var_16 = getelementptr i32, i32* %var_0, i32 0
-%var_17 = load i32,  i32* %var_16
-%var_18 = trunc i32 %var_17 to i8
-%var_19 = add i8 %var_14, %var_18
-%var_20 = zext i8 %var_19 to i32
-call void @printi_int(i32 %var_20)
-br label %label_26
-label_26:
+%var_16 = trunc i32 %var_14 to i8
+%var_17 = getelementptr i32, i32* %var_0, i32 0
+%var_18 = load i32,  i32* %var_17
+%var_19 = trunc i32 %var_18 to i8
+%var_20 = add i8 %var_16, %var_19
+%var_21 = zext i8 %var_20 to i32
+call void @printi_int(i32 %var_21)
+br label %label_27
+label_27:
 ret void
 }

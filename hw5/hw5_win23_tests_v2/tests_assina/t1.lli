@@ -13,6 +13,16 @@ define void @printi_int(i32) {
 call i32 (i8*, ...) @printf(i8* getelementptr([4 x i8], [4 x i8]* @.intFormat, i32 0, i32 0), i32 %0)
 ret void
 }
+define void @check_div_error(i32) {
+%valid = icmp eq i32 %0, 0
+br i1 %valid, label %ILLEGAL, label %LEGAL
+ILLEGAL:
+call void @print_string(i8* getelementptr([23 x i8], [23 x i8]* @.DIVIDE_BY_ZERO.str, i32 0, i32 0))
+call void @exit(i32 0)
+ret void
+LEGAL:
+ret void
+}
 @var_1 = constant [25 x i8] c"This is the second test!\00"
 @var_2 = constant [48 x i8] c"Here we will test loading and storing prev calc\00"
 @var_3 = constant [23 x i8] c"now calculating 1 + 2:\00"
@@ -55,21 +65,22 @@ label_30:
 %var_14 = getelementptr i32, i32* %var_0, i32 0
 %var_15 = load i32,  i32* %var_14
 %var_17 = add i32 0, 3
+call void @check_div_error(i32 %var_17)
 %var_18 = sdiv i32 %var_15, %var_17
 %var_20 = getelementptr i32, i32* %var_0, i32 1
 store i32 %var_18, i32* %var_20
 %var_21.ptr = getelementptr[15 x i8], [15 x i8]* @var_21, i32 0, i32 0
 call void @print_string(i8* %var_21.ptr)
-br label %label_40
-label_40:
+br label %label_41
+label_41:
 %var_22 = getelementptr i32, i32* %var_0, i32 1
 %var_23 = load i32,  i32* %var_22
 call void @printi_int(i32 %var_23)
-br label %label_45
-label_45:
+br label %label_46
+label_46:
 %var_25.ptr = getelementptr[5 x i8], [5 x i8]* @var_25, i32 0, i32 0
 call void @print_string(i8* %var_25.ptr)
-br label %label_49
-label_49:
+br label %label_50
+label_50:
 ret void
 }
